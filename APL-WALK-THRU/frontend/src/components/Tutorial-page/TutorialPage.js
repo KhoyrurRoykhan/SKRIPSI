@@ -7,7 +7,7 @@ const TutorialPage = () => {
       <SidebarTutor />
       <div className="flex-grow-1 p-3">
         {/* Main Content Area */}
-        <h1>Python Exercises</h1>
+        <h1>Content Area</h1>
         {/* Your main content goes here */}
       </div>
     </div>
