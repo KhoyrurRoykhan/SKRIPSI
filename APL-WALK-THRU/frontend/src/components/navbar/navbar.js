@@ -1,68 +1,55 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
-const Navbar = () => {
+const Navigasibar = () => {
+
+  const [name, setName] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    refreshToken();
+    // getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const refreshToken = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/token');
+      const decoded = jwtDecode(response.data.accessToken);
+      setName(decoded.name);
+    } catch (error) {
+      if (error.response) {
+        navigate('/login');
+      }
+    }
+  };
+
+
   return (
-    <nav className="navbar" role="navigation" aria-label="main navigation">
-      <div className="navbar-brand">
-        <a className="navbar-item" href="https://bulma.io">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"/>
-        </a>
-    
-        <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-    
-      <div id="navbarBasicExample" className="navbar-menu">
-        <div className="navbar-start">
-          <a className="navbar-item">
-            Home
-          </a>
-    
-          <a className="navbar-item">
-            Documentation
-          </a>
-    
-          <div className="navbar-item has-dropdown is-hoverable">
-            <a className="navbar-link">
-              More
-            </a>
-    
-            <div className="navbar-dropdown">
-              <a className="navbar-item">
-                About
-              </a>
-              <a className="navbar-item">
-                Jobs
-              </a>
-              <a className="navbar-item">
-                Contact
-              </a>
-              <hr className="navbar-divider"/>
-              <a className="navbar-item">
-                Report an issue
-              </a>
-            </div>
-          </div>
-        </div>
-    
-        <div className="navbar-end">
-          <div className="navbar-item">
-            <div className="buttons">
-              <a className="button is-primary">
-                <strong>Sign up</strong>
-              </a>
-              <a className="button is-light">
-                Log in
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <Navbar className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand href="/">WALK THRU</Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link className='ml-5' href="#home">Belajar Turtle</Nav.Link>
+            <Nav.Link className='ml-5' href="#link">Tantangan</Nav.Link>
+            <Nav.Link className='ml-5' href="#links">Susur Sungai</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+        <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text>
+            Signed in as: <a href="#login">{name}</a>
+          </Navbar.Text>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   )
 }
 
-export default Navbar
+export default Navigasibar;

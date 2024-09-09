@@ -1,0 +1,20 @@
+.carousel-img {
+    height: 400px;
+    object-fit: cover; 
+    width: 100%;
+  }
+
+.turtle-img {
+    height: 4em;
+    width: auto;
+}
+
+.custom-card {
+    width: 20rem;
+  }
+  
+.custom-card-img {
+    height: 200px; /* Set the height to ensure all images are the same */
+    object-fit: cover; /* Ensure images cover the entire area without stretching */
+  }
+  

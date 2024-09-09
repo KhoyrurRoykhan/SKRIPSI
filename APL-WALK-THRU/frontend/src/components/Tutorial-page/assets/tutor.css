@@ -1,0 +1,15 @@
+/* Custom CSS for active dropdown */
+.nav-link.active {
+    background-color: #04AA6D; /* Green background for active links */
+    color: white; /* White text for active links */
+  }
+  
+  .nav-dropdown-item {
+    padding-left: 20px; /* Indent dropdown items */
+  }
+  
+  .nav-dropdown-item.active {
+    background-color: #04AA6D; /* Green background for active dropdown items */
+    color: white; /* White text for active dropdown items */
+  }
+  
