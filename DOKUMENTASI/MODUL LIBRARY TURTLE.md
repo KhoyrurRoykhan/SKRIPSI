@@ -28,12 +28,11 @@
     - pen
     - isdown
 - Color Control
+    - color
     - pencolor
     - fillcolor
-    - color
     - filling
-    - begin_fill
-    - end_fill
+    - begin_fill & end_fill
 - More drawing control
     - reset
     - clear
@@ -828,3 +827,230 @@ turtle.forward(100)   # Gambar garis jika pena sudah turun
 
 #### Kesimpulan
 - **`isdown()`**: Metode ini memberikan cara cepat untuk memeriksa apakah pena sedang aktif menggambar atau tidak, membantu dalam mengelola status pena dalam berbagai situasi saat menggunakan Turtle.
+
+### Color Control
+### - color
+
+Metode `color()` digunakan untuk mengubah warna penyu (turtle) pada kanvas. Anda dapat mengatur warna garis (pen) dan warna isi (fill) dengan metode ini.
+
+- **Sintaks:**
+  ```python
+  turtle.color(*args)
+  ```
+
+- **Format Argumen:**
+  - **`turtle.color(colorstring)`**: Mengatur warna garis dan warna isi menggunakan nama warna sebagai string. Contoh: `"red"`, `"blue"`, dll.
+  - **`turtle.color((r, g, b))`** atau **`turtle.color(r, g, b)`**: Mengatur warna garis dan warna isi menggunakan kode warna RGB. `r`, `g`, dan `b` adalah nilai integer dalam rentang 0 hingga 255.
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Mengatur Warna Menggunakan Nama Warna**
+```python
+turtle.forward(50)    # Gambar garis maju 50 unit dengan warna default (hitam)
+turtle.color("red")   # Ubah warna garis menjadi merah
+turtle.forward(50)    # Gambar garis maju 50 unit dengan warna merah
+```
+- **Output:** Garis pertama akan berwarna hitam, sedangkan garis kedua akan berwarna merah.
+
+**Contoh 2: Mengatur Warna Menggunakan Kode RGB**
+```python
+turtle.forward(50)              # Gambar garis maju 50 unit dengan warna default (hitam)
+turtle.color((0, 255, 0))       # Ubah warna garis menjadi hijau menggunakan kode RGB
+turtle.forward(50)              # Gambar garis maju 50 unit dengan warna hijau
+```
+- **Output:** Garis pertama akan berwarna hitam, sedangkan garis kedua akan berwarna hijau.
+
+#### Penjelasan:
+- **`color()`**: Metode ini mengatur warna garis dan warna isi penyu. Anda dapat menggunakan nama warna dalam bentuk string atau kode warna RGB.
+- **Nama Warna**: Misalnya, `"blue"`, `"green"`, `"yellow"`.
+- **Kode RGB**: Format `(r, g, b)` di mana `r`, `g`, dan `b` masing-masing adalah nilai untuk merah, hijau, dan biru, dengan rentang 0 hingga 255.
+
+#### Kesimpulan
+- **`color()`**: Memungkinkan Anda untuk mengubah warna garis dan warna isi penyu dengan menggunakan nama warna atau kode warna RGB, memberikan fleksibilitas dalam mendesain dan mewarnai gambar yang dibuat oleh penyu.
+
+
+### - pencolor
+Metode `pencolor()` digunakan untuk mengubah warna tinta dari garis yang digambar oleh penyu (turtle). Warna defaultnya adalah hitam. Ini hanya mempengaruhi warna garis yang digambar, bukan warna isi.
+
+- **Sintaks:**
+  ```python
+  turtle.pencolor(*args)
+  ```
+
+- **Argumen:**
+  - **`colorstring`**: (Opsional) Nama warna sebagai string, seperti `"red"`, `"green"`, dll.
+  - **`(r, g, b)`** atau **`r, g, b`**: (Opsional) Tupel tiga nilai `r`, `g`, dan `b` menggunakan kode warna RGB, di mana masing-masing nilai adalah integer dalam rentang 0 hingga 255.
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Mengubah Warna Garis Menggunakan Nama Warna**
+```python
+turtle.forward(50)       # Gambar garis maju 50 unit dengan warna default (hitam)
+turtle.pencolor("red")   # Ubah warna garis menjadi merah
+turtle.forward(50)       # Gambar garis maju 50 unit dengan warna merah
+turtle.left(90)          # Belok 90 derajat
+turtle.forward(50)       # Gambar garis maju 50 unit dengan warna merah
+```
+- **Output:** Garis pertama berwarna hitam, sedangkan garis berikutnya berwarna merah.
+
+**Contoh 2: Mengubah Warna Garis Menggunakan Kode RGB**
+```python
+turtle.forward(50)            # Gambar garis maju 50 unit dengan warna default (hitam)
+turtle.pencolor((0, 255, 0))  # Ubah warna garis menjadi hijau menggunakan kode RGB
+turtle.forward(50)            # Gambar garis maju 50 unit dengan warna hijau
+turtle.left(90)               # Belok 90 derajat
+turtle.forward(50)            # Gambar garis maju 50 unit dengan warna hijau
+```
+- **Output:** Garis pertama berwarna hitam, sedangkan garis berikutnya berwarna hijau.
+
+#### Penjelasan:
+- **`pencolor()`**: Metode ini digunakan untuk mengatur warna tinta garis yang digambar oleh penyu. Anda dapat menggunakan nama warna atau kode warna RGB untuk menentukan warna garis.
+- **Nama Warna**: Misalnya, `"blue"`, `"yellow"`, `"purple"`.
+- **Kode RGB**: Format `(r, g, b)` di mana `r`, `g`, dan `b` adalah nilai untuk merah, hijau, dan biru, masing-masing dalam rentang 0 hingga 255.
+
+#### Kesimpulan
+- **`pencolor()`**: Memungkinkan Anda untuk mengubah warna garis yang digambar oleh penyu, memberikan kontrol lebih besar atas estetika gambar yang dibuat oleh penyu.
+
+
+### - fillcolor
+
+Metode `fillcolor()` digunakan untuk mengatur atau mengembalikan warna isian untuk bentuk yang digambar oleh penyu (turtle). Jika penyu menggambar bentuk poligon, warna isian akan diterapkan ke dalam bentuk tersebut.
+
+- **Sintaks:**
+  ```python
+  turtle.fillcolor(*args)
+  ```
+
+- **Parameter:**
+  - **`fillcolor()`**: Mengembalikan warna isian saat ini sebagai string spesifikasi warna atau format angka hex.
+  - **`fillcolor(colorstring)`**: Menetapkan warna isian menggunakan string spesifikasi warna, seperti `"red"`, `"yellow"`, dll.
+  - **`fillcolor((r, g, b))`**: Menetapkan warna isian menggunakan kode warna RGB dalam bentuk tupel `(r, g, b)`, di mana `r`, `g`, dan `b` adalah nilai integer dari 0 hingga 255.
+  - **`fillcolor(r, g, b)`**: Menetapkan warna isian menggunakan kode warna RGB dengan nilai `r`, `g`, dan `b` sebagai integer dari 0 hingga 255.
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Mengatur Warna Isian Menggunakan Nama Warna**
+```python
+turtle.shape("turtle")    # Mengubah bentuk penyu menjadi "turtle"
+turtle.fillcolor("blue")  # Menetapkan warna isian menjadi biru
+turtle.begin_fill()       # Mulai mengisi bentuk dengan warna
+turtle.circle(50)         # Menggambar lingkaran dengan jari-jari 50
+turtle.end_fill()         # Mengakhiri proses pengisian
+```
+- **Output:** Lingkaran biru yang diisi dengan warna biru.
+
+**Contoh 2: Mengatur Warna Isian Menggunakan Kode RGB**
+```python
+turtle.shape("turtle")           # Mengubah bentuk penyu menjadi "turtle"
+turtle.fillcolor((255, 0, 0))    # Menetapkan warna isian menjadi merah menggunakan kode RGB
+turtle.begin_fill()              # Mulai mengisi bentuk dengan warna
+turtle.circle(50)                # Menggambar lingkaran dengan jari-jari 50
+turtle.end_fill()                # Mengakhiri proses pengisian
+```
+- **Output:** Lingkaran merah yang diisi dengan warna merah.
+
+#### Penjelasan:
+- **`fillcolor()`**: Metode ini digunakan untuk menetapkan warna isian pada bentuk yang digambar oleh penyu. Anda bisa menggunakan nama warna atau kode RGB.
+- **`begin_fill()` dan `end_fill()`**: Digunakan untuk menandai awal dan akhir pengisian warna dalam bentuk yang digambar.
+
+#### Kesimpulan
+- **`fillcolor()`**: Memungkinkan Anda untuk mengatur warna isian pada bentuk yang digambar oleh penyu, memberikan kemampuan untuk membuat gambar yang lebih berwarna dan menarik.
+
+### - filling
+
+Metode `filling()` digunakan untuk memeriksa status pengisian warna pada bentuk yang sedang digambar oleh penyu (turtle). Fungsi ini mengembalikan nilai boolean yang menunjukkan apakah proses pengisian warna sedang berlangsung.
+
+- **Sintaks:**
+  ```python
+  turtle.filling()
+  ```
+
+- **Parameter:**
+  - Tidak memerlukan argumen apa pun.
+
+- **Return:**
+  - **`True`**: Jika proses pengisian warna sedang berlangsung.
+  - **`False`**: Jika tidak ada proses pengisian warna yang sedang berlangsung.
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Memeriksa Status Pengisian Secara Default**
+```python
+print(turtle.filling())
+```
+- **Output:** `False`  
+  (Status default adalah tidak mengisi, jadi pengisian tidak aktif.)
+
+**Contoh 2: Memeriksa Status Pengisian Setelah Memulai Proses Pengisian**
+```python
+turtle.begin_fill()      # Mulai proses pengisian warna
+print(turtle.filling())  # Memeriksa status pengisian
+```
+- **Output:** `True`  
+  (Status pengisian aktif setelah `begin_fill()` dipanggil.)
+
+#### Penjelasan:
+- **`begin_fill()`**: Digunakan untuk memulai proses pengisian warna pada bentuk yang digambar.
+- **`end_fill()`**: Digunakan untuk mengakhiri proses pengisian warna pada bentuk tersebut.
+- **`filling()`**: Memungkinkan Anda untuk memeriksa apakah proses pengisian warna aktif atau tidak.
+
+#### Kesimpulan
+- **`filling()`**: Berguna untuk memeriksa status apakah penyu sedang dalam proses mengisi bentuk dengan warna atau tidak. Ini membantu dalam memahami dan mengelola proses pengisian warna saat menggambar bentuk.
+
+### - begin_fill & end_fill
+
+Metode `begin_fill()` dan `end_fill()` digunakan bersama untuk mengisi bentuk yang digambar oleh penyu (turtle) dengan warna yang telah ditentukan. Proses ini membuat bagian dalam bentuk yang digambar menjadi berwarna sesuai dengan warna yang telah ditetapkan.
+
+#### a) `begin_fill()`
+Metode ini digunakan untuk memulai proses pengisian warna pada bentuk yang akan digambar. Metode ini harus dipanggil sebelum menggambar bentuk yang ingin diisi.
+
+- **Sintaks:**
+  ```python
+  turtle.begin_fill()
+  ```
+
+- **Contoh Penggunaan:**
+
+**Contoh 1: Mengisi Lingkaran dengan Warna**
+```python
+turtle.color("red")        # Menetapkan warna isian menjadi merah
+turtle.begin_fill()        # Mulai proses pengisian warna
+turtle.circle(80)          # Menggambar lingkaran dengan jari-jari 80
+turtle.end_fill()          # Mengakhiri proses pengisian warna
+```
+- **Output:** Lingkaran merah yang diisi dengan warna merah.
+
+**Contoh 2: Tanpa `begin_fill()`**
+```python
+turtle.color("red")        # Menetapkan warna isian menjadi merah
+# turtle.begin_fill()      # Tidak memanggil begin_fill(), jadi pengisian tidak dimulai
+turtle.circle(80)          # Menggambar lingkaran
+turtle.end_fill()          # Mengakhiri proses pengisian
+```
+- **Output:** Lingkaran akan digambar tetapi tidak terisi dengan warna merah, karena `begin_fill()` tidak dipanggil.
+
+#### b) `end_fill()`
+Metode ini digunakan untuk mengakhiri proses pengisian warna yang telah dimulai dengan `begin_fill()`. Setelah `end_fill()` dipanggil, bentuk yang digambar diisi dengan warna yang telah ditentukan.
+
+- **Sintaks:**
+  ```python
+  turtle.end_fill()
+  ```
+
+- **Contoh Penggunaan:**
+
+**Contoh 1: Mengisi Lingkaran dengan Warna**
+```python
+turtle.color("red")        # Menetapkan warna isian menjadi merah
+turtle.begin_fill()        # Mulai proses pengisian warna
+turtle.circle(80)          # Menggambar lingkaran dengan jari-jari 80
+turtle.end_fill()          # Mengakhiri proses pengisian warna
+```
+- **Output:** Lingkaran merah yang diisi dengan warna merah.
+
+#### Penjelasan:
+- **`begin_fill()`**: Memulai proses pengisian warna. Metode ini harus dipanggil sebelum menggambar bentuk yang ingin diisi.
+- **`end_fill()`**: Mengakhiri proses pengisian warna dan mengisi bagian dalam bentuk yang telah digambar dengan warna yang telah ditentukan.
+
+#### Kesimpulan:
+- **`begin_fill()` dan `end_fill()`**: Digunakan bersama untuk mengisi bentuk yang digambar dengan warna yang telah ditentukan. `begin_fill()` harus dipanggil sebelum menggambar bentuk, dan `end_fill()` setelah menggambar bentuk untuk mengisi bagian dalamnya.
