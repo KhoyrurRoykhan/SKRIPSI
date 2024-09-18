@@ -18,11 +18,11 @@
     - xcor & ycor
     - heading
     - distance
-- Settings for measurement
+<!-- - Settings for measurement
     - degrees
-    - radians
+    - radians -->
 - Pen control (Drawing State)
-    - pendown
+    - pendown & penup
     - penup
     - pensize
     - pen
@@ -623,3 +623,208 @@ print(distance_to_joe)  # Menampilkan jarak ke penyu joe
 
 #### Kesimpulan
 - **`distance()`**: Menghitung dan mengembalikan jarak dari penyu saat ini ke titik tertentu, vektor, atau penyu lain. Berguna untuk perhitungan geometris dan navigasi.
+
+### Pen control (Drawing State)
+### - pendown & penup
+
+#### a) **`pendown()` | `pd()` | `down()`**
+
+Metode `pendown()` digunakan untuk menurunkan pena penyu ke kanvas, sehingga saat penyu bergerak, pena akan meninggalkan jejak atau garis pada layar. Metode ini tidak memerlukan argumen apa pun dan bisa dipanggil dengan beberapa nama alias.
+
+- **Sintaks:**
+  ```python
+  turtle.pendown()
+  ```
+  atau
+  ```python
+  turtle.pd()
+  ```
+  atau
+  ```python
+  turtle.down()
+  ```
+
+**Contoh: Menurunkan Pena dan Menggambar**
+```python
+turtle.forward(50)  # Penyu bergerak maju 50 unit
+turtle.penup()      # Mengangkat pena, sehingga tidak menggambar
+turtle.forward(50)  # Penyu bergerak maju 50 unit tanpa menggambar
+turtle.pendown()    # Menurunkan pena, sehingga akan menggambar lagi
+turtle.forward(50)  # Penyu bergerak maju 50 unit dan menggambar
+```
+- **Output:** Hanya garis pertama dan terakhir yang digambar. Garis kedua tidak digambar karena pena diangkat dengan `penup()`.
+
+#### b) **`penup()` | `pu()` | `up()`**
+
+Metode `penup()` digunakan untuk mengangkat pena dari kanvas, sehingga saat penyu bergerak, pena tidak akan meninggalkan jejak atau garis pada layar. Metode ini juga tidak memerlukan argumen dan memiliki beberapa alias.
+
+- **Sintaks:**
+  ```python
+  turtle.penup()
+  ```
+  atau
+  ```python
+  turtle.pu()
+  ```
+  atau
+  ```python
+  turtle.up()
+  ```
+
+**Contoh: Mengangkat Pena dan Berpindah**
+```python
+turtle.forward(50)  # Penyu bergerak maju 50 unit dan menggambar
+turtle.penup()      # Mengangkat pena, sehingga tidak menggambar
+turtle.forward(50)  # Penyu bergerak maju 50 unit tanpa menggambar
+turtle.pendown()    # Menurunkan pena, sehingga akan menggambar lagi
+turtle.forward(50)  # Penyu bergerak maju 50 unit dan menggambar
+```
+- **Output:** Garis pertama dan terakhir digambar. Bagian tengah tidak digambar karena pena diangkat dengan `penup()`.
+
+#### Penjelasan:
+- **`pendown()`**: Menurunkan pena sehingga penyu menggambar saat bergerak.
+- **`penup()`**: Mengangkat pena sehingga penyu tidak menggambar saat bergerak.
+
+Dengan menggunakan `pendown()` dan `penup()`, Anda dapat mengontrol kapan penyu akan menggambar dan kapan tidak, memungkinkan Anda untuk membuat gambar yang lebih kompleks dengan memindahkan penyu tanpa meninggalkan jejak jika tidak diinginkan.
+
+
+### - pensize
+
+Metode `pensize()` dan `width()` digunakan untuk mengatur atau mengembalikan ketebalan garis yang digambar oleh penyu (turtle). Anda bisa mengubah ketebalan garis untuk efek visual yang berbeda saat menggambar.
+
+- **Sintaks:**
+  ```python
+  turtle.pensize(width=None)
+  ```
+  atau
+  ```python
+  turtle.width(width=None)
+  ```
+
+- **Parameter:**
+  - **width**: Bilangan bulat atau float yang menentukan ketebalan garis dalam piksel. Jika tidak ada argumen yang diberikan, metode ini mengembalikan ketebalan garis saat ini.
+
+**Contoh: Mengatur dan Mengembalikan Ketebalan Garis**
+
+**Contoh 1: Mengembalikan Ketebalan Garis**
+```python
+turtle.pensize()  # Mengembalikan ketebalan garis saat ini
+```
+- **Output:** Nilai default ketebalan garis, misalnya `1`.
+
+**Contoh 2: Mengatur Ketebalan Garis**
+```python
+turtle.forward(100)     # Penyu bergerak maju 100 unit dengan ketebalan garis default
+turtle.left(50)         # Penyu berbelok 50 derajat
+turtle.pensize(10)      # Mengatur ketebalan garis menjadi 10 piksel
+turtle.forward(100)     # Penyu bergerak maju 100 unit dengan ketebalan garis baru
+```
+- **Output:** Garis pertama digambar dengan ketebalan default, sedangkan garis kedua digambar dengan ketebalan 10 piksel.
+
+#### Penjelasan:
+- **`pensize(width)`** atau **`width(width)`**: Digunakan untuk mengatur ketebalan garis. Jika `width` tidak diberikan, metode ini hanya mengembalikan ketebalan garis saat ini.
+- **Default Width:** Ketebalan garis default biasanya adalah `1`.
+
+#### Kesimpulan
+- **`pensize(width)`** dan **`width(width)`** memungkinkan Anda untuk mengatur ketebalan garis yang digunakan oleh penyu saat menggambar. Ini memberikan fleksibilitas dalam menciptakan gambar dengan garis yang berbeda ketebalannya, sesuai dengan kebutuhan desain.
+
+### - pen
+
+Metode `pen()` digunakan untuk mengatur atau mengembalikan berbagai atribut pena penyu (turtle) dengan menggunakan kamus atau argumen kata kunci. Ini memungkinkan Anda untuk mengatur beberapa atribut pena dalam satu pernyataan, membuatnya lebih efisien.
+
+- **Sintaks:**
+  ```python
+  turtle.pen(pen=None, **pendict)
+  ```
+  atau
+  ```python
+  turtle.pen(**pendict)
+  ```
+
+- **Parameter:**
+  - **pen**: Kamus (`dictionary`) yang berisi pasangan kunci/nilai dengan atribut pena yang ingin diatur. 
+  - **pendict**: Argumen kata kunci (`keyword arguments`) yang dapat mencakup atribut pena.
+
+**Atribut Pena yang Dapat Diatur:**
+- `"shown"`: `True` atau `False` – Menampilkan atau menyembunyikan pena.
+- `"pendown"`: `True` atau `False` – Menurunkan atau mengangkat pena.
+- `"pencolor"`: String warna atau tuple warna – Mengatur warna garis pena.
+- `"fillcolor"`: String warna atau tuple warna – Mengatur warna isi pena.
+- `"pensize"`: Bilangan positif – Mengatur ketebalan garis pena.
+- `"speed"`: Angka dalam rentang 0 hingga 10 – Mengatur kecepatan penyu.
+- `"resizemode"`: `"auto"`, `"user"`, atau `"noresize"` – Menentukan mode perubahan ukuran.
+- `"stretchfactor"`: Tuple (bilangan positif, bilangan positif) – Faktor peregangan bentuk.
+- `"shearfactor"`: Bilangan – Faktor geser bentuk.
+- `"outline"`: Bilangan positif – Ketebalan garis tepi bentuk.
+- `"tilt"`: Bilangan – Sudut kemiringan bentuk.
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Mengatur Beberapa Atribut Pena**
+```python
+turtle.pen(fillcolor="black", pencolor="red", pensize=10)  # Mengatur beberapa atribut pena
+turtle.forward(100)   # Penyu bergerak maju 100 unit dengan atribut pena yang baru
+turtle.left(50)       # Penyu berbelok 50 derajat
+turtle.forward(100)   # Penyu bergerak maju 100 unit
+```
+- **Output:** Garis yang digambar berwarna merah dengan ketebalan 10 piksel, dan area yang diisi berwarna hitam.
+
+**Contoh 2: Menggunakan Kamus untuk Mengatur Atribut Pena**
+```python
+pen_attributes = {
+    "fillcolor": "blue",
+    "pencolor": "green",
+    "pensize": 5,
+    "speed": 8
+}
+turtle.pen(pen=pen_attributes)  # Mengatur atribut pena dengan kamus
+turtle.forward(100)   # Penyu bergerak maju 100 unit dengan atribut pena yang baru
+```
+- **Output:** Garis yang digambar berwarna hijau dengan ketebalan 5 piksel, area yang diisi berwarna biru, dan kecepatan penyu adalah 8.
+
+#### Penjelasan:
+- **`pen()`**: Metode ini sangat berguna untuk mengatur beberapa atribut pena sekaligus dengan menggunakan kamus atau argumen kata kunci, membuat pengaturan menjadi lebih ringkas dan efisien.
+- **Penggunaan Atribut**: Anda dapat mengatur warna, ketebalan, kecepatan, dan berbagai atribut pena lainnya untuk mendapatkan efek visual yang diinginkan pada gambar yang dibuat oleh penyu. 
+
+#### Kesimpulan
+- **`pen()`**: Memungkinkan Anda untuk mengatur beberapa atribut pena sekaligus, atau mengembalikannya jika tidak ada argumen yang diberikan. Ini memberikan fleksibilitas dalam mengontrol bagaimana penyu menggambar di layar.
+
+### - isdown
+
+Metode `isdown()` digunakan untuk memeriksa apakah pena penyu (turtle) sedang turun atau tidak. Ini mengembalikan nilai boolean yang menunjukkan status pena.
+
+- **Sintaks:**
+  ```python
+  turtle.isdown()
+  ```
+
+- **Return:**
+  - **`True`**: Jika pena sedang turun (artinya pena menempel pada kanvas dan akan menggambar saat penyu bergerak).
+  - **`False`**: Jika pena sedang diangkat (artinya pena tidak menempel pada kanvas dan tidak akan menggambar saat penyu bergerak).
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Memeriksa Status Pena**
+```python
+turtle.penup()          # Mengangkat pena
+print(turtle.isdown()) # Output: False
+
+turtle.pendown()        # Menurunkan pena
+print(turtle.isdown()) # Output: True
+```
+- **Output:** Menampilkan `False` saat pena diangkat dan `True` saat pena diturunkan.
+
+**Contoh 2: Menggunakan `isdown()` dalam Logika Program**
+```python
+if not turtle.isdown():
+    turtle.pendown()  # Menurunkan pena jika pena sedang diangkat
+
+turtle.forward(100)   # Gambar garis jika pena sudah turun
+```
+- **Output:** Garis akan digambar hanya jika pena sebelumnya diangkat, sehingga pena harus diturunkan terlebih dahulu sebelum menggambar.
+
+#### Penjelasan:
+- **`isdown()`**: Berguna untuk memeriksa status pena penyu dan dapat digunakan dalam logika program untuk memastikan pena berada dalam posisi yang diinginkan sebelum melakukan aksi seperti menggambar atau memindahkan penyu.
+
+#### Kesimpulan
+- **`isdown()`**: Metode ini memberikan cara cepat untuk memeriksa apakah pena sedang aktif menggambar atau tidak, membantu dalam mengelola status pena dalam berbagai situasi saat menggunakan Turtle.
