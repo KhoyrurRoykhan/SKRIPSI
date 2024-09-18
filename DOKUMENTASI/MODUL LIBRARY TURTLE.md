@@ -15,9 +15,7 @@
     - undo & speed
 - Turtle Tell State
     - position
-    - towards
-    - xcor
-    - ycor
+    - xcor & ycor
     - heading
     - distance
 - Settings for measurement
@@ -471,3 +469,157 @@ turtle.forward(100)    # Penyu bergerak maju 100 unit dengan cepat
 - **`speed()`**: Mengatur atau mengembalikan kecepatan penyu. Membuat animasi lebih dinamis dengan memilih kecepatan yang sesuai (dari 'slowest' hingga 'fastest').
 
 Metode `undo()` berguna untuk koreksi dan pengeditan, sementara `speed()` memungkinkan kontrol lebih besar terhadap animasi dan kecepatan gambar.
+
+### Turtle Tell State
+### - position
+Metode `pos()` atau `position()` digunakan untuk mendapatkan lokasi penyu (turtle) saat ini dalam bentuk koordinat (x, y) sebagai vektor 2D (`Vec2D`). Metode ini berguna ketika kita perlu mengetahui posisi penyu di kanvas, terutama saat melakukan perhitungan atau membuat pola yang bergantung pada lokasi penyu.
+
+- **Alias:** `pos()` dan `position()`
+- **Sintaks:**
+  ```python
+  turtle.pos()
+  ```
+  atau
+  ```python
+  turtle.position()
+  ```
+- **Return Value:** Mengembalikan posisi penyu saat ini dalam format `(x, y)`.
+
+#### Keterangan:
+- Fungsi ini tidak memerlukan argumen.
+- Posisi default penyu di awal adalah `(0, 0)`, yaitu titik pusat kanvas.
+
+#### Contoh Penggunaan:
+```python
+turtle.forward(100)  # Penyu bergerak maju 100 unit
+current_position = turtle.pos()  # Mendapatkan posisi saat ini
+print(current_position)  # Menampilkan posisi penyu saat ini
+```
+- **Output:** `(100.00, 0.00)`  
+  Penyu bergerak 100 unit ke depan dari posisi awal `(0, 0)`, sehingga posisinya sekarang adalah `(100, 0)`.
+
+#### Kesimpulan
+Metode `pos()` atau `position()` sangat berguna untuk mengetahui lokasi penyu pada kanvas dalam bentuk koordinat `(x, y)`. Ini membantu dalam perhitungan posisi dan membuat pola yang kompleks berdasarkan posisi penyu yang ada.
+
+
+### - xcor & ycor
+
+#### 1. **Metode `xcor()`**
+Metode `xcor()` digunakan untuk mendapatkan koordinat x penyu (turtle) dari posisi saat ini. Metode ini tidak memerlukan argumen dan mengembalikan nilai x dari posisi penyu dalam format angka.
+
+- **Sintaks:**
+  ```python
+  turtle.xcor()
+  ```
+- **Return Value:** Mengembalikan koordinat x penyu saat ini.
+
+**Contoh: Mendapatkan Koordinat x**
+```python
+turtle.left(50)       # Penyu berbelok 50 derajat
+turtle.forward(100)   # Penyu bergerak maju 100 unit
+print(round(turtle.xcor(), 5))  # Menampilkan koordinat x penyu dengan pembulatan 5 desimal
+```
+- **Output:** Misalnya, `100.0` jika penyu bergerak 100 unit ke arah x dari posisi awal. Nilai ini bisa berbeda tergantung pada pergerakan penyu.
+
+#### 2. **Metode `ycor()`**
+Metode `ycor()` digunakan untuk mendapatkan koordinat y penyu dari posisi saat ini. Metode ini tidak memerlukan argumen dan mengembalikan nilai y dari posisi penyu dalam format angka.
+
+- **Sintaks:**
+  ```python
+  turtle.ycor()
+  ```
+- **Return Value:** Mengembalikan koordinat y penyu saat ini.
+
+**Contoh: Mendapatkan Koordinat y**
+```python
+turtle.left(60)       # Penyu berbelok 60 derajat
+turtle.forward(100)   # Penyu bergerak maju 100 unit
+print(round(turtle.ycor(), 3))  # Menampilkan koordinat y penyu dengan pembulatan 3 desimal
+```
+- **Output:** Misalnya, `86.60` jika penyu bergerak 100 unit dalam arah y dari posisi awal. Nilai ini bisa berbeda tergantung pada pergerakan penyu.
+
+#### Kesimpulan
+- **`xcor()`**: Mengembalikan koordinat x dari posisi penyu saat ini. Berguna untuk mengetahui seberapa jauh penyu bergerak di sepanjang sumbu x.
+- **`ycor()`**: Mengembalikan koordinat y dari posisi penyu saat ini. Berguna untuk mengetahui seberapa jauh penyu bergerak di sepanjang sumbu y.
+
+Kedua metode ini membantu dalam pelacakan posisi penyu di kanvas dan dapat digunakan untuk analisis atau pembuatan pola berdasarkan koordinat penyu.
+
+
+### - Heading
+Metode `heading()` digunakan untuk mendapatkan arah (orientasi) penyu (turtle) saat ini dalam derajat. Arah ini menunjukkan sudut yang dibentuk penyu dari sumbu x positif (Timur) dalam arah jarum jam.
+
+- **Sintaks:**
+  ```python
+  turtle.heading()
+  ```
+- **Return Value:** Mengembalikan arah penyu saat ini dalam derajat (0 hingga 360).
+
+**Contoh: Mendapatkan Arah Penyu**
+```python
+turtle.left(47)  # Penyu berbelok 47 derajat ke kiri
+current_heading = turtle.heading()  # Mendapatkan arah penyu saat ini
+print(current_heading)  # Menampilkan arah penyu dalam derajat
+```
+- **Output:** Misalnya, `47.0` jika penyu telah berbelok 47 derajat dari posisi awal.
+
+#### Penjelasan:
+- **Default Heading:** Jika penyu baru diinisialisasi, arah default adalah 0 derajat (Timur).
+- **Perubahan Arah:** Saat penyu berbelok menggunakan metode seperti `left()` atau `right()`, arah penyu akan berubah sesuai derajat yang ditentukan.
+
+#### Kesimpulan
+- **`heading()`**: Mengembalikan arah penyu saat ini dalam derajat. Ini membantu untuk menentukan orientasi penyu dan dapat digunakan untuk perhitungan atau pengaturan arah gerakan berikutnya.
+
+Metode ini sangat berguna untuk mengontrol dan memeriksa arah penyu saat menggambar atau membuat pola.
+
+### - Distance
+Metode `distance()` digunakan untuk menghitung jarak antara penyu (turtle) dengan titik tertentu di kanvas atau dengan penyu lain. Metode ini mengembalikan jarak dalam satuan langkah penyu.
+
+- **Sintaks:**
+  ```python
+  turtle.distance(x, y=None)
+  ```
+  atau
+  ```python
+  turtle.distance((x, y))
+  ```
+  atau
+  ```python
+  turtle.distance(vec)
+  ```
+  atau
+  ```python
+  turtle.distance(mypen)
+  ```
+
+- **Parameter:**
+  - **x**: Koordinat x dari titik tujuan.
+  - **y**: Koordinat y dari titik tujuan (jika tidak disebutkan, metode ini menganggap `x` adalah tupel koordinat).
+  - **vec**: Tupel koordinat `(x, y)` atau vektor yang dikembalikan oleh metode lain seperti `pos()`.
+  - **mypen**: Penyu lain yang posisinya akan dibandingkan dengan posisi penyu saat ini.
+
+**Contoh Penggunaan:**
+
+**Contoh 1: Menghitung Jarak ke Titik Koordinat**
+```python
+turtle.forward(77)  # Penyu bergerak maju 77 unit
+distance_to_point = turtle.distance(100, 100)  # Menghitung jarak ke titik (100, 100)
+print(distance_to_point)  # Menampilkan jarak ke titik tersebut
+```
+- **Output:** Misalnya, `118.6` jika jarak dari posisi penyu saat ini ke titik (100, 100) adalah 118.6 unit.
+
+**Contoh 2: Menghitung Jarak ke Penyu Lain**
+```python
+joe = turtle.Turtle()  # Membuat penyu baru bernama joe
+joe.forward(77)        # Joe bergerak maju 77 unit
+distance_to_joe = turtle.distance(joe)  # Menghitung jarak ke penyu joe
+print(distance_to_joe)  # Menampilkan jarak ke penyu joe
+```
+- **Output:** `77.0` jika penyu `joe` berada 77 unit dari penyu saat ini (karena `joe` bergerak maju 77 unit dari posisi awal).
+
+#### Penjelasan:
+- **Jarak ke Titik Koordinat:** Anda bisa mengukur jarak dari penyu ke titik (x, y) dengan memberikan kedua koordinat tersebut.
+- **Jarak ke Vektor:** Jika anda ingin mengukur jarak ke posisi lain, seperti hasil dari `pos()`, cukup berikan vektor `(x, y)`.
+- **Jarak ke Penyu Lain:** Jika ingin mengukur jarak ke penyu lain, cukup berikan objek penyu sebagai argumen.
+
+#### Kesimpulan
+- **`distance()`**: Menghitung dan mengembalikan jarak dari penyu saat ini ke titik tertentu, vektor, atau penyu lain. Berguna untuk perhitungan geometris dan navigasi.
