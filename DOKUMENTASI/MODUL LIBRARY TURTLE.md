@@ -389,7 +389,7 @@ turtle.stamp()       # Mencap bentuk penyu pada posisi saat ini
 turtle.forward(100)  # Penyu bergerak maju 100 unit lagi
 ```
 - **Output:** Penyu bergerak maju, mencap bentuknya di posisi tengah, lalu bergerak maju lagi.
-
+![Alt text](assets/turtle-stamp-a.gif)
 
 **Contoh 2: Mencap dengan Warna**
 ```python
@@ -398,6 +398,7 @@ stamp_id = turtle.stamp()  # Mencap bentuk penyu dan menyimpan ID cap
 turtle.fd(50)              # Penyu bergerak maju 50 unit
 ```
 - **Output:** Penyu mencap bentuk biru di posisi awal, lalu bergerak maju 50 unit.
+![Alt text](assets/turtle-stamp-b.gif)
 
 #### 2. **Metode `clearstamp()`**
 Metode `clearstamp()` digunakan untuk menghapus cap tertentu yang telah dibuat oleh penyu. Metode ini memerlukan ID cap yang ingin dihapus, yang sebelumnya diperoleh dari pemanggilan `stamp()`. 
@@ -417,6 +418,7 @@ turtle.fd(50)              # Penyu bergerak maju 50 unit
 turtle.clearstamp(stamp_id)  # Menghapus cap dengan ID yang disimpan
 ```
 - **Output:** Penyu mencap bentuk biru di posisi awal, bergerak maju, lalu cap biru dihapus menggunakan ID-nya.
+![Alt text](assets/turtle-clearstamp.gif)
 
 #### Kesimpulan
 - **`stamp()`**: Mencap salinan bentuk penyu di posisi saat ini dan mengembalikan ID cap.
@@ -443,6 +445,7 @@ turtle.forward(100)  # Penyu bergerak maju 100 unit
 turtle.undo()        # Membatalkan tindakan terakhir (bergerak maju 100 unit)
 ```
 - **Output:** Penyu pertama-tama bergerak maju, lalu berbelok, kemudian bergerak maju lagi. Setelah `undo()`, penyu kembali ke posisi sebelum langkah terakhir.
+![Alt text](assets/turtle-undo.gif)
   
 Jika `undo()` dihapus, maka penyu akan tetap maju 100 unit terakhir:
 ```python
@@ -477,6 +480,7 @@ turtle.right(90)
 turtle.forward(100)    # Penyu bergerak maju 100 unit dengan cepat
 ```
 - **Output:** Penyu pertama-tama bergerak maju dengan lambat, kemudian setelah mengubah kecepatan menjadi 'fast', penyu bergerak maju dengan lebih cepat.
+![Alt text](assets/turtle-speed.gif)
 
 #### Kesimpulan
 - **`undo()`**: Membatalkan tindakan terakhir dari penyu. Dapat digunakan berulang untuk membatalkan beberapa tindakan sebelumnya.
