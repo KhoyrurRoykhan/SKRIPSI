@@ -67,12 +67,13 @@ turtle.right(angle)
 
 - **angle**: Nilai sudut (misalnya 90) yang menunjukkan seberapa jauh penyu akan berputar ke kanan.
 
-![Alt text](assets/turtle-right.gif)
 
 **Contoh Penggunaan:**
 ```python
 turtle.right(90)     # Penyu berputar 90 derajat ke kanan
 ```
+
+![Alt text](assets/turtle-right.gif)
 
 **Apa yang terjadi?**
 1. Penyu berputar 90 derajat ke kanan (sehingga sekarang menghadap ke bawah layar).
@@ -92,6 +93,7 @@ turtle.left(angle)
 ```python
 turtle.left(120)     # Penyu berputar 120 derajat ke kiri
 ```
+![Alt text](assets/turtle-left.gif)
 
 **Apa yang terjadi?**
 1. Kemudian, penyu berputar 120 derajat ke kiri.
@@ -115,6 +117,7 @@ turtle.forward(jarak)
 ```python
 turtle.forward(100)  # Penyu bergerak maju sejauh 100 unit
 ```
+![Alt text](assets/turtle-forward.gif)
 
 **Apa yang terjadi?**
 - Penyu akan bergerak maju dalam arah yang sedang dihadapinya sejauh 100 unit.
@@ -137,6 +140,7 @@ turtle.backward(jarak)
 ```python
 turtle.backward(100)  # Penyu bergerak mundur sejauh 100 unit
 ```
+![Alt text](assets/turtle-backward.gif)
 
 **Apa yang terjadi?**
 - Penyu akan bergerak mundur dalam arah yang berlawanan dengan arah yang sedang dihadapinya sejauh 100 unit.
@@ -174,6 +178,7 @@ turtle.setposition(x, y)
 ```python
 turtle.goto(100, 100)  # Penyu bergerak ke posisi (100, 100)
 ```
+![Alt text](assets/turtle-setpos.gif)
 
 **Apa yang terjadi?**
 - Penyu akan berpindah langsung ke posisi koordinat (100, 100) pada layar.
@@ -198,6 +203,7 @@ turtle.setx(x)
 turtle.setpos(-100, 100)  # Penyu ditempatkan pada posisi (-100, 100)
 turtle.setx(200)          # Penyu bergerak ke posisi (200, 100) tanpa mengubah koordinat y
 ```
+![Alt text](assets/turtle-setx.gif)
 
 **Apa yang terjadi?**
 1. Penyu pertama-tama ditempatkan di koordinat (-100, 100).
@@ -218,6 +224,7 @@ turtle.sety(y)
 turtle.setpos(-100, 100)  # Penyu ditempatkan pada posisi (-100, 100)
 turtle.sety(-200)         # Penyu bergerak ke posisi (-100, -200) tanpa mengubah koordinat x
 ```
+![Alt text](assets/turtle-sety.gif)
 
 **Apa yang terjadi?**
 1. Penyu pertama-tama ditempatkan di koordinat (-100, 100).
@@ -257,7 +264,7 @@ turtle.seth(to_angle)
 turtle.setpos(-100, 100)  # Penyu ditempatkan pada posisi (-100, 100)
 turtle.setheading(90)     # Penyu diatur menghadap ke utara
 ```
-
+![Alt text](assets/turtle-setheading.gif)
 **Apa yang terjadi?**
 1. Penyu pertama-tama ditempatkan di koordinat (-100, 100).
 2. Kemudian, `setheading(90)` mengubah arah penyu sehingga menghadap ke utara (90 derajat).
@@ -286,7 +293,7 @@ turtle.home()
 turtle.setpos(-100, 100)  # Penyu ditempatkan pada posisi (-100, 100)
 turtle.home()             # Penyu kembali ke titik asal (0, 0) dan menghadap ke timur
 ```
-
+![Alt text](assets/turtle-home.gif)
 **Apa yang terjadi?**
 1. Penyu pertama-tama ditempatkan di koordinat (-100, 100).
 2. Kemudian, `home()` memindahkan penyu kembali ke titik asal (0, 0) dan mengatur arah penyu menghadap ke timur.
@@ -314,18 +321,21 @@ turtle.circle(radius, extent=None, steps=None)
 turtle.circle(50)  # Menggambar lingkaran dengan jari-jari 50
 ```
 - **Output**: Lingkaran penuh dengan radius 50 unit.
+![Alt text](assets/turtle-circle-a.gif)
 
 ##### Contoh 2: Menggambar Busur Lingkaran dengan Radius 120 dan Extent 180
 ```python
 turtle.circle(120, 180)  # Menggambar busur lingkaran dengan radius 120 dan derajat 180
 ```
 - **Output**: Busur lingkaran (setengah lingkaran) dengan radius 120 unit.
+![Alt text](assets/turtle-circle-b.gif)
 
 ##### Contoh 3: Menggambar Poligon dengan Radius 80 dan 5 Langkah
 ```python
 turtle.circle(80, steps=5)  # Menggambar poligon dengan radius 80 dan 5 sisi
 ```
 - **Output**: Bentuk poligon (segilima) dengan radius 80 unit.
+![Alt text](assets/turtle-circle-c.gif)
 
 #### Kesimpulan
 Metode `circle()` sangat berguna untuk menggambar lingkaran, busur, atau bahkan poligon dengan jumlah sisi yang bisa ditentukan. Dengan mengatur parameter `radius`, `extent`, dan `steps`, kita bisa membuat berbagai macam bentuk sesuai kebutuhan.
@@ -348,6 +358,7 @@ turtle.dot(size=None, *color)
 turtle.dot()  # Menggambar titik dengan ukuran default
 ```
 - **Output**: Menggambar titik dengan ukuran yang bergantung pada `pensize`.
+![Alt text](assets/turtle-dot-a.gif)
 
 ##### Contoh 2: Menggambar Titik dengan Ukuran 20 dan Warna "blue"
 ```python
@@ -356,6 +367,7 @@ turtle.dot(20, "blue")  # Menggambar titik berwarna biru dengan ukuran 20
 turtle.fd(50)         # Menggerakkan penyu 50 unit ke depan
 ```
 - **Output**: Penyu akan bergerak maju 50 unit, menggambar titik berwarna biru dengan ukuran 20, kemudian bergerak maju lagi 50 unit.
+![Alt text](assets/turtle-dot-b.gif)
 
 #### Kesimpulan
 Metode `dot()` sangat berguna untuk menggambar titik-titik dengan ukuran dan warna yang dapat dikustomisasi. Ini bisa digunakan untuk membuat pola, menandai posisi tertentu, atau sekadar menghias gambar.
@@ -377,6 +389,7 @@ turtle.stamp()       # Mencap bentuk penyu pada posisi saat ini
 turtle.forward(100)  # Penyu bergerak maju 100 unit lagi
 ```
 - **Output:** Penyu bergerak maju, mencap bentuknya di posisi tengah, lalu bergerak maju lagi.
+
 
 **Contoh 2: Mencap dengan Warna**
 ```python
