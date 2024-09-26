@@ -67,6 +67,8 @@ turtle.right(angle)
 
 - **angle**: Nilai sudut (misalnya 90) yang menunjukkan seberapa jauh penyu akan berputar ke kanan.
 
+![Alt text](assets/turtle-right.gif)
+
 **Contoh Penggunaan:**
 ```python
 turtle.right(90)     # Penyu berputar 90 derajat ke kanan
