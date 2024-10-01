@@ -516,6 +516,8 @@ print(current_position)  # Menampilkan posisi penyu saat ini
 - **Output:** `(100.00, 0.00)`  
   Penyu bergerak 100 unit ke depan dari posisi awal `(0, 0)`, sehingga posisinya sekarang adalah `(100, 0)`.
 
+  ![Alt text](assets/turtle-position.gif)
+
 #### Kesimpulan
 Metode `pos()` atau `position()` sangat berguna untuk mengetahui lokasi penyu pada kanvas dalam bentuk koordinat `(x, y)`. Ini membantu dalam perhitungan posisi dan membuat pola yang kompleks berdasarkan posisi penyu yang ada.
 
