@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import './assets/navbar.css'
 
 const Navigasibar = () => {
 
@@ -31,7 +32,7 @@ const Navigasibar = () => {
 
 
   return (
-    <Navbar className="bg-body-tertiary">
+    <Navbar className="bg-body-tertiary fixed-top">
       <Container>
         <Navbar.Brand href="/">WALK THRU</Navbar.Brand>
         <Navbar.Toggle />

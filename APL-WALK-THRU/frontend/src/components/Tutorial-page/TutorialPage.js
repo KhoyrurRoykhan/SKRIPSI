@@ -1,11 +1,12 @@
 import React from 'react';
 import SidebarTutor from './SidebarTutor';
+import './assets/tutor.css';  // Import the updated CSS
 
 const TutorialPage = () => {
   return (
-    <div className="d-flex">
+    <div className='mt-5'>
       <SidebarTutor />
-      <div className="flex-grow-1 p-3">
+      <div className="main-content">
         {/* Main Content Area */}
         <h1>Turtle Graphics in Python</h1>
         <p>
@@ -20,7 +21,7 @@ const TutorialPage = () => {
 
         {/* Embedding Trinket */}
         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', background: '#ccc', marginBottom: '20px' }}>
-        <iframe src="https://trinket.io/embed/python/33e5c3b81b" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+          <iframe src="https://trinket.io/embed/python/33e5c3b81b" width="100%" height="356" frameBorder="0" marginWidth="0" marginHeight="0" allowFullScreen></iframe>
         </div>
 
         <p>
@@ -29,6 +30,6 @@ const TutorialPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default TutorialPage;

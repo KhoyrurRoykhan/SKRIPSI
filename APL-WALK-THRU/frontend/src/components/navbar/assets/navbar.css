@@ -1,0 +1,8 @@
+/* tambahkan di file CSS global atau style yang relevan */
+.fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030; /* Mengatur agar navbar tetap berada di atas elemen lain */
+}

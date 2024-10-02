@@ -1,387 +1,273 @@
 import React, { useState } from 'react';
-import { Nav, NavDropdown } from 'react-bootstrap';
 import './assets/tutor.css';
 
 const SidebarTutor = () => {
-
-  const [activeItem, setActiveItem] = useState('Python Intro');
+  // State untuk melacak dropdown mana yang sedang aktif
+  const [activeItem, setActiveItem] = useState('');
+  const [activeDropdown, setActiveDropdown] = useState(null); // Untuk melacak dropdown aktif
 
   const handleSelect = (eventKey) => {
     setActiveItem(eventKey);
   };
 
+  const toggleDropdown = (dropdownIndex) => {
+    // Jika dropdown yang diklik sudah aktif, tutup, jika tidak, buka dropdown tersebut
+    if (activeDropdown === dropdownIndex) {
+      setActiveDropdown(null); // Tutup jika sudah terbuka
+    } else {
+      setActiveDropdown(dropdownIndex); // Buka dropdown baru
+    }
+  };
+
   return (
-    <div className="d-flex flex-column vh-100 bg-light p-3" style={{ width: '250px' }}>
-      <h4 className="mb-4">Turtle Tutorial</h4>
-      <Nav
-        defaultActiveKey="Turtle Intro"
-        className="flex-column"
-        onSelect={handleSelect}
+    <div className="sidenav mt-5">
+      <a
+        href="#about"
+        onClick={() => handleSelect('About')}
+        className={activeItem === 'About' ? 'active' : ''}
       >
-        <Nav.Link
-          eventKey="Turtle Intro"
-          href="#turtle-intro"
-          className={activeItem === 'Turtle Intro' ? 'active' : ''}
+        Pendahuluan
+      </a>
+
+      {/* First Dropdown */}
+      <button
+        className={`dropdown-btn ${activeDropdown === 1 ? 'active' : ''}`}
+        onClick={() => toggleDropdown(1)}
+      >
+        Turtle Motion <i className="fa fa-caret-down"></i>
+      </button>
+      <div className="dropdown-container" style={{ display: activeDropdown === 1 ? 'block' : 'none' }}>
+        <a
+          href="#link1"
+          onClick={() => handleSelect('Link1')}
+          className={activeItem === 'Link1' ? 'active' : ''}
         >
-          Turtle Intro
-        </Nav.Link>
-
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="Turtle motion"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Turtle motion') ? 'active' : ''}
-          onSelect={handleSelect}
+          Left & Right
+        </a>
+        <a
+          href="#link2"
+          onClick={() => handleSelect('Link2')}
+          className={activeItem === 'Link2' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="Forward()"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            Forward( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Backward()"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            Backward( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Right()"
-            href="#output-variables"
-            className={activeItem === 'Output Variables' ? 'active' : ''}
-          >
-            Right( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Left()"
-            href="#global-variables"
-            className={activeItem === 'Global Variables' ? 'active' : ''}
-          >
-            Left( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Set Position"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            Setposition( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Teleport"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            Teleport( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Set x"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            setx( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Set y"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            sety( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Set Heading"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            setheading( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Home"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            Home( )
-          </NavDropdown.Item>
-
-          <NavDropdown.Item
-            eventKey="circle"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            circle( )
-          </NavDropdown.Item>
-
-          <NavDropdown.Item
-            eventKey="dot"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            dot( )
-          </NavDropdown.Item>
-
-          <NavDropdown.Item
-            eventKey="stamp"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            stamp( )
-          </NavDropdown.Item>
-
-          <NavDropdown.Item
-            eventKey="Clearstamp"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            clearstamp( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Undo"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            undo( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Speed"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            Speed( )
-          </NavDropdown.Item>
-        </NavDropdown>
-        
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="Tell Turtle’s state"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Tell Turtle’s state') ? 'active' : ''}
-          onSelect={handleSelect}
+          Forward & Backward
+        </a>
+        <a
+          href="#link3"
+          onClick={() => handleSelect('Link3')}
+          className={activeItem === 'Link3' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="Position"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            Position( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Backward()"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            towards( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Right()"
-            href="#output-variables"
-            className={activeItem === 'Output Variables' ? 'active' : ''}
-          >
-            xcor( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Left()"
-            href="#global-variables"
-            className={activeItem === 'Global Variables' ? 'active' : ''}
-          >
-            ycor( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Set Position"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            heading( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Teleport"
-            href="#variable-exercises"
-            className={activeItem === 'Variable Exercises' ? 'active' : ''}
-          >
-            distance( )
-          </NavDropdown.Item>
-        </NavDropdown>
-
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="Settings for measurement"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Tell Turtle’s state') ? 'active' : ''}
-          onSelect={handleSelect}
+          Setposition
+        </a>
+        <a
+          href="#link4"
+          onClick={() => handleSelect('Link4')}
+          className={activeItem === 'Link4' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="degrees"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            degrees( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="Backward()"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            radians( )
-          </NavDropdown.Item>
-        </NavDropdown>
-
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="Drawing state"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Tell Turtle’s state') ? 'active' : ''}
-          onSelect={handleSelect}
+          Setx & Sety
+        </a>
+        <a
+          href="#link5"
+          onClick={() => handleSelect('Link5')}
+          className={activeItem === 'Link5' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="pendown"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            pendown( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="penup"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            penup( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="pensize"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            pensize( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="width"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            width( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="pen"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            pen( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="isdown"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            isdown( )
-          </NavDropdown.Item>
-        </NavDropdown>
-
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="Color control"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Tell Turtle’s state') ? 'active' : ''}
-          onSelect={handleSelect}
+          Setheading
+        </a>
+        <a
+          href="#link6"
+          onClick={() => handleSelect('Link6')}
+          className={activeItem === 'Link6' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="pencolor"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            pencolor( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="fillcolor"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            fillcolor( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="color"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            color( )
-          </NavDropdown.Item>
-        </NavDropdown>
-
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="Filling"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Tell Turtle’s state') ? 'active' : ''}
-          onSelect={handleSelect}
+          Home
+        </a>
+        <a
+          href="#link7"
+          onClick={() => handleSelect('Link7')}
+          className={activeItem === 'Link7' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="filling"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            filling( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="begin_fill"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            begin_fill( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="end_fill"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            end_fill( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="end_fill"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            end_fill( )
-          </NavDropdown.Item>
-        </NavDropdown>
-
-        {/* Dropdown for Python Variables */}
-        <NavDropdown
-          title="More drawing control"
-          id="nav-dropdown-turtle-motion"
-          className={activeItem.startsWith('Tell Turtle’s state') ? 'active' : ''}
-          onSelect={handleSelect}
+          Circle
+        </a>
+        <a
+          href="#link8"
+          onClick={() => handleSelect('Link8')}
+          className={activeItem === 'Link8' ? 'active' : ''}
         >
-          <NavDropdown.Item
-            eventKey="reset"
-            href="#variable-names"
-            className={activeItem === 'Variable Names' ? 'active' : ''}
-          >
-            reset( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="begin_fill"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            clear( )
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            eventKey="end_fill"
-            href="#assign-multiple-values"
-            className={activeItem === 'Assign Multiple Values' ? 'active' : ''}
-          >
-            write( )
-          </NavDropdown.Item>
-        </NavDropdown>
-
-        {/* Other non-dropdown items */}
-        <Nav.Link
-          eventKey="Python Data Types"
-          href="#python-data-types"
-          className={activeItem === 'Python Data Types' ? 'active' : ''}
+          dot
+        </a>
+        <a
+          href="#link9"
+          onClick={() => handleSelect('Link9')}
+          className={activeItem === 'Link9' ? 'active' : ''}
         >
-          Python Data Types
-        </Nav.Link>
-      </Nav>
+          stamp & clearstamp
+        </a>
+        <a
+          href="#link10"
+          onClick={() => handleSelect('Link10')}
+          className={activeItem === 'Link10' ? 'active' : ''}
+        >
+          undo & speed
+        </a>
+      </div>
+
+      {/* Second Dropdown */}
+      <button
+        className={`dropdown-btn ${activeDropdown === 2 ? 'active' : ''}`}
+        onClick={() => toggleDropdown(2)}
+      >
+        Turtle Tell State <i className="fa fa-caret-down"></i>
+      </button>
+      <div className="dropdown-container" style={{ display: activeDropdown === 2 ? 'block' : 'none' }}>
+        <a
+          href="#link11"
+          onClick={() => handleSelect('Link11')}
+          className={activeItem === 'Link11' ? 'active' : ''}
+        >
+          Position
+        </a>
+        <a
+          href="#link12"
+          onClick={() => handleSelect('Link12')}
+          className={activeItem === 'Link12' ? 'active' : ''}
+        >
+          xcor & ycor
+        </a>
+        <a
+          href="#link13"
+          onClick={() => handleSelect('Link13')}
+          className={activeItem === 'Link13' ? 'active' : ''}
+        >
+          heading
+        </a>
+        <a
+          href="#link14"
+          onClick={() => handleSelect('Link14')}
+          className={activeItem === 'Link14' ? 'active' : ''}
+        >
+          distance
+        </a>
+      </div>
+
+      {/* Third Dropdown */}
+      <button
+        className={`dropdown-btn ${activeDropdown === 3 ? 'active' : ''}`}
+        onClick={() => toggleDropdown(3)}
+      >
+        Pen control <i className="fa fa-caret-down"></i>
+      </button>
+      <div className="dropdown-container" style={{ display: activeDropdown === 3 ? 'block' : 'none' }}>
+        <a
+          href="#link15"
+          onClick={() => handleSelect('Link15')}
+          className={activeItem === 'Link15' ? 'active' : ''}
+        >
+          pendown & penup
+        </a>
+        <a
+          href="#link16"
+          onClick={() => handleSelect('Link16')}
+          className={activeItem === 'Link16' ? 'active' : ''}
+        >
+          pensize
+        </a>
+        <a
+          href="#link17"
+          onClick={() => handleSelect('Link17')}
+          className={activeItem === 'Link17' ? 'active' : ''}
+        >
+          pen
+        </a>
+        <a
+          href="#link18"
+          onClick={() => handleSelect('Link18')}
+          className={activeItem === 'Link18' ? 'active' : ''}
+        >
+          isdown
+        </a>
+      </div>
+
+      {/* Fourth Dropdown */}
+      <button
+        className={`dropdown-btn ${activeDropdown === 4 ? 'active' : ''}`}
+        onClick={() => toggleDropdown(4)}
+      >
+        Color Control <i className="fa fa-caret-down"></i>
+      </button>
+      <div className="dropdown-container" style={{ display: activeDropdown === 4 ? 'block' : 'none' }}>
+        <a
+          href="#link19"
+          onClick={() => handleSelect('Link19')}
+          className={activeItem === 'Link19' ? 'active' : ''}
+        >
+          color
+        </a>
+        <a
+          href="#link20"
+          onClick={() => handleSelect('Link20')}
+          className={activeItem === 'Link20' ? 'active' : ''}
+        >
+          pencolor
+        </a>
+        <a
+          href="#link21"
+          onClick={() => handleSelect('Link21')}
+          className={activeItem === 'Link21' ? 'active' : ''}
+        >
+          fillcolor
+        </a>
+        <a
+          href="#link22"
+          onClick={() => handleSelect('Link22')}
+          className={activeItem === 'Link22' ? 'active' : ''}
+        >
+          filling
+        </a>
+        <a
+          href="#link23"
+          onClick={() => handleSelect('Link23')}
+          className={activeItem === 'Link23' ? 'active' : ''}
+        >
+          begin_fill & end_fill
+        </a>
+      </div>
+
+      {/* Fifth Dropdown */}
+      <button
+        className={`dropdown-btn ${activeDropdown === 5 ? 'active' : ''}`}
+        onClick={() => toggleDropdown(5)}
+      >
+        More drawing control <i className="fa fa-caret-down"></i>
+      </button>
+      <div className="dropdown-container" style={{ display: activeDropdown === 5 ? 'block' : 'none' }}>
+        <a
+          href="#link24"
+          onClick={() => handleSelect('Link24')}
+          className={activeItem === 'Link24' ? 'active' : ''}
+        >
+          reset
+        </a>
+        <a
+          href="#link25"
+          onClick={() => handleSelect('Link25')}
+          className={activeItem === 'Link25' ? 'active' : ''}
+        >
+          clear
+        </a>
+        <a
+          href="#link26"
+          onClick={() => handleSelect('Link26')}
+          className={activeItem === 'Link26' ? 'active' : ''}
+        >
+          write
+        </a>
+      </div>
+
+      <a
+        href="#search"
+        onClick={() => handleSelect('Search')}
+        className={activeItem === 'Search' ? 'active' : ''}
+      >
+        Search
+      </a>
     </div>
   );
 };
