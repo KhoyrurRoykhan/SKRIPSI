@@ -80,7 +80,6 @@ Meskipun `left()` dan `right()` biasanya dikombinasikan dengan perintah lain sep
 
 Perintah `left()` dan `right()` dalam pustaka **Turtle Graphics** memungkinkan pengaturan arah gerakan turtle dengan rotasi ke kiri atau ke kanan berdasarkan derajat yang ditentukan. Perintah ini sangat berguna untuk kontrol arah sebelum melakukan perintah lain dalam pembuatan gambar atau pola.
 
-Berikut adalah bagian pertanyaan (question) yang sesuai dengan modul tentang **Turtle Left & Right** yang telah kita buat:
 
 ---
 
