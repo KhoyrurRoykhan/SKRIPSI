@@ -22,9 +22,9 @@ const SidebarTutor = () => {
   return (
     <div className="sidenav mt-5">
       <a
-        href="#about"
-        onClick={() => handleSelect('About')}
-        className={activeItem === 'About' ? 'active' : ''}
+        href="/tutorial"
+        onClick={() => handleSelect('Pendahuluan')}
+        className={activeItem === 'Pendahuluan' ? 'active' : ''}
       >
         Pendahuluan
       </a>
@@ -38,70 +38,70 @@ const SidebarTutor = () => {
       </button>
       <div className="dropdown-container" style={{ display: activeDropdown === 1 ? 'block' : 'none' }}>
         <a
-          href="#link1"
+          href="/tutorial/leftright"
           onClick={() => handleSelect('Link1')}
           className={activeItem === 'Link1' ? 'active' : ''}
         >
           Left & Right
         </a>
         <a
-          href="#link2"
+          href="/tutorial/forwardbackward"
           onClick={() => handleSelect('Link2')}
           className={activeItem === 'Link2' ? 'active' : ''}
         >
           Forward & Backward
         </a>
         <a
-          href="#link3"
+          href="/tutorial/setposition"
           onClick={() => handleSelect('Link3')}
           className={activeItem === 'Link3' ? 'active' : ''}
         >
           Setposition
         </a>
         <a
-          href="#link4"
+          href="/tutorial/setxy"
           onClick={() => handleSelect('Link4')}
           className={activeItem === 'Link4' ? 'active' : ''}
         >
           Setx & Sety
         </a>
         <a
-          href="#link5"
+          href="/tutorial/setheading"
           onClick={() => handleSelect('Link5')}
           className={activeItem === 'Link5' ? 'active' : ''}
         >
           Setheading
         </a>
         <a
-          href="#link6"
+          href="/tutorial/home"
           onClick={() => handleSelect('Link6')}
           className={activeItem === 'Link6' ? 'active' : ''}
         >
           Home
         </a>
         <a
-          href="#link7"
+          href="/tutorial/circle"
           onClick={() => handleSelect('Link7')}
           className={activeItem === 'Link7' ? 'active' : ''}
         >
           Circle
         </a>
         <a
-          href="#link8"
+          href="/tutorial/dot"
           onClick={() => handleSelect('Link8')}
           className={activeItem === 'Link8' ? 'active' : ''}
         >
           dot
         </a>
         <a
-          href="#link9"
+          href="/tutorial/stamp"
           onClick={() => handleSelect('Link9')}
           className={activeItem === 'Link9' ? 'active' : ''}
         >
           stamp & clearstamp
         </a>
         <a
-          href="#link10"
+          href="/tutorial/undospeed"
           onClick={() => handleSelect('Link10')}
           className={activeItem === 'Link10' ? 'active' : ''}
         >

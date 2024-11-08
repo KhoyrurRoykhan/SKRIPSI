@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import './assets/navbar.css'
+import { FaBook, FaTrophy, FaWater } from 'react-icons/fa'; // Import icons
+import './assets/navbar.css';
 
 const Navigasibar = () => {
 
@@ -14,7 +15,6 @@ const Navigasibar = () => {
 
   useEffect(() => {
     refreshToken();
-    // getUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -30,7 +30,6 @@ const Navigasibar = () => {
     }
   };
 
-
   return (
     <Navbar className="bg-body-tertiary fixed-top">
       <Container>
@@ -38,9 +37,9 @@ const Navigasibar = () => {
         <Navbar.Toggle />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link className='ml-5' href="#home">Belajar Turtle</Nav.Link>
-            <Nav.Link className='ml-5' href="#link">Tantangan</Nav.Link>
-            <Nav.Link className='ml-5' href="#links">Susur Sungai</Nav.Link>
+            <Nav.Link className='ml-5' href="#home"><FaBook /> Belajar Turtle</Nav.Link>
+            <Nav.Link className='ml-5' href="#link"><FaTrophy /> Tantangan</Nav.Link>
+            <Nav.Link className='ml-5' href="#links"><FaWater /> Susur Sungai</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
@@ -50,7 +49,7 @@ const Navigasibar = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  )
-}
+  );
+};
 
 export default Navigasibar;
