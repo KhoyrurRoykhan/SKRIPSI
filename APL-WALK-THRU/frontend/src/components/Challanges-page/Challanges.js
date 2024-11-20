@@ -2,24 +2,24 @@ import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 
 const challenges = [
-  { id: 1, name: 'Get the Broccoli', link: '#' },
-  { id: 2, name: 'Get the shapes', link: '#' },
-  { id: 3, name: 'Let\'s have Pizza', link: '#' },
-  { id: 4, name: 'How about some cookies', link: '#' },
-  { id: 5, name: 'Meet some Friends', link: '#' },
-  { id: 6, name: 'The turtle is not in the middle', link: '#' },
-  { id: 7, name: 'The Square Butterfly Hunt', link: '#' },
-  { id: 8, name: 'The Square Butterfly Hunt part 2', link: '#' },
-  { id: 9, name: 'Arc Gathering', link: '#' },
-  { id: 10, name: 'Rectangle and Square', link: '#' },
-  { id: 11, name: 'Animals Star', link: '#' },
-  { id: 12, name: 'Triangle in a triangle', link: '#' }
+  { id: 1, name: 'Jelajahi Lahan Basah: Temui Monyet Proboscis', link: '#' },
+  { id: 2, name: 'Temukan Keindahan Orangutan Borneo', link: '#' },
+  { id: 3, name: 'Buat Rumah untuk Dolphin Sungai', link: '#' },
+  { id: 4, name: 'Gambar Burung Raja Udang yang Berwarna-warni', link: '#' },
+  { id: 5, name: 'Rancang Sarang untuk Burung Hornbill', link: '#' },
+  { id: 6, name: 'Bantu Kura-kura Menemukan Jalannya Pulang', link: '#' },
+  { id: 7, name: 'Misi Kupu-kupu di Lahan Basah yang Hebat', link: '#' },
+  { id: 8, name: 'Perburuan Serangga Lahan Basah yang Menakjubkan', link: '#' },
+  { id: 9, name: 'Kumpulkan Ikan dari Lahan Basah', link: '#' },
+  { id: 10, name: 'Bentuk Habitat Lahan Basah', link: '#' },
+  { id: 11, name: 'Malam Berbintang di Lahan Basah', link: '#' },
+  { id: 12, name: 'Segitiga Lahan Basah: Petualangan Geometris', link: '#' }
 ];
 
 const Challenges = () => {
   return (
-    <Container className="mt-4">
-      <h2>Challenges</h2>
+    <Container style={{marginTop:100}}>
+      <h2 className='mb-3'>Challenges</h2>
       <Row>
         {challenges.map((challenge, index) => (
           <Col key={challenge.id} md={6} lg={4} className="mb-3">

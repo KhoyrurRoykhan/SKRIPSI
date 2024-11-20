@@ -14,7 +14,7 @@ const Navigasibar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    refreshToken();
+    // refreshToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
