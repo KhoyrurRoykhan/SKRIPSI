@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import swal from 'sweetalert'; // Impor SweetAlert
 import papuyu from './assets/papuyu-1.png';
-import broccoli from './assets/papuyu.png';
+import broccoli from './assets/cacingtarget.png';
 
 const TantanganSatu = () => {
   const [turtleCommands, setTurtleCommands] = useState('');
@@ -206,13 +207,11 @@ const TantanganSatu = () => {
         Math.abs(currentX - (canvas.width / 2 + broccoliTarget.x)) <= tolerance &&
         Math.abs(currentY - (canvas.height / 2 - broccoliTarget.y)) <= tolerance
       ) {
-        alert('Papuyu telah mencapai target Broccoli!');
+        swal("Horee!", "Ikan Papuyu telah memakan Cacing!", "success"); // Menggunakan SweetAlert
       }
     }, 0); // Delay sangat kecil untuk memastikan sinkronisasi
   };
-    
-
-
+  
   return (
     <Container style={{marginTop: 100}}>
       <Row>
@@ -231,7 +230,7 @@ rt 90
 `}
               />
             </Form.Group>
-            <Button variant="primary" onClick={executeCommands}>
+            <Button variant="primary" onClick={executeCommands }>
               Execute
             </Button>
           </Form>

@@ -23,14 +23,13 @@ Dalam pustaka **Turtle Graphics**, metode `left()` dan `right()` digunakan untuk
 
    t = turtle.Turtle()
 
-   # Putar turtle ke kiri sejauh 90 derajat
-   t.left(90)
-
-   # Putar lagi ke kiri sejauh 45 derajat
-   t.left(45)
+   # Putar turtle ke kiri sejauh 120 derajat
+   t.left(120)
 
    turtle.done()
    ```
+   Output:
+   ![Alt text](assets/turtle-left.gif)
 
 2. **`right(derajat)`**: Memutar arah turtle searah jarum jam (kanan) sebesar derajat yang ditentukan.
 
@@ -43,11 +42,10 @@ Dalam pustaka **Turtle Graphics**, metode `left()` dan `right()` digunakan untuk
    # Putar turtle ke kanan sejauh 90 derajat
    t.right(90)
 
-   # Putar lagi ke kanan sejauh 45 derajat
-   t.right(45)
-
    turtle.done()
    ```
+   Output:
+   ![Alt text](assets/turtle-right.gif)
 
 ---
 
@@ -126,6 +124,8 @@ Dalam pustaka **Turtle Graphics**, metode `forward()` dan `backward()` digunakan
 
    turtle.done()
    ```
+   Output:
+   ![Alt text](assets/turtle-forward.gif)
 
 2. **`backward(jarak)`**: Menggerakkan turtle ke belakang sejauh jarak yang ditentukan (dalam piksel), dalam arah berlawanan dengan arah yang sedang dihadapi oleh turtle.
 
@@ -136,10 +136,12 @@ Dalam pustaka **Turtle Graphics**, metode `forward()` dan `backward()` digunakan
    t = turtle.Turtle()
 
    # Gerakkan turtle ke belakang sejauh 50 piksel
-   t.backward(50)
+   t.backward(100)
 
    turtle.done()
    ```
+   Output:
+   ![Alt text](assets/turtle-backward.gif)
 
 ---
 

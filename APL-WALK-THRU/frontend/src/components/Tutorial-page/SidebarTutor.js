@@ -2,29 +2,34 @@ import React, { useState } from 'react';
 import './assets/tutor.css';
 
 const SidebarTutor = () => {
-  // State untuk melacak dropdown mana yang sedang aktif
   const [activeItem, setActiveItem] = useState('');
-  const [activeDropdown, setActiveDropdown] = useState(null); // Untuk melacak dropdown aktif
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const handleSelect = (eventKey) => {
     setActiveItem(eventKey);
+    // Keep the dropdown open if the selected item belongs to it
+    if (eventKey.startsWith('Link')) {
+      const dropdownIndex = parseInt(eventKey.replace('Link', ''));
+      setActiveDropdown(dropdownIndex);
+    }
   };
 
   const toggleDropdown = (dropdownIndex) => {
-    // Jika dropdown yang diklik sudah aktif, tutup, jika tidak, buka dropdown tersebut
     if (activeDropdown === dropdownIndex) {
-      setActiveDropdown(null); // Tutup jika sudah terbuka
+      setActiveDropdown(null); // Close if already open
     } else {
-      setActiveDropdown(dropdownIndex); // Buka dropdown baru
+      setActiveDropdown(dropdownIndex); // Open new dropdown
     }
   };
+
+  const isItemActive = (item) => activeItem === item;
 
   return (
     <div className="sidenav mt-5">
       <a
         href="/tutorial"
         onClick={() => handleSelect('Pendahuluan')}
-        className={activeItem === 'Pendahuluan' ? 'active' : ''}
+        className={isItemActive('Pendahuluan') ? 'active' : ''}
       >
         Pendahuluan
       </a>
@@ -40,70 +45,70 @@ const SidebarTutor = () => {
         <a
           href="/tutorial/leftright"
           onClick={() => handleSelect('Link1')}
-          className={activeItem === 'Link1' ? 'active' : ''}
+          className={isItemActive('Link1') ? 'active' : ''}
         >
           Left & Right
         </a>
         <a
           href="/tutorial/forwardbackward"
           onClick={() => handleSelect('Link2')}
-          className={activeItem === 'Link2' ? 'active' : ''}
+          className={isItemActive('Link2') ? 'active' : ''}
         >
           Forward & Backward
         </a>
         <a
           href="/tutorial/setposition"
           onClick={() => handleSelect('Link3')}
-          className={activeItem === 'Link3' ? 'active' : ''}
+          className={isItemActive('Link3') ? 'active' : ''}
         >
           Setposition
         </a>
         <a
           href="/tutorial/setxy"
           onClick={() => handleSelect('Link4')}
-          className={activeItem === 'Link4' ? 'active' : ''}
+          className={isItemActive('Link4') ? 'active' : ''}
         >
           Setx & Sety
         </a>
         <a
           href="/tutorial/setheading"
           onClick={() => handleSelect('Link5')}
-          className={activeItem === 'Link5' ? 'active' : ''}
+          className={isItemActive('Link5') ? 'active' : ''}
         >
           Setheading
         </a>
         <a
           href="/tutorial/home"
           onClick={() => handleSelect('Link6')}
-          className={activeItem === 'Link6' ? 'active' : ''}
+          className={isItemActive('Link6') ? 'active' : ''}
         >
           Home
         </a>
         <a
           href="/tutorial/circle"
           onClick={() => handleSelect('Link7')}
-          className={activeItem === 'Link7' ? 'active' : ''}
+          className={isItemActive('Link7') ? 'active' : ''}
         >
           Circle
         </a>
         <a
           href="/tutorial/dot"
           onClick={() => handleSelect('Link8')}
-          className={activeItem === 'Link8' ? 'active' : ''}
+          className={isItemActive('Link8') ? 'active' : ''}
         >
           dot
         </a>
         <a
           href="/tutorial/stamp"
           onClick={() => handleSelect('Link9')}
-          className={activeItem === 'Link9' ? 'active' : ''}
+          className={isItemActive('Link9') ? 'active' : ''}
         >
           stamp & clearstamp
         </a>
         <a
           href="/tutorial/undospeed"
           onClick={() => handleSelect('Link10')}
-          className={activeItem === 'Link10' ? 'active' : ''}
+          className={isItemActive('Link10') ? 'active' : ''}
         >
           undo & speed
         </a>
@@ -114,34 +119,34 @@ const SidebarTutor = () => {
         className={`dropdown-btn ${activeDropdown === 2 ? 'active' : ''}`}
         onClick={() => toggleDropdown(2)}
       >
-        Turtle Tell State <i className="fa fa-caret-down"></i>
+        Turtle Tell State <i className ="fa fa-caret-down"></i>
       </button>
       <div className="dropdown-container" style={{ display: activeDropdown === 2 ? 'block' : 'none' }}>
         <a
           href="#link11"
           onClick={() => handleSelect('Link11')}
-          className={activeItem === 'Link11' ? 'active' : ''}
+          className={isItemActive('Link11') ? 'active' : ''}
         >
           Position
         </a>
         <a
           href="#link12"
           onClick={() => handleSelect('Link12')}
-          className={activeItem === 'Link12' ? 'active' : ''}
+          className={isItemActive('Link12') ? 'active' : ''}
         >
           xcor & ycor
         </a>
         <a
           href="#link13"
           onClick={() => handleSelect('Link13')}
-          className={activeItem === 'Link13' ? 'active' : ''}
+          className={isItemActive('Link13') ? 'active' : ''}
         >
           heading
         </a>
         <a
           href="#link14"
           onClick={() => handleSelect('Link14')}
-          className={activeItem === 'Link14' ? 'active' : ''}
+          className={isItemActive('Link14') ? 'active' : ''}
         >
           distance
         </a>
@@ -158,28 +163,28 @@ const SidebarTutor = () => {
         <a
           href="#link15"
           onClick={() => handleSelect('Link15')}
-          className={activeItem === 'Link15' ? 'active' : ''}
+          className={isItemActive('Link15') ? 'active' : ''}
         >
           pendown & penup
         </a>
         <a
           href="#link16"
           onClick={() => handleSelect('Link16')}
-          className={activeItem === 'Link16' ? 'active' : ''}
+          className={isItemActive('Link16') ? 'active' : ''}
         >
           pensize
         </a>
         <a
           href="#link17"
           onClick={() => handleSelect('Link17')}
-          className={activeItem === 'Link17' ? 'active' : ''}
+          className={isItemActive('Link17') ? 'active' : ''}
         >
           pen
         </a>
         <a
           href="#link18"
           onClick={() => handleSelect('Link18')}
-          className={activeItem === 'Link18' ? 'active' : ''}
+          className={isItemActive('Link18') ? 'active' : ''}
         >
           isdown
         </a>
@@ -196,35 +201,35 @@ const SidebarTutor = () => {
         <a
           href="#link19"
           onClick={() => handleSelect('Link19')}
-          className={activeItem === 'Link19' ? 'active' : ''}
+          className={isItemActive('Link19') ? 'active' : ''}
         >
           color
         </a>
         <a
           href="#link20"
           onClick={() => handleSelect('Link20')}
-          className={activeItem === 'Link20' ? 'active' : ''}
+          className={isItemActive('Link20') ? 'active' : ''}
         >
           pencolor
         </a>
         <a
           href="#link21"
           onClick={() => handleSelect('Link21')}
-          className={activeItem === 'Link21' ? 'active' : ''}
+          className={isItemActive('Link21') ? 'active' : ''}
         >
           fillcolor
         </a>
         <a
           href="#link22"
           onClick={() => handleSelect('Link22')}
-          className={activeItem === 'Link22' ? 'active' : ''}
+          className={isItemActive('Link22') ? 'active' : ''}
         >
           filling
         </a>
         <a
           href="#link23"
           onClick={() => handleSelect('Link23')}
-          className={activeItem === 'Link23' ? 'active' : ''}
+          className={isItemActive('Link23') ? 'active' : ''}
         >
           begin_fill & end_fill
         </a>
@@ -241,21 +246,21 @@ const SidebarTutor = () => {
         <a
           href="#link24"
           onClick={() => handleSelect('Link24')}
-          className={activeItem === 'Link24' ? 'active' : ''}
+          className={isItemActive('Link24') ? 'active' : ''}
         >
           reset
         </a>
         <a
           href="#link25"
-          onClick={() => handleSelect('Link25')}
-          className={activeItem === 'Link25' ? 'active' : ''}
+          on Click={() => handleSelect('Link25')}
+          className={isItemActive('Link25') ? 'active' : ''}
         >
           clear
         </a>
         <a
           href="#link26"
           onClick={() => handleSelect('Link26')}
-          className={activeItem === 'Link26' ? 'active' : ''}
+          className={isItemActive('Link26') ? 'active' : ''}
         >
           write
         </a>
@@ -264,7 +269,7 @@ const SidebarTutor = () => {
       <a
         href="#search"
         onClick={() => handleSelect('Search')}
-        className={activeItem === 'Search' ? 'active' : ''}
+        className={isItemActive('Search') ? 'active' : ''}
       >
         Search
       </a>

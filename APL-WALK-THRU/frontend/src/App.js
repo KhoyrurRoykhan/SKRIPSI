@@ -18,6 +18,8 @@ import Dot from "./components/Tutorial-page/Turtle-motion/Dot";
 import UndoSpeed from "./components/Tutorial-page/Turtle-motion/UndoSpeed";
 import Challanges from "./components/Challanges-page/Challanges";
 import TantanganSatu from "./components/Challanges-page/all-challanges/TantanganSatu";
+import Susursungai from "./components/Susursungai/Susursungai";
+import Baritoriver from "./components/Susursungai/all-susursungai/Baritoriver";
 
 
 
@@ -44,6 +46,9 @@ function App() {
       <Route path="/challanges" element={<><Navigasibar/><Challanges/></>}/>
       <Route path="/challanges/1" element={<><Navigasibar/><TantanganSatu/></>}/>
       <Route path="/compile" element={<><Compile/><Footer/></>}/>
+
+      <Route path="/susursungai" element={<><Navigasibar/><Susursungai/></>}/>
+      <Route path="/susursungai/1" element={<><Navigasibar/><Baritoriver/></>}/>
 
     </Routes>
     </BrowserRouter>

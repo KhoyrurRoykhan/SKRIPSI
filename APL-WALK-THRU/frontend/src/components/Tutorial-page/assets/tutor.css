@@ -49,6 +49,7 @@
 .main-content {
   margin-left: 200px;
   padding: 20px;
+  /* font-family: 'Poppins', sans-serif; */
 }
 
 @media screen and (max-width: 768px) {
