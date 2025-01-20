@@ -5,7 +5,7 @@ import Navigasibar from "./components/navbar/navbar";
 import LandingPage from "./components/Landing-page/landingPage";
 import Footer from "./components/Footer/footer";
 // import KategoriGrid from "./components/Landing-page/KategoriGrid";
-import Pendahuluan from "./components/Tutorial-page/Pendahuluan";
+import Pendahuluan from "./components/Tutorial-page/Pendahuluan/Pendahuluan";
 import Compile from "./components/Compiler/compile";
 import LeftRight from "./components/Tutorial-page/Turtle-motion/LeftRight";
 import ForwardBackward from "./components/Tutorial-page/Turtle-motion/ForwardBackward";
@@ -20,6 +20,9 @@ import Challanges from "./components/Challanges-page/Challanges";
 import TantanganSatu from "./components/Challanges-page/all-challanges/TantanganSatu";
 import Susursungai from "./components/Susursungai/Susursungai";
 import Baritoriver from "./components/Susursungai/all-susursungai/Baritoriver";
+import TantanganDua from "./components/Challanges-page/all-challanges/TantanganDua";
+import Skulpt from "./components/coba/Skulpt";
+import ChallangeOne from "./components/Challanges-page/all-challanges/ChallangeOne";
 
 
 
@@ -32,7 +35,7 @@ function App() {
       <Route exact path="/register" element={<><Navigasibar/><Register/></>}/>
       <Route path="/" element={<><Navigasibar/><LandingPage/><Footer/></>}/>
       {/* <Route path="/kat" element={<><KategoriGrid/></>}/> */}
-      <Route path="/tutorial" element={<><Navigasibar/><Pendahuluan/><Footer/></>}/>
+      <Route path="/tutorial" element={<><Navigasibar/><Pendahuluan/></>}/>
       <Route path="/tutorial/leftright" element={<><Navigasibar/><LeftRight/></>}/>
       <Route path="/tutorial/forwardbackward" element={<><Navigasibar/><ForwardBackward/></>}/>
       <Route path="/tutorial/setposition" element={<><Navigasibar/><SetPosition/></>}/>
@@ -45,10 +48,14 @@ function App() {
 
       <Route path="/challanges" element={<><Navigasibar/><Challanges/></>}/>
       <Route path="/challanges/1" element={<><Navigasibar/><TantanganSatu/></>}/>
+      <Route path="/challanges/2" element={<><Navigasibar/><TantanganDua/></>}/>
+      <Route path="/challanges/one" element={<><Navigasibar/><ChallangeOne/></>}/>
       <Route path="/compile" element={<><Compile/><Footer/></>}/>
 
       <Route path="/susursungai" element={<><Navigasibar/><Susursungai/></>}/>
       <Route path="/susursungai/1" element={<><Navigasibar/><Baritoriver/></>}/>
+
+      <Route path="/skulpt" element={<><Skulpt/></>}/>
 
     </Routes>
     </BrowserRouter>

@@ -4,7 +4,7 @@ import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
 
-const TantanganSatu = () => {
+const ChallangeOne = () => {
   const [turtleCommands, setTurtleCommands] = useState('');
   const canvasRef = useRef(null);
   const papuyuImageRef = useRef(null);
@@ -15,13 +15,15 @@ const TantanganSatu = () => {
   };
 
   const showHint = () => {
-    swal("Deskripsi Misi", 
-      "Bantu papuyu menemukan jalannya menuju cacing lezat di posisi 100,100!\n\n" +
-      "Tujuan: Kura-kura memulai perjalanan dari posisi 0,0 dan harus menavigasi untuk mencapai posisi 100,100, tempat cacing besar lezat untuk dimakan.\n\n" +
-      "Instruksi:\n" +
-      "1) Papuyu harus bergerak maju dan mundur sejauh x satuan setiap kali untuk mencapai posisi 100,100.\n" +
-      "2) Ia dapat berbelok ke kanan atau ke kiri sebesar x derajat setiap kali untuk mengubah arah.\n" +
-      "3) Setelah ia mencapai cacing, ia bisa menikmati makanannya!", 
+    swal(
+      "Deskripsi Misi",
+      "Bantu Papuyu menghadap ke cacing lezat di posisi 100,100!\n\n" +
+        "Tujuan: Papuyu memulai dari posisi 0,0 dan harus diarahkan untuk menghadap langsung ke cacing di posisi 100,100.\n\n" +
+        "Instruksi:\n" +
+        "1) Gunakan perintah 'left(x)' untuk berbelok ke kiri sebesar x derajat.\n" +
+        "2) Gunakan perintah 'right(x)' untuk berbelok ke kanan sebesar x derajat.\n" +
+        "3) Setelah sudut Papuyu menghadap ke cacing, misi selesai!\n\n" +
+        "Selamat mencoba!",
       "info"
     );
   };
@@ -38,8 +40,7 @@ const TantanganSatu = () => {
       ctx.moveTo(x, 0);
       ctx.lineTo(x, ctx.canvas.height);
       ctx.stroke();
-      // Draw x-axis labels
-      ctx.fillText(x - ctx.canvas.width / 2, x, ctx.canvas.height / 2 + 10); // Offset for better visibility
+      ctx.fillText(x - ctx.canvas.width / 2, x, ctx.canvas.height / 2 + 10);
     }
 
     // Draw horizontal lines and labels
@@ -48,8 +49,7 @@ const TantanganSatu = () => {
       ctx.moveTo(0, y);
       ctx.lineTo(ctx.canvas.width, y);
       ctx.stroke();
-      // Draw y-axis labels
-      ctx.fillText((ctx.canvas.height / 2 - y).toString(), ctx.canvas.width / 2 + 5, y + 3); // Offset for better visibility
+      ctx.fillText((ctx.canvas.height / 2 - y).toString(), ctx.canvas.width / 2 + 5, y + 3);
     }
   };
 
@@ -59,14 +59,11 @@ const TantanganSatu = () => {
     const papuyuImage = papuyuImageRef.current;
     const broccoliImage = broccoliImageRef.current;
 
-    // Initialize canvas
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw grid
     drawGrid(ctx);
 
-    // Draw center lines
     ctx.strokeStyle = 'lightgray';
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2, 0);
@@ -75,36 +72,26 @@ const TantanganSatu = () => {
     ctx.lineTo(canvas.width, canvas.height / 2);
     ctx.stroke();
 
-    // Display papuyu and broccoli at initial positions
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-
-    // Target (Broccoli)
     const broccoliTarget = { x: 100, y: 100 };
 
-    // Papuyu
-    const imageWidth = 500; 
-    const aspectRatio = papuyuImage.width / papuyuImage.height;
-    const imageHeight = imageWidth / aspectRatio;
-
-    // Broccoli
     const broccoliImageWidth = 100;
     const broccoliAspectRatio = broccoliImage.width / broccoliImage.height;
     const broccoliImageHeight = broccoliImageWidth / broccoliAspectRatio;
 
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    // Draw Broccoli at target position
     ctx.drawImage(
       broccoliImage,
       centerX + broccoliTarget.x - broccoliImageWidth / 2,
-      centerY - broccoliTarget.y - broccoliImageHeight /  2,
+      centerY - broccoliTarget.y - broccoliImageHeight / 2,
       broccoliImageWidth,
       broccoliImageHeight
     );
 
-    // Draw Papuyu at center
+    const imageWidth = 500;
+    const aspectRatio = papuyuImage.width / papuyuImage.height;
+    const imageHeight = imageWidth / aspectRatio;
+
     ctx.drawImage(
       papuyuImage,
       centerX - imageWidth / 2,
@@ -113,24 +100,20 @@ const TantanganSatu = () => {
       imageHeight
     );
 
-    // Show hint alert when the component mounts
     showHint();
-
-  }, [papuyuImageRef, broccoliImageRef]);
+  }, []);
 
   const executeCommands = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const papuyuImage = papuyuImageRef.current;
     const broccoliImage = broccoliImageRef.current;
-  
-    // Clear and redraw canvas
+
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-    // Draw grid
+
     drawGrid(ctx);
-  
+
     ctx.strokeStyle = 'lightgray';
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2, 0);
@@ -138,15 +121,13 @@ const TantanganSatu = () => {
     ctx.moveTo(0, canvas.height / 2);
     ctx.lineTo(canvas.width, canvas.height / 2);
     ctx.stroke();
-  
-    // Target position (Broccoli)
+
     const broccoliTarget = { x: 100, y: 100 };
-  
-    // Draw Broccoli
+
     const broccoliImageWidth = 100;
     const broccoliAspectRatio = broccoliImage.width / broccoliImage.height;
     const broccoliImageHeight = broccoliImageWidth / broccoliAspectRatio;
-  
+
     ctx.drawImage(
       broccoliImage,
       canvas.width / 2 + broccoliTarget.x - broccoliImageWidth / 2,
@@ -154,86 +135,40 @@ const TantanganSatu = () => {
       broccoliImageWidth,
       broccoliImageHeight
     );
-  
-    // Initial position of Papuyu
-    let currentX = canvas.width / 2;
-    let currentY = canvas.height / 2;
+
     let currentAngle = 90;
-  
-    // Movement path
-    const path = [{ x: currentX, y: currentY }];
-  
-    // Execute commands
+
     const commands = turtleCommands.split('\n');
     commands.forEach((command) => {
-      const parts = command.trim().split(' '); // Correctly declare parts here
+      const parts = command.trim().split('(');
       const instruction = parts[0].toLowerCase();
-      const value = parseFloat(parts[1]);
-  
-      switch (instruction) {
-        case 'forward':
-        case 'fd':
-          currentX += value * Math.cos((currentAngle - 90) * Math.PI / 180);
-          currentY += value * Math.sin((currentAngle - 90) * Math.PI / 180);
-          path.push({ x: currentX, y: currentY });
-          break;
-  
-        case 'backward':
-        case 'bk':
-          currentX -= value * Math.cos((currentAngle - 90) * Math.PI / 180);
-          currentY -= value * Math.sin((currentAngle - 90) * Math.PI / 180);
-          path.push({ x: currentX, y: currentY });
-          break;
-  
-        case 'right':
-        case 'rt':
-          currentAngle += value;
-          break;
-  
-        case 'left':
-        case 'lt':
-          currentAngle -= value;
-          break;
-  
-        case 'goto':
-          if (parts.length === 3) {
-            currentX = canvas.width / 2 + parseFloat(parts[1]);
-            currentY = canvas.height / 2 - parseFloat(parts[2]);
-            path.push({ x: currentX, y: currentY });
-          }
-          break;
-  
-        case 'setheading':
-        case 'seth':
-          currentAngle = value;
-          break;
-  
-        default:
-          console.warn('Invalid command:', command);
+      const value = parseFloat(parts[1]?.replace(')', ''));
+
+      if (instruction === 'right') {
+        currentAngle += value;
+      } else if (instruction === 'left') {
+        currentAngle -= value;
+      } else {
+        console.warn('Invalid command:', command);
       }
     });
-  
-    // Draw movement path
-    ctx.beginPath();
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 2;
-    ctx.moveTo(path[0].x, path[0].y);
-    path.slice(1).forEach((point) => {
-      ctx.lineTo(point.x, point.y);
-    });
-    ctx.stroke();
-  
-    // Redraw Papuyu at final position
+
+    const dx = broccoliTarget.x;
+    const dy = broccoliTarget.y;
+    const targetAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+    const normalizedCurrentAngle = ((currentAngle % 360) + 360) % 360;
+    const normalizedTargetAngle = ((targetAngle % 360) + 360) % 360;
+
+    const initialX = canvas.width / 2;
+    const initialY = canvas.height / 2;
     const imageWidth = 500;
     const aspectRatio = papuyuImage.width / papuyuImage.height;
     const imageHeight = imageWidth / aspectRatio;
-  
+
     ctx.save();
-    ctx.translate(currentX, currentY);
-    ctx.rotate((currentAngle - 90) * Math.PI / 180);
-  
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.translate(initialX, initialY);
+    ctx.rotate((normalizedCurrentAngle - 90) * Math.PI / 180);
     ctx.drawImage(
       papuyuImage,
       -imageWidth / 2,
@@ -242,25 +177,19 @@ const TantanganSatu = () => {
       imageHeight
     );
     ctx.restore();
-  
-    // Debug final position of Papuyu
-    console.log(`Papuyu Final Position: (${currentX.toFixed(2)}, ${currentY.toFixed(2)})`);
-    console.log(`Broccoli Position: (${canvas.width / 2 + broccoliTarget.x}, ${canvas.height / 2 - broccoliTarget.y})`);
-  
-    // Tolerance for position checking
-    const tolerance = 2;
-  
-    // Check final position after execution
-    setTimeout(() => {
-      if (
-        Math.abs(currentX - (canvas.width / 2 + broccoliTarget.x)) <= tolerance &&
-        Math.abs(currentY - (canvas.height / 2 - broccoliTarget.y)) <= tolerance
-      ) {
-        swal("Horee!", "Ikan Papuyu telah memakan Cacing!", "success"); // Using SweetAlert
-      }
-    }, 0); // Very small delay for synchronization
+
+    const angleTolerance = 2;
+    if (Math.abs(normalizedCurrentAngle - normalizedTargetAngle) <= angleTolerance) {
+      swal("Horee!", "Papuyu berhasil menghadap ke cacing!", "success");
+    } else {
+      swal(
+        "Coba Lagi!",
+        "Papuyu belum menghadap ke cacing dengan benar. Periksa perintah Anda.",
+        "error"
+      );
+    }
   };
-  
+
   return (
     <Container style={{ marginTop: 100 }}>
       <Row>
@@ -274,16 +203,19 @@ const TantanganSatu = () => {
                 value={turtleCommands}
                 onChange={handleCommandChange}
                 placeholder={`Enter commands like:
-  fd 100
-  rt 90
+  right(45)
+  left(90)
   `}
               />
             </Form.Group>
-            <Button className='mt-2' variant="success" onClick={executeCommands}>
+            <Button className="mt-2" variant="success" onClick={executeCommands}>
               Execute
             </Button>
-            <Button className='mt-2 ms-2' variant="info" onClick={showHint}>
+            <Button className="mt-2 ms-2" variant="info" onClick={showHint}>
               Show Hint
+            </Button>
+            <Button className="mt-2 ms-2" variant="primary" href='/tutorial/leftright'>
+              Kembali ke Materi
             </Button>
           </Form>
         </Col>
@@ -314,4 +246,4 @@ const TantanganSatu = () => {
   );
 };
 
-export default TantanganSatu;
+export default ChallangeOne;

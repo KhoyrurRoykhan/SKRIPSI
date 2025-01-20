@@ -587,8 +587,8 @@ Apa yang dilakukan perintah `t.home()`?
 Pemahaman dasar tentang pemrograman Python.
 
 ### Tujuan Pembelajaran
-- Memahami cara menggambar lingkaran menggunakan `circle()`.
-- Mengerti parameter yang digunakan dalam fungsi `circle()` untuk mengubah ukuran dan arah lingkaran.
+   - Memahami cara menggambar lingkaran menggunakan `circle()`.
+   - Mengerti parameter yang digunakan dalam fungsi `circle()` untuk mengubah ukuran dan arah lingkaran.
 
 ---
 

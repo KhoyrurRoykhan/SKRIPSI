@@ -31,7 +31,7 @@ const SidebarTutor = () => {
         onClick={() => handleSelect('Pendahuluan')}
         className={isItemActive('Pendahuluan') ? 'active' : ''}
       >
-        Pendahuluan
+        Pengenalan
       </a>
 
       {/* First Dropdown */}

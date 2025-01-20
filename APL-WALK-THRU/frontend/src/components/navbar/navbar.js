@@ -14,7 +14,7 @@ const Navigasibar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // refreshToken();
+    refreshToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -33,13 +33,13 @@ const Navigasibar = () => {
   return (
     <Navbar className="bg-body-tertiary fixed-top">
       <Container>
-        <Navbar.Brand href="/">WALK THRU</Navbar.Brand>
+        <Navbar.Brand href="/">WALK THROUGH</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link className='ml-5' href="#home"><FaBook /> Belajar Turtle</Nav.Link>
-            <Nav.Link className='ml-5' href="#link"><FaTrophy /> Tantangan</Nav.Link>
-            <Nav.Link className='ml-5' href="#links"><FaWater /> Susur Sungai</Nav.Link>
+            <Nav.Link className='ml-5' href="/tutorial"><FaBook /> Belajar Turtle</Nav.Link>
+            <Nav.Link className='ml-5' href="/challanges"><FaTrophy /> Tantangan</Nav.Link>
+            <Nav.Link className='ml-5' href="/susursungai"><FaWater /> Susur Sungai</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">

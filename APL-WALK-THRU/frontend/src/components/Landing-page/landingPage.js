@@ -24,7 +24,7 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // refreshToken();
+    refreshToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -43,20 +43,20 @@ const LandingPage = () => {
   };
 
   return (
-    <Container fluid>
+    <Container fluid style={{ padding: '20px', fontFamily: 'Open Sans, sans-serif' }}>
       <Container style={{ marginTop: 115 }}>
       <Row className="justify-content-center" >
         <Col md="8">
-          <h1 className="text-center mb-4">WALK THRU : Library Tutrle</h1>
+          <h1 className="text-center mb-4"><b>WALK THROUGH : Library Tutrle</b></h1>
           <h3 className="text-center mb-4">Belajar Menyusuri Ruang Turtle</h3>
           <h3 className="text-center mb-4">Dengan Menyenangkan</h3>
-          <p className="text-center mb-4">WalkThru adalah perangkat gratis yang membantu siswa memahami lebih dalam konsep-konsep pemrograman library turtle di Python. Dengan tutorial interaktif dan tantangan-tantangan, WalkThru memungkinkan siswa untuk menjelajahi cara membuat berbagai bentuk dan desain. Platform ini berfungsi sebagai pendukung pembelajaran visual, menggabungkan konsep geometri dan logika pemrograman dengan cara yang menyenangkan.</p>
+          <p className="text-center mb-4">Walk Through adalah perangkat gratis yang membantu siswa memahami lebih dalam konsep-konsep pemrograman library turtle di Python. Dengan tutorial interaktif dan tantangan-tantangan, Walk Through memungkinkan siswa untuk menjelajahi cara membuat berbagai bentuk dan desain. Platform ini berfungsi sebagai pendukung pembelajaran visual, menggabungkan konsep geometri dan logika pemrograman dengan cara yang menyenangkan.</p>
           <Row className="justify-content-center">
             <Col md="4" className="mb-3">
-              <Button variant="primary" size="lg" block>Mulai Eksplore</Button>
+              <Button href='#Ayo-Eksplore' variant="primary" size="lg" block>Mulai Eksplore</Button>
             </Col>
             <Col md="4" className="mb-3">
-              <Button variant="secondary" size="lg" block>Tujuan Aplikasi</Button>
+              <Button href='#tujuan' variant="secondary" size="lg" block>Tujuan Aplikasi</Button>
             </Col>
           </Row>
           <h3 className="text-center mb-4">Rekomendasi Pembelajaran:</h3>
@@ -89,7 +89,7 @@ const LandingPage = () => {
     </Container>
 
     <Container fluid style={{ marginTop: 100, backgroundColor: '#cdcfd1', paddingTop: 100, paddingBottom: 100 }}>
-      <h1 className="text-center mb-5">Ayo Eksplore!</h1>
+      <h1 id='Ayo-Eksplore' className="text-center mb-5">Ayo Eksplore!</h1>
       <Row className="justify-content-center">
         <Col md={3} className="mb-4">
           <Card>
@@ -102,10 +102,9 @@ const LandingPage = () => {
               />
               <Card.Title><FaBook /> Belajar Turtle</Card.Title>
               <Card.Text>
-                Our newest collection of GeoGebra Math Resources has been meticulously
-                crafted by our expert team for Grades 4 to 8.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan elit nec est bibendum semper. Pellentesque eleifend aliquet tincidunt. Ut tincidunt et sem vitae porttitor.
               </Card.Text>
-              <Button variant="primary" href="#">Explore all</Button>
+              <Button variant="primary" href="/tutorial">Explore all</Button>
             </Card.Body>
           </Card>
         </Col>
@@ -120,10 +119,9 @@ const LandingPage = () => {
               />
               <Card.Title><FaTrophy /> Tantangan</Card.Title>
               <Card.Text>
-                Our newest collection of GeoGebra Math Resources has been meticulously
-                crafted by our expert team for Grades 4 to 8.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan elit nec est bibendum semper. Pellentesque eleifend aliquet tincidunt. Ut tincidunt et sem vitae porttitor.
               </Card.Text>
-              <Button variant="primary" href="#">Explore all</Button>
+              <Button variant="primary" href="/challanges">Explore all</Button>
             </Card.Body>
           </Card>
         </Col>
@@ -138,10 +136,9 @@ const LandingPage = () => {
               />
               <Card.Title><FaWater /> Susur Sungai</Card.Title>
               <Card.Text>
-                Our newest collection of GeoGebra Math Resources has been meticulously
-                crafted by our expert team for Grades 4 to 8.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan elit nec est bibendum semper. Pellentesque eleifend aliquet tincidunt. Ut tincidunt et sem vitae porttitor.
               </Card.Text>
-              <Button variant="primary" href="#">Explore all</Button>
+              <Button variant="primary" href="/susursungai">Explore all</Button>
             </Card.Body>
           </Card>
         </Col>
@@ -157,9 +154,9 @@ const LandingPage = () => {
           <Image src={Tujuan} roundedCircle fluid style={{ width: '250px', height: '250px' }}/>
         </Col>
         <Col md={7}>
-          <h1 className="text-center mb-4">Tujuan</h1>
+          <h1 id="tujuan" className="text-center mb-4">Tujuan</h1>
           <p className="text-center">
-              Tujuan aplikasi WalkThru adalah untuk membantu siswa memahami konsep pemrograman menggunakan library Turtle di Python melalui tutorial interaktif dan tantangan yang menyenangkan. Dengan menyediakan pembelajaran visual yang menggabungkan geometri dan logika pemrograman, WalkThru membuat proses belajar lebih menarik dan memudahkan siswa untuk mengeksplorasi pembuatan berbagai bentuk dan desain. Platform ini dirancang untuk meningkatkan pemahaman siswa, mendorong kreativitas, dan memberikan pengalaman belajar yang mendalam dan interaktif.
+              Tujuan aplikasi Walk Through adalah untuk membantu siswa memahami konsep pemrograman menggunakan library Turtle di Python melalui tutorial interaktif dan tantangan yang menyenangkan. Dengan menyediakan pembelajaran visual yang menggabungkan geometri dan logika pemrograman, Walk Through membuat proses belajar lebih menarik dan memudahkan siswa untuk mengeksplorasi pembuatan berbagai bentuk dan desain. Platform ini dirancang untuk meningkatkan pemahaman siswa, mendorong kreativitas, dan memberikan pengalaman belajar yang mendalam dan interaktif.
           </p>
           <Button variant="primary" className="mt-3 d-block mx-auto" href="#">About us</Button>
         </Col>

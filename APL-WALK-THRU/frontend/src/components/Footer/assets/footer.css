@@ -1,32 +1,32 @@
-footer {
+.footer {
     background-color: #343a40; /* Dark background */
     color: #fff; /* White text */
   }
   
-  footer a {
+  .footer a {
     color: #ffffff;
     text-decoration: none;
   }
   
-  footer a:hover {
+  .footer a:hover {
     text-decoration: underline;
   }
   
-  footer h5 {
+  .footer h5 {
     font-weight: bold;
     margin-bottom: 15px;
   }
   
-  footer p, footer ul {
+  .footer p, .footer ul {
     font-size: 14px;
   }
   
-  footer ul {
+  .footer ul {
     padding-left: 0;
     list-style: none;
   }
   
-  footer ul li {
+  .footer ul li {
     margin-bottom: 10px;
   }
   
