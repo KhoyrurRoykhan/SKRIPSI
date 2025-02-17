@@ -4,15 +4,13 @@ import '../assets/tutor.css';
 
 const SetHeading = () => {
   return (
-    <div className='mt-5'>
-      <SidebarTutor />
-      <div className='main-content' style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <h1 className='mt-3'>Turtle Setheading</h1>
+    <div className='content' style={{paddingLeft:50, paddingRight:50}}>
+      <div>
+        <h2 className='mt-3' style={{textAlign:'center'}}>Setheading</h2>
 
-        <h3>Prasyarat</h3>
-        <p>Pemahaman dasar tentang pemrograman Python.</p>
+        <hr></hr>
 
-        <h3>Tujuan Pembelajaran</h3>
+        <h4>Tujuan Pembelajaran</h4>
         <ul>
           <li>Memahami cara mengatur arah turtle menggunakan <code>setheading()</code>.</li>
           <li>Memahami bagaimana sudut arah mempengaruhi gerakan turtle.</li>
@@ -20,7 +18,7 @@ const SetHeading = () => {
 
         <hr />
 
-        <h2>Definisi Turtle <code>setheading()</code></h2>
+        <h4>Definisi Turtle <code>setheading()</code></h4>
         <p>
           Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>setheading()</code> digunakan untuk mengatur arah turtle ke sudut tertentu, diukur dalam derajat. Sudut dihitung searah jarum jam, dimulai dari arah ke timur (0 derajat). Dengan menggunakan <code>setheading()</code>, Anda dapat mengontrol ke mana turtle akan menghadap sebelum bergerak.
         </p>
@@ -53,7 +51,7 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Contoh Penggunaan <code>setheading()</code></h2>
+        <h4>Contoh Penggunaan <code>setheading()</code></h4>
         <p>
           Anda dapat menggunakan <code>setheading()</code> untuk menggambar bentuk tertentu dengan mengatur arah sebelum setiap pergerakan. Misalnya, membuat segiempat dengan mengatur arah di setiap sisi:
         </p>
@@ -72,21 +70,21 @@ turtle.done()`}
           </code>
         </pre>
 
-        <h3>Arah dan Rotasi</h3>
+        <h4>Arah dan Rotasi</h4>
         <p>
           Dengan <code>setheading()</code>, Anda dapat secara langsung mengatur arah turtle ke sudut yang diinginkan tanpa harus menggunakan <code>left()</code> atau <code>right()</code>. Ini memudahkan pembuatan pola atau gambar yang memerlukan arah spesifik.
         </p>
 
         <hr />
 
-        <h2>Kesimpulan</h2>
+        <h4>Kesimpulan</h4>
         <p>
           Perintah <code>setheading()</code> dalam pustaka <strong>Turtle Graphics</strong> sangat berguna untuk mengontrol arah turtle dengan presisi. Dengan mengatur sudut arah secara langsung, Anda dapat membuat pola yang kompleks dan menggambar dengan lebih terstruktur.
         </p>
 
         <hr />
 
-        <h2>Kuis</h2>
+        <h4>Kuis</h4>
         <p>Apa yang dilakukan perintah <code>t.setheading(270)</code>?</p>
         <ul>
           <li>[ ] Mengatur arah turtle ke barat</li>

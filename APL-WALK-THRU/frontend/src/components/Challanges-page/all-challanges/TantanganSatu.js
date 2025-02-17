@@ -3,8 +3,11 @@ import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
+import { useNavigate } from "react-router-dom";
 
 const TantanganSatu = () => {
+  const navigate = useNavigate();
+
   const [turtleCommands, setTurtleCommands] = useState('');
   const canvasRef = useRef(null);
   const papuyuImageRef = useRef(null);
@@ -284,6 +287,10 @@ const TantanganSatu = () => {
             </Button>
             <Button className='mt-2 ms-2' variant="info" onClick={showHint}>
               Show Hint
+            </Button>
+            <Button className="mt-2 ms-2" variant="primary" href='/belajarturtle' 
+            onClick={() => navigate('/belajarturtle', { state: { activeContent: "menu1.1" } })}>
+              Kembali ke Materi
             </Button>
           </Form>
         </Col>

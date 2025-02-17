@@ -4,15 +4,13 @@ import '../assets/tutor.css';
 
 const Dot = () => {
   return (
-    <div className='mt-5'>
-      <SidebarTutor />
-      <div className='main-content' style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <h1 className='mt-3'>Turtle Dot</h1>
+    <div className='content' style={{paddingLeft:50, paddingRight:50}}>
+      <div>
+        <h2 className='mt-3' style={{textAlign:'center'}}>Dot</h2>
 
-        <h3>Prasyarat</h3>
-        <p>Pemahaman dasar tentang pemrograman Python.</p>
+        <hr/>
 
-        <h3>Tujuan Pembelajaran</h3>
+        <h4>Tujuan Pembelajaran</h4>
         <ul>
           <li>Memahami cara menggambar titik menggunakan <code>dot()</code>.</li>
           <li>Mengerti parameter yang digunakan dalam fungsi <code>dot()</code> untuk mengubah ukuran dan warna titik.</li>
@@ -20,7 +18,7 @@ const Dot = () => {
 
         <hr />
 
-        <h2>Definisi Turtle <code>dot()</code></h2>
+        <h4>Definisi Turtle <code>dot()</code></h4>
         <p>
           Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>dot()</code> digunakan untuk menggambar titik pada posisi turtle saat ini. Titik ini dapat diatur ukuran dan warnanya. Fungsi ini sangat berguna untuk menandai posisi tertentu dalam gambar atau untuk menggambar pola dengan titik.
         </p>
@@ -46,10 +44,10 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Contoh Penggunaan <code>dot()</code></h2>
+        <h4>Contoh Penggunaan <code>dot()</code></h4>
         <p>Berikut adalah beberapa contoh penggunaan <code>dot()</code> untuk menggambar titik:</p>
 
-        <h3>Menggambar Titik dengan Ukuran dan Warna yang Berbeda</h3>
+        <h4>Menggambar Titik dengan Ukuran dan Warna yang Berbeda</h4>
         <pre>
           <code>
             {`import turtle
@@ -71,7 +69,7 @@ turtle.done()`}
           </code>
         </pre>
 
-        <h3>Menggambar Titik di Berbagai Posisi</h3>
+        <h4>Menggambar Titik di Berbagai Posisi</h4>
         <p>Anda bisa memindahkan turtle ke posisi yang berbeda sebelum menggambar titik:</p>
         <pre>
           <code>
@@ -94,7 +92,7 @@ turtle.done()`}
           </code>
         </pre>
 
-        <h3>Menggambar Pola dengan Titik</h3>
+        <h4>Menggambar Pola dengan Titik</h4>
         <p>Anda dapat menggunakan loop untuk menggambar pola titik:</p>
         <pre>
           <code>
@@ -115,14 +113,14 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Kesimpulan</h2>
+        <h4>Kesimpulan</h4>
         <p>
           Perintah <code>dot()</code> dalam pustaka <strong>Turtle Graphics</strong> memungkinkan Anda menggambar titik dengan ukuran dan warna yang dapat disesuaikan. Fungsi ini berguna untuk menandai posisi, membuat pola, atau menambah detail pada gambar yang Anda buat.
         </p>
 
         <hr />
 
-        <h2>Kuis</h2>
+        <h4>Kuis</h4>
         <p>Apa yang dilakukan perintah <code>t.dot(30, "blue")</code>?</p>
         <ul>
           <li>[ ] Menggambar titik dengan ukuran 30 dan warna biru</li>

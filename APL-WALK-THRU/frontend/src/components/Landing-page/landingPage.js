@@ -104,7 +104,7 @@ const LandingPage = () => {
               <Card.Text>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan elit nec est bibendum semper. Pellentesque eleifend aliquet tincidunt. Ut tincidunt et sem vitae porttitor.
               </Card.Text>
-              <Button variant="primary" href="/tutorial">Explore all</Button>
+              <Button variant="primary" href="/belajarturtle">Explore all</Button>
             </Card.Body>
           </Card>
         </Col>

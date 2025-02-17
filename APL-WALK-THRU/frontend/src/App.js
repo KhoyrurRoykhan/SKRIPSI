@@ -21,8 +21,8 @@ import TantanganSatu from "./components/Challanges-page/all-challanges/Tantangan
 import Susursungai from "./components/Susursungai/Susursungai";
 import Baritoriver from "./components/Susursungai/all-susursungai/Baritoriver";
 import TantanganDua from "./components/Challanges-page/all-challanges/TantanganDua";
-import Skulpt from "./components/coba/Skulpt";
 import ChallangeOne from "./components/Challanges-page/all-challanges/ChallangeOne";
+import Tutorialpage from "./components/Tutorial-page/Tutorial-page";
 
 
 
@@ -35,6 +35,10 @@ function App() {
       <Route exact path="/register" element={<><Navigasibar/><Register/></>}/>
       <Route path="/" element={<><Navigasibar/><LandingPage/><Footer/></>}/>
       {/* <Route path="/kat" element={<><KategoriGrid/></>}/> */}
+
+      <Route path="/belajarturtle" element={<><Navigasibar/><Tutorialpage/></>}/>
+
+
       <Route path="/tutorial" element={<><Navigasibar/><Pendahuluan/></>}/>
       <Route path="/tutorial/leftright" element={<><Navigasibar/><LeftRight/></>}/>
       <Route path="/tutorial/forwardbackward" element={<><Navigasibar/><ForwardBackward/></>}/>
@@ -55,7 +59,6 @@ function App() {
       <Route path="/susursungai" element={<><Navigasibar/><Susursungai/></>}/>
       <Route path="/susursungai/1" element={<><Navigasibar/><Baritoriver/></>}/>
 
-      <Route path="/skulpt" element={<><Skulpt/></>}/>
 
     </Routes>
     </BrowserRouter>

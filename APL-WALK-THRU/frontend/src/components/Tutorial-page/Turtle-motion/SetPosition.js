@@ -4,107 +4,73 @@ import '../assets/tutor.css';
 
 const SetPosition = () => {
   return (
-    <div className='mt-5'>
-      <SidebarTutor />
-      <div className='main-content' style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <h1 className='mt-3'>Turtle Setposition</h1>
+    <div className='content' style={{paddingLeft:50, paddingRight:50}}>
+      <div>
+        <h2 className='mt-3' style={{textAlign:'center'}}>Setposition</h2>
+        <hr></hr>
+        <br></br>
 
-        <h3>Prasyarat</h3>
-        <p>Pemahaman dasar tentang pemrograman Python.</p>
-
-        <h3>Tujuan Pembelajaran</h3>
-        <ul>
-          <li>Memahami cara mengatur posisi turtle secara langsung menggunakan <code>setposition()</code> atau <code>setpos()</code>.</li>
+        <h4>Tujuan Pembelajaran</h4>
+        <ol>
+          <li>Memahami cara mengatur posisi turtle secara langsung menggunakan `setposition()` atau `setpos()`.</li>
           <li>Memahami koordinat kartesius dalam ruang gambar Turtle Graphics.</li>
-        </ul>
+        </ol>
 
-        <hr />
+        <br/>
 
-        <h2>Definisi Turtle <code>setposition()</code> atau <code>setpos()</code></h2>
+        <h4>Definisi Turtle <code>setposition()</code></h4>
         <p>
-          Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>setposition()</code> (bisa juga disingkat <code>setpos()</code>) digunakan untuk memindahkan turtle ke titik tertentu dalam ruang gambar, berdasarkan koordinat yang ditentukan. Saat perintah ini digunakan, turtle akan menggambar jalur dari posisi sebelumnya ke posisi baru.
+        Dalam pustaka Turtle Graphics, metode `setposition()` (bisa juga disingkat `setpos()`) digunakan untuk memindahkan turtle ke titik tertentu dalam ruang gambar, berdasarkan koordinat yang ditentukan. Saat perintah ini digunakan, turtle akan menggambar jalur dari posisi sebelumnya ke posisi baru.
         </p>
+
+        <br/>
 
         <h4>Fungsi:</h4>
         <p><code>setposition(x, y)</code> atau <code>setpos(x, y)</code>: Memindahkan turtle ke koordinat <code>(x, y)</code> yang ditentukan dalam ruang gambar. Jalur yang digambar tergantung pada apakah pena (pen) sedang aktif atau tidak. Jika pena aktif, jalur akan tergambar; jika tidak, hanya turtle yang berpindah.</p>
         <pre>
           <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Pindahkan turtle ke koordinat (100, 100)
-t.setposition(100, 100)
-
-# Pindahkan ke koordinat (-50, 50)
-t.setposition(-50, 50)
-
-turtle.done()`}
+            {`# Pindahkan turtle ke koordinat (100, 100)
+setposition(100, 100)`}
           </code>
         </pre>
+        <p>Hasil:</p>
+        <p>Objek akan bergerak ke posisi x=100 dan y=100.</p>
+        <p>img hasil</p>
 
-        <hr />
+        <br />
 
-        <h2>Contoh Penggunaan Setposition untuk Membentuk Pola</h2>
+        <h4>Contoh Penggunaan Setposition untuk Membentuk Pola</h4>
         <p>
-          Anda dapat menggunakan <code>setposition()</code> untuk menggambar pola dengan mengatur beberapa titik koordinat. Misalnya, membuat segitiga dengan menentukan tiga titik:
+        Kita dapat menggunakan <code>setposition()</code> untuk menggambar pola dengan mengatur beberapa titik koordinat. Misalnya, membuat segitiga dengan menentukan tiga titik:
         </p>
         <pre>
           <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Pindahkan turtle ke titik pertama
-t.setposition(100, 0)
+            {`# Pindahkan turtle ke titik pertama
+setposition(100, 0)
 
 # Pindahkan ke titik kedua
-t.setposition(50, 100)
+setposition(50, 100)
 
 # Kembali ke titik awal
-t.setposition(0, 0)
-
-turtle.done()`}
+setposition(0, 0)
+`}
           </code>
         </pre>
 
-        <h3>Menggunakan <code>penup()</code> dan <code>pendown()</code></h3>
+        <p>Hasil:</p>
+        <p>Objek akan berpindah ke titik x=100, y=0. Kemudian setelah mencapai titik itu obejek akan pindah ke titik kedua yaitu x=50,y=100. Dan setelah mencapai titik kedua, objek akan berpindah lagi ke titik awal yaitu x=0,y=0.</p>
+        <p>img hasil</p>
+
+        <br />
+
+        <h4>Kesimpulan</h4>
         <p>
-          Perintah <code>setposition()</code> sering digunakan bersamaan dengan <code>penup()</code> dan <code>pendown()</code>. Jika Anda ingin memindahkan turtle ke posisi baru tanpa menggambar jalur, gunakan <code>penup()</code> untuk mengangkat pena, lalu <code>pendown()</code> untuk menurunkan pena jika ingin mulai menggambar lagi.
-        </p>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Angkat pena untuk berpindah tanpa menggambar
-t.penup()
-t.setposition(150, 150)
-
-# Turunkan pena untuk mulai menggambar
-t.pendown()
-t.setposition(0, 0)
-
-turtle.done()`}
-          </code>
-        </pre>
-
-        <hr />
-
-        <h2>Kesimpulan</h2>
-        <p>
-          Perintah <code>setposition()</code> atau <code>setpos()</code> dalam pustaka <strong>Turtle Graphics</strong> memungkinkan Anda memindahkan turtle ke koordinat tertentu dalam ruang gambar. Perintah ini sangat berguna untuk mengatur posisi awal turtle atau membuat jalur menggambar yang kompleks dengan mengombinasikan pergerakan dan kontrol pena.
+        Perintah `setposition()` atau `setpos()` dalam pustaka Turtle Graphics memungkinkan Anda memindahkan turtle ke koordinat tertentu dalam ruang gambar. Perintah ini sangat berguna untuk mengatur posisi awal turtle atau membuat jalur menggambar yang kompleks dengan mengombinasikan pergerakan dan kontrol pena.
         </p>
 
-        {/* Embedding Trinket */}
-        <div style={{ position: 'relative', paddingBottom: '28%', height: 0, overflow: 'hidden', maxWidth: '100%', background: '#ccc', marginBottom: '20px' }}>
-          <iframe src="https://trinket.io/embed/python/33e5c3b81b" width="100%" height="356" frameBorder="0" marginWidth="0" marginHeight="0" allowFullScreen></iframe>
-        </div>
+        <br />
 
-        <hr />
-
-        <h2>Kuis</h2>
+        <h4>Kuis</h4>
         <p>Apa yang dilakukan perintah <code>t.setposition(-100, 50)</code> jika pena aktif?</p>
         <ul>
           <li>[ ] Memutar turtle ke kiri sejauh 50 derajat</li>

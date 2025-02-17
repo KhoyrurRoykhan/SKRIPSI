@@ -4,15 +4,13 @@ import '../assets/tutor.css';
 
 const SetHome = () => {
   return (
-    <div className='mt-5'>
-      <SidebarTutor />
-      <div className='main-content' style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <h1 className='mt-3'>Turtle Home</h1>
+    <div className='content' style={{paddingLeft:50, paddingRight:50}}>
+      <div>
+        <h2 className='mt-3' style={{textAlign:'center'}}>Home</h2>
 
-        <h3>Prasyarat</h3>
-        <p>Pemahaman dasar tentang pemrograman Python.</p>
+        <hr/>
 
-        <h3>Tujuan Pembelajaran</h3>
+        <h4>Tujuan Pembelajaran</h4>
         <ul>
           <li>Memahami cara mengembalikan posisi turtle ke titik awal menggunakan <code>home()</code>.</li>
           <li>Mengetahui kegunaan fungsi <code>home()</code> dalam pengaturan gambar.</li>
@@ -20,7 +18,7 @@ const SetHome = () => {
 
         <hr />
 
-        <h2>Definisi Turtle <code>home()</code></h2>
+        <h4>Definisi Turtle <code>home()</code></h4>
         <p>
           Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>home()</code> digunakan untuk memindahkan turtle kembali ke posisi awalnya, yaitu titik (0, 0) pada koordinat kartesius. Selain memindahkan turtle, perintah ini juga mengatur arah turtle menghadap ke timur (0 derajat). Ini berguna ketika Anda ingin memulai kembali menggambar dari posisi awal.
         </p>
@@ -46,7 +44,7 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Contoh Penggunaan <code>home()</code></h2>
+        <h4>Contoh Penggunaan <code>home()</code></h4>
         <p>
           Perintah <code>home()</code> sangat berguna ketika Anda ingin kembali ke titik awal setelah menggambar, terutama saat bekerja pada gambar yang kompleks. Misalnya, menggambar pola dan kemudian kembali ke titik awal:
         </p>
@@ -68,7 +66,7 @@ turtle.done()`}
           </code>
         </pre>
 
-        <h3>Kombinasi dengan Perintah Lain</h3>
+        <h4>Kombinasi dengan Perintah Lain</h4>
         <p>
           Anda dapat menggunakan <code>home()</code> bersama dengan perintah lain seperti <code>penup()</code> dan <code>pendown()</code> jika Anda ingin berpindah ke posisi awal tanpa menggambar jalur.
         </p>
@@ -95,14 +93,14 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Kesimpulan</h2>
+        <h4>Kesimpulan</h4>
         <p>
           Perintah <code>home()</code> dalam pustaka <strong>Turtle Graphics</strong> memudahkan untuk kembali ke posisi awal (0, 0) dan mengatur arah turtle. Ini berguna untuk memulai kembali proses menggambar dari titik yang telah ditentukan tanpa harus mengatur koordinat secara manual.
         </p>
 
         <hr />
 
-        <h2>Kuis</h2>
+        <h4>Kuis</h4>
         <p>Apa yang dilakukan perintah <code>t.home()</code>?</p>
         <ul>
           <li>[ ] Menghapus semua jalur yang telah digambar</li>

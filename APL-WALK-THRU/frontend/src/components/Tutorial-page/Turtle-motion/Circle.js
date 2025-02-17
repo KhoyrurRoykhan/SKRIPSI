@@ -4,15 +4,13 @@ import '../assets/tutor.css';
 
 const Circle = () => {
   return (
-    <div className='mt-5'>
-      <SidebarTutor />
-      <div className='main-content' style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <h1 className='mt-3'>Turtle Circle</h1>
+    <div className='content' style={{paddingLeft:50, paddingRight:50}}>
+      <div>
+        <h2 className='mt-3' style={{textAlign:'center'}}>Circle</h2>
 
-        <h3>Prasyarat</h3>
-        <p>Pemahaman dasar tentang pemrograman Python.</p>
+        <hr/>
 
-        <h3>Tujuan Pembelajaran</h3>
+        <h4>Tujuan Pembelajaran</h4>
         <ul>
           <li>Memahami cara menggambar lingkaran menggunakan <code>circle()</code>.</li>
           <li>Mengerti parameter yang digunakan dalam fungsi <code>circle()</code> untuk mengubah ukuran dan arah lingkaran.</li>
@@ -20,7 +18,7 @@ const Circle = () => {
 
         <hr />
 
-        <h2>Definisi Turtle <code>circle()</code></h2>
+        <h4>Definisi Turtle <code>circle()</code></h4>
         <p>
           Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>circle()</code> digunakan untuk menggambar lingkaran atau bagian dari lingkaran (busur) dengan jari-jari tertentu. Fungsi ini sangat berguna untuk menggambar bentuk bulat dan pola yang melibatkan lingkaran.
         </p>
@@ -46,10 +44,10 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Contoh Penggunaan <code>circle()</code></h2>
+        <h4>Contoh Penggunaan <code>circle()</code></h4>
         <p>Berikut adalah contoh penggunaan <code>circle()</code> untuk menggambar lingkaran penuh dan busur:</p>
 
-        <h3>Menggambar Lingkaran Penuh</h3>
+        <h4>Menggambar Lingkaran Penuh</h4>
         <pre>
           <code>
             {`import turtle
@@ -63,7 +61,7 @@ turtle.done()`}
           </code>
         </pre>
 
-        <h3>Menggambar Busur Lingkaran</h3>
+        <h4>Menggambar Busur Lingkaran</h4>
         <p>Anda juga dapat menggambar busur dengan menentukan <code>extent</code>. Misalnya, untuk menggambar busur 180 derajat:</p>
         <pre>
           <code>
@@ -78,7 +76,7 @@ turtle.done()`}
           </code>
         </pre>
 
-        <h3>Menggambar Lingkaran dengan Posisi dan Arah Berbeda</h3>
+        <h4>Menggambar Lingkaran dengan Posisi dan Arah Berbeda</h4>
         <pre>
           <code>
             {`import turtle
@@ -99,14 +97,14 @@ turtle.done()`}
 
         <hr />
 
-        <h2>Kesimpulan</h2>
+        <h4>Kesimpulan</h4>
         <p>
           Perintah <code>circle()</code> dalam pustaka <strong>Turtle Graphics</strong> memungkinkan Anda menggambar lingkaran atau busur dengan mudah. Dengan mengatur jari-jari dan opsi <code>extent</code>, Anda dapat menggambar berbagai bentuk bulat yang berbeda untuk memperkaya gambar atau pola yang Anda buat.
         </p>
 
         <hr />
 
-        <h2>Kuis</h2>
+        <h4>Kuis</h4>
         <p>Apa yang dilakukan perintah <code>t.circle(75, 180)</code>?</p>
         <ul>
           <li>[ ] Menggambar lingkaran penuh dengan jari-jari 75</li>
