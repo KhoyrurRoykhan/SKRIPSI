@@ -49,8 +49,8 @@ const Texteditor = () => {
     }, []);
 
     return (
-        <div>
-            <div className='content' style={{ paddingLeft: 50, paddingRight: 50 }}>
+        <div className='mt-3'>
+            <div className='content mt-5' style={{ paddingLeft: 50, paddingRight: 50 }}>
                 <br />
                 <div className="skulpt-container" style={{ border: "2px solid #ccc" }}>
                     <div className="editor-section">

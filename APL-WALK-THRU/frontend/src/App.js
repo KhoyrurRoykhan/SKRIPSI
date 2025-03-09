@@ -23,6 +23,7 @@ import Baritoriver from "./components/Susursungai/all-susursungai/Baritoriver";
 import TantanganDua from "./components/Challanges-page/all-challanges/TantanganDua";
 import ChallangeOne from "./components/Challanges-page/all-challanges/ChallangeOne";
 import Tutorialpage from "./components/Tutorial-page/Tutorial-page";
+import Texteditor from "./components/Tutorial-page/Texteditor";
 
 
 
@@ -58,6 +59,9 @@ function App() {
 
       <Route path="/susursungai" element={<><Navigasibar/><Susursungai/></>}/>
       <Route path="/susursungai/1" element={<><Navigasibar/><Baritoriver/></>}/>
+
+      <Route path="/texteditor" element={<><Navigasibar/><Texteditor/></>}/>
+
 
 
     </Routes>

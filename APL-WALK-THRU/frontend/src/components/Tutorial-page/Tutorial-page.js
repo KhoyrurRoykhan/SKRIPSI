@@ -15,6 +15,18 @@ import SetHome from "./Turtle-motion/SetHome";
 import Circle from "./Turtle-motion/Circle";
 import Dot from "./Turtle-motion/Dot";
 import Texteditor from "./Texteditor";
+import Position from "./Tell-state/Position";
+import Xykoordinat from "./Tell-state/Xykoordinat";
+import Heading from "./Tell-state/Heading";
+import Distance from "./Tell-state/Distance";
+import Pendownpenup from "./Pen-control/Pendownpenup";
+import Pensize from "./Pen-control/Pensize";
+import Isdown from "./Pen-control/Isdown";
+import Color from "./Color-control/PenColor";
+import FillColor from "./Color-control/FillColor";
+import Reset from "./More_drawing_control/Reset";
+import Clear from "./More_drawing_control/Clear";
+import Write from "./More_drawing_control/Write";
 
 
 const Tutorialpage = () => {
@@ -197,7 +209,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu2")}
+                      onClick={() => handleContentChange(<Position/>, "menu2")}
                     >
                       Position
                     </button>
@@ -207,7 +219,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu2.2")}
+                      onClick={() => handleContentChange(<Xykoordinat/>, "menu2.2")}
                     >
                       Xcor & Ycor
                     </button>
@@ -217,7 +229,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu2.3")}
+                      onClick={() => handleContentChange(<Heading/>, "menu2.3")}
                     >
                       Heading
                     </button>
@@ -227,7 +239,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu2.4")}
+                      onClick={() => handleContentChange(<Distance/>, "menu2.4")}
                     >
                       Distance
                     </button>
@@ -245,7 +257,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu3.1")}
+                      onClick={() => handleContentChange(<Pendownpenup/>, "menu3.1")}
                     >
                       Pendown & Penup
                     </button>
@@ -255,7 +267,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu3.2")}
+                      onClick={() => handleContentChange(<Pensize/>, "menu3.2")}
                     >
                       Pensize
                     </button>
@@ -265,7 +277,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu3.3")}
+                      onClick={() => handleContentChange(<Isdown/>, "menu3.3")}
                     >
                       Isdown
                     </button>
@@ -283,9 +295,9 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu4.1")}
+                      onClick={() => handleContentChange(<Color/>, "menu4.1")}
                     >
-                      Color & pencolor
+                      Pencolor
                     </button>
                     <button
                       className={`btn text-start mb-2 ${
@@ -293,7 +305,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu4.2")}
+                      onClick={() => handleContentChange(<FillColor/>, "menu4.2")}
                     >
                       Pengisian Warna (Fillcolor, Begin_fill, dan End_fill)
                     </button>
@@ -311,7 +323,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu5.1")}
+                      onClick={() => handleContentChange(<Reset/>, "menu5.1")}
                     >
                       Reset
                     </button>
@@ -321,7 +333,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(navigate("#"), "menu5.2")}
+                      onClick={() => handleContentChange(<Clear/>, "menu5.2")}
                     >
                       Clear
                     </button>
@@ -331,7 +343,7 @@ const Tutorialpage = () => {
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
-                      onClick={() => handleContentChange(<Texteditor/>, "menu5.3")}
+                      onClick={() => handleContentChange(<Write/>, "menu5.3")}
                     >
                       Write
                     </button>

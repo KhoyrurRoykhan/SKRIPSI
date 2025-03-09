@@ -1,133 +1,581 @@
-import React from 'react';
-import SidebarTutor from '../SidebarTutor';
+import React, { useState, useEffect, useRef } from 'react';
+import CodeMirror from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { Accordion, Container, Row, Col, Button, Form, Alert, Card, Image, AccordionItem, AccordionHeader, AccordionBody } from 'react-bootstrap';
+import { BsArrowClockwise, BsCheckCircle } from 'react-icons/bs'; // Import ikon Bootstrap
 import '../assets/tutor.css';
+import '../asset_skulpt/SkulptTurtleRunner.css';
+import forward100 from './assets/2turtle-forward.gif';
+import backward100 from './assets/2turtle-backward.gif';
+// import combinedForwardBackward from './assets/combinedForwardBackward.gif';
+
+// Challange
+import swal from 'sweetalert'; // Import SweetAlert
+import papuyu from './assets/papuyu-1.png';
+import broccoli from './assets/cacingtarget.png';
+import map from './assets/8-dot.png';
+import { useNavigate } from "react-router-dom";
+
+const correctCommands = {
+  '1a': 'forward(100)',
+  '1b': 'right(90)',
+  '1c': 'forward(100)',
+  '1d': 'left(45)',
+  '1e': 'forward(50)'
+};
 
 const Dot = () => {
+  // hint challanges
+  const showHint = () => {
+    swal(
+      "Petunjuk Tantangan",
+      "Bidawang saat ini berada di titik (-200, 0). \n\n" +
+      "Tugas kalian adalah Menggerakan bidawang menuju titik (200, 0), namun pada setiap 50 langkah buat bidawang menggambar titik berwarna merah dan hijau secara selang seling dengan ukuran 15.",
+      "info"
+    );
+  };
+
+  //accordion task
+  const [completedSteps, setCompletedSteps] = useState([]);
+  const [activeKey, setActiveKey] = useState('1a');
+
+  const checkCode = () => {
+    const lines = pythonCode.split('\n').map(line => line.trim());
+    let newCompletedSteps = [];
+    let keys = Object.keys(correctCommands);
+    
+    for (let i = 0; i < keys.length; i++) {
+      if (lines[i] === correctCommands[keys[i]]) {
+        newCompletedSteps.push(keys[i]);
+      } else {
+        break;
+      }
+    }
+    
+    setCompletedSteps(newCompletedSteps);
+    if (newCompletedSteps.length < keys.length) {
+      setActiveKey(keys[newCompletedSteps.length]);
+    } else {
+      setActiveKey(null);
+    }
+  };
+
+  //kuis
+  const [answers, setAnswers] = useState({
+    question1: '',
+    question2: ''
+  });
+
+  const [feedback, setFeedback] = useState({
+    question1: '',
+    question2: ''
+  });
+
+  const handleAnswerChange = (question, answer) => {
+    setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+  };
+
+  const handleSubmit = () => {
+    const feedbackMessages = {
+      question1: answers.question1 === 'Menggambar titik di posisi saat ini.' 
+        ? 'Benar!' 
+        : 'Salah!',
+      question2: answers.question2 === 'Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini.' 
+        ? 'Benar!' 
+        : 'Salah!'
+    };
+    setFeedback(feedbackMessages);
+  };
+
+  const [pythonCode, setPythonCode] = useState(``);
+  const [pythonCode1, setPythonCode1] = useState(`
+
+for i in range(100):
+  speed(1)
+  # Menggambar titik dengan ukuran 10 dan warna default
+  dot(10)
+  forward(200)
+  speed(0)
+  home()
+  reset()
+`);
+
+const [pythonCode2, setPythonCode2] = useState(`
+
+for i in range(100):
+  speed(1)
+  # Menggambar titik dengan ukuran 20 dan warna merah
+  dot(20, "red")
+              
+  # Pindahkan turtle untuk menggambar titik berikutnya
+  setposition(50, 50)
+             
+  # Menggambar titik dengan ukuran 15 dan warna biru
+  dot(15, "blue")
+
+  setposition(200, 200)
+  speed(0)
+  home()
+  reset()
+`);
+
+  const [pythonCodeChallanges, setPythonCodeChallanges] = useState(``);
+
+  const [output, setOutput] = useState('');
+
+  const outf = (text) => {
+    setOutput((prev) => prev + text);
+  };
+
+  const builtinRead = (x) => {
+    if (window.Sk.builtinFiles === undefined || window.Sk.builtinFiles['files'][x] === undefined) {
+      throw `File not found: '${x}'`;
+    }
+    return window.Sk.builtinFiles['files'][x];
+  };
+
+  const runit = (code, forceReset = false) => {
+    setOutput('');
+    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const prog = forceReset ? imports : imports + pythonCode;
+
+    window.Sk.pre = "output";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas';
+
+    window.Sk.misceval.asyncToPromise(() => 
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+        () => console.log('success'),
+        (err) => setOutput((prev) => prev + err.toString())
+    );
+};
+
+  const runit1 = (code, forceReset = false) => {
+    setOutput('');
+    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const prog = forceReset ? imports : imports + pythonCode1;
+  
+    window.Sk.pre = "output1";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-contoh1';
+  
+    window.Sk.misceval.asyncToPromise(() => 
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+        () => console.log('success'),
+        (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
+
+  const runit2 = (code, forceReset = false) => {
+    setOutput('');
+    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const prog = forceReset ? imports : imports + pythonCode2;
+  
+    window.Sk.pre = "output2";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-contoh2';
+  
+    window.Sk.misceval.asyncToPromise(() => 
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+        () => console.log('success'),
+        (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
+
+
+  const runitchallanges = (code, forceReset = false) => {
+    setOutput('');
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-200,0)\npendown()\nspeed(1)\n";
+    const prog = forceReset ? imports : imports + pythonCodeChallanges;
+  
+    window.Sk.pre = "output4";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
+  
+    window.Sk.misceval.asyncToPromise(() => 
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+        () => {
+          console.log('success');
+          setHasRun(true);
+          checkCodeChallanges();
+        },
+        (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
+
+  const [hasRun, setHasRun] = useState(false);
+
+  const checkCodeChallanges = () => {
+    if (!hasRun) return;
+
+    const validCode = [
+        "forward(50)", 'dot(15,"red")', "forward(50)", 'dot(15,"green")',
+        "forward(50)", 'dot(15,"red")', "forward(50)", 'dot(15,"green")',
+        "forward(50)", 'dot(15,"red")', "forward(50)", 'dot(15,"green")',
+        "forward(50)", 'dot(15,"red")', "forward(50)"
+    ];
+
+    const userCodeLines = pythonCodeChallanges.trim().split("\n");
+
+    // Cek apakah kode pengguna merupakan bagian awal dari jawaban yang valid
+    const isPartialMatch = validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index]);
+
+    // Cek apakah kode pengguna sudah lengkap dan benar
+    const isExactMatch = userCodeLines.length === validCode.length && isPartialMatch;
+
+    if (isExactMatch) {
+        swal("Jawaban Benar!", "Kamu berhasil!", "success");
+    } else if (!isPartialMatch) {
+        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+    }
+};
+
+
+  const resetCode = () => {
+    setPythonCode('');
+    setOutput('');
+    runit('', true);
+};
+
+  const resetCodeChallanges = () => {
+    setPythonCodeChallanges('');
+    setOutput('');
+    runitchallanges('', true);
+  };
+
+
+  useEffect(() => {
+    runit();
+    runit1(); // Jalankan kode saat halaman dimuat
+    runit2(); // Jalankan kode saat halaman dimuat
+    runitchallanges(); // Jalankan kode saat halaman dimuat
+  }, []);
+
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 className='mt-3' style={{textAlign:'center'}}>Dot</h2>
+        <h2 style={{textAlign:'center'}}>Dot</h2>
+        <hr></hr>
+        <br/>
+
+        <h4>Tujuan Pembelajaran</h4>
+        <ol>
+          <li>Memahami cara menggambar titik menggunakan <code>dot()</code>.</li>
+        </ol>
 
         <hr/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ul>
-          <li>Memahami cara menggambar titik menggunakan <code>dot()</code>.</li>
-          <li>Mengerti parameter yang digunakan dalam fungsi <code>dot()</code> untuk mengubah ukuran dan warna titik.</li>
-        </ul>
-
-        <hr />
-
-        <h4>Definisi Turtle <code>dot()</code></h4>
         <p>
-          Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>dot()</code> digunakan untuk menggambar titik pada posisi turtle saat ini. Titik ini dapat diatur ukuran dan warnanya. Fungsi ini sangat berguna untuk menandai posisi tertentu dalam gambar atau untuk menggambar pola dengan titik.
+        Fungsi <code>dot()</code> digunakan untuk menggambar titik pada posisi Bidawang berada. Titik ini dapat diatur ukuran dan warnanya. Fungsi ini sangat berguna untuk menandai posisi tertentu dalam gambar atau untuk menggambar pola dengan titik.
         </p>
-
-        <h4>Fungsi:</h4>
         <p><code>dot(ukuran, warna)</code>: Menggambar titik dengan ukuran dan warna yang ditentukan. Parameter <code>warna</code> opsional dan dapat diisi dengan nama warna atau kode heksadesimal.</p>
         <ul>
           <li><strong>ukuran</strong>: Ukuran titik yang ingin digambar. Nilai default adalah 5.</li>
           <li><strong>warna</strong>: Warna titik yang ingin digambar. Jika tidak ditentukan, warna default adalah warna pena saat ini.</li>
         </ul>
-        <pre>
-          <code>
-            {`import turtle
 
-t = turtle.Turtle()
+        <br></br>
 
-# Menggambar titik dengan ukuran 10 dan warna default
-t.dot(10)
+        <h5>Contoh 1:</h5>
+        <p>Menggambar titik dengan ukuran 10 dan warna default:</p>
+        <Row className="align-items-center">
+          <Col md={6}>
+            <CodeMirror
+              value={`# Menggambar titik dengan ukuran 10 dan warna default
+dot(10)
+forward(200)`}
+              height="400px"
+              theme="light"
+              extensions={[python()]}
+              editable={false}
+              options={{ readOnly: 'nocursor' }}
+            />
+          </Col>
+          <Col md={6} className="text-center">
+            <div className="canvas-section" style={{width:400,height:400,  textAlign:'center'}}>
+              <div style={{textAlign:'center'}} id="mycanvas-contoh1"></div>
+            </div>
+          </Col>
+        </Row>
+        <br></br>
+        <p><b>Hasil:</b> Fungsi <code>dot(10)</code> akan menggambar titik pada posisi bidawang tersebut dengan ukuran 10 dan warna default.</p>
+        
+        <br></br>
 
-turtle.done()`}
-          </code>
-        </pre>
-
-        <hr />
-
-        <h4>Contoh Penggunaan <code>dot()</code></h4>
-        <p>Berikut adalah beberapa contoh penggunaan <code>dot()</code> untuk menggambar titik:</p>
-
-        <h4>Menggambar Titik dengan Ukuran dan Warna yang Berbeda</h4>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar titik dengan ukuran 20 dan warna merah
-t.dot(20, "red")
-
+        <h5>Contoh 2:</h5>
+        <p>Menggambar Titik dengan Ukuran dan Warna yang Berbeda:</p>
+        <Row className="align-items-center">
+          <Col md={6}>
+            <CodeMirror
+              value={`# Menggambar titik dengan ukuran 20 dan warna merah
+dot(20, "red")
+              
 # Pindahkan turtle untuk menggambar titik berikutnya
-t.penup()
-t.setposition(50, 50)
-t.pendown()
-
+setposition(50, 50)
+             
 # Menggambar titik dengan ukuran 15 dan warna biru
-t.dot(15, "blue")
+dot(15, "blue")
 
-turtle.done()`}
-          </code>
-        </pre>
-
-        <h4>Menggambar Titik di Berbagai Posisi</h4>
-        <p>Anda bisa memindahkan turtle ke posisi yang berbeda sebelum menggambar titik:</p>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar titik di posisi (0, 0)
-t.dot(10, "green")
-
-# Pindahkan turtle ke posisi lain
-t.penup()
-t.setposition(-50, -50)
-t.pendown()
-
-# Menggambar titik di posisi (-50, -50)
-t.dot(10, "purple")
-
-turtle.done()`}
-          </code>
-        </pre>
-
-        <h4>Menggambar Pola dengan Titik</h4>
-        <p>Anda dapat menggunakan loop untuk menggambar pola titik:</p>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar pola titik
-for i in range(10):
-    t.dot(10, "orange")
-    t.penup()
-    t.forward(20)
-    t.pendown()
-
-turtle.done()`}
-          </code>
-        </pre>
+setposition(200, 200)`}
+              height="400px"
+              theme="light"
+              extensions={[python()]}
+              editable={false}
+              options={{ readOnly: 'nocursor' }}
+            />
+          </Col>
+          <Col md={6} className="text-center">
+            <div className="canvas-section" style={{width:400,height:400,  textAlign:'center'}}>
+              <div style={{textAlign:'center'}} id="mycanvas-contoh2"></div>
+            </div>
+          </Col>
+        </Row>
+        <br></br>
+        <p><b>Hasil:</b> Fungsi <code>dot(20,"red")</code> akan membuat Bidawang menggambar titik dengan ukuran 20 dan warna merah, sedangkan <code>dot(15,"blue")</code> akan menggambar titik dengan ukuran 15 dan warna biru.</p>
+        
+        <br></br>
 
         <hr />
+
+        <h4>Latihan Menggunakan dot()</h4>
+        <p>
+        Untuk lebih mudah memahami cara kerja perintah <code>dot()</code>, ikuti instruksi dibawah ini
+        </p>
+        <Row>
+          <Col xs={3} style={{ fontSize: 15 }}>
+            <Accordion activeKey={activeKey} onSelect={(key) => setActiveKey(key)}>
+              <AccordionItem eventKey="1a">
+                <AccordionHeader>
+                  <b>1. Gambar Titik</b>
+                  {completedSteps.includes('1a') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                </AccordionHeader>
+                <AccordionBody>
+                  <p>Gambar titik dengan ukuran 20 pada posisi saat ini:</p>
+                  <pre><code>dot(20)</code></pre>
+                </AccordionBody>
+              </AccordionItem>
+              <AccordionItem eventKey="1b">
+                <AccordionHeader>
+                  <b>2. Maju</b>
+                  {completedSteps.includes('1b') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                </AccordionHeader>
+                <AccordionBody>
+                  <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini untuk menggerakan bidawang ke depan sejauh 50 langkah:</p>
+                  <pre><code>forward(50)</code></pre>
+                </AccordionBody>
+              </AccordionItem>
+              <AccordionItem eventKey="1c">
+                <AccordionHeader>
+                  <b>3. Gambar Titik Merah</b>
+                  {completedSteps.includes('1c') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                </AccordionHeader>
+                <AccordionBody>
+                  <p>Gambar lagi titik dengan ukuran 50 dan berwarna merah:</p>
+                  <pre><code>dot(50,"red")</code></pre>
+                </AccordionBody>
+              </AccordionItem>
+              <AccordionItem eventKey="1d">
+                <AccordionHeader>
+                  <b>4. Maju</b>
+                  {completedSteps.includes('1d') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                </AccordionHeader>
+                <AccordionBody>
+                  <p>Gerakkan lagi bidawang maju sejauh 100 langkah:</p>
+                  <pre><code>forward(100)</code></pre>
+                </AccordionBody>
+              </AccordionItem>
+              <AccordionItem eventKey="1e">
+                <AccordionHeader>
+                  <b>5. Gambar Titik Kuning</b>
+                  {completedSteps.includes('1e') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                </AccordionHeader>
+                <AccordionBody>
+                  <p>Gambar lagi titik dengan ukuran 100 dan berwarna kuning:</p>
+                  <pre><code>dot(100,"yellow")</code></pre>
+                </AccordionBody>
+              </AccordionItem>
+            </Accordion>
+          </Col>
+
+
+
+          <Col xs={9}>
+          <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+          <div className="editor-section">
+            {/* <h5>Python Turtle Code Editor</h5> */}
+            <CodeMirror
+              value={pythonCode}
+              placeholder={'//Ketikan kode disini!'}
+              height="290px"
+              theme="light"
+              extensions={[python()]}
+              onChange={(value) => setPythonCode(value)}
+            />
+            <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
+              <Button variant="success" onClick={() => { runit(); checkCode(); }}>Run Code</Button>
+              <Button variant="secondary" onClick={resetCode}>
+                <BsArrowClockwise /> Reset
+              </Button>
+              </div>
+            <pre className="output" style={{height:60}}>{output}</pre>
+          </div>
+          <div className="canvas-section" style={{width: 400, height: 400}}>
+            <div  style={{width: 400, height: 400}} id="mycanvas"></div>
+          </div>
+        </div>
+          </Col>
+        </Row>
+        
+
+        <br></br>
+
+        <hr/>
 
         <h4>Kesimpulan</h4>
         <p>
-          Perintah <code>dot()</code> dalam pustaka <strong>Turtle Graphics</strong> memungkinkan Anda menggambar titik dengan ukuran dan warna yang dapat disesuaikan. Fungsi ini berguna untuk menandai posisi, membuat pola, atau menambah detail pada gambar yang Anda buat.
+        Perintah <code>dot()</code> berfungsi untuk menggambar titik dengan ukuran dan warna yang dapat disesuaikan. Fungsi ini berguna untuk menandai posisi, membuat pola, atau menambah detail pada gambar yang dibuat.
         </p>
 
-        <hr />
+        <br/>
 
-        <h4>Kuis</h4>
-        <p>Apa yang dilakukan perintah <code>t.dot(30, "blue")</code>?</p>
-        <ul>
-          <li>[ ] Menggambar titik dengan ukuran 30 dan warna biru</li>
-          <li>[ ] Menghapus titik yang sudah ada</li>
-          <li>[ ] Mengganti warna pena menjadi biru</li>
-          <li>[ ] Menggambar lingkaran dengan jari-jari 30</li>
-        </ul>
+        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        {/* Kuis Accordion */}
+        <Accordion.Item eventKey="0">
+          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+          <Accordion.Body>
+            <Form>
+              <Form.Group controlId="question1">
+                <Form.Label>1. Apa fungsi dari metode dot()? </Form.Label>
+                <Form.Check 
+                  type="radio" 
+                  label="Menggambar lingkaran penuh." 
+                  name="question1" 
+                  onChange={() => handleAnswerChange('question1', 'Menggambar lingkaran penuh.')} 
+                />
+                <Form.Check 
+                  type="radio" 
+                  label="Menggambar busur lingkaran." 
+                  name="question1" 
+                  onChange={() => handleAnswerChange('question1', 'Menggambar busur lingkaran.')} 
+                />
+                <Form.Check 
+                  type="radio" 
+                  label="Menggambar titik di posisi saat ini." 
+                  name="question1" 
+                  onChange={() => handleAnswerChange('question1', 'Menggambar titik di posisi saat ini.')} 
+                />
+                <Form.Check 
+                  type="radio" 
+                  label="Menghapus titik pada kanvas." 
+                  name="question1" 
+                  onChange={() => handleAnswerChange('question1', 'Menghapus titik pada kanvas.')} 
+                />
+              </Form.Group>
+              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+
+              <Form.Group controlId="question2">
+                <Form.Label>2. Apa yang terjadi jika Anda memanggil dot(15, "blue")? </Form.Label>
+                <Form.Check 
+                  type="radio" 
+                  label="Titik biru dengan ukuran 15 piksel digambar di posisi saat ini." 
+                  name="question2" 
+                  onChange={() => handleAnswerChange('question2', 'Titik biru dengan ukuran 15 piksel digambar di posisi saat ini.')} 
+                />
+                <Form.Check 
+                  type="radio" 
+                  label="Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini." 
+                  name="question2" 
+                  onChange={() => handleAnswerChange('question2', 'Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini.')} 
+                />
+                <Form.Check 
+                  type="radio" 
+                  label="Lingkaran penuh biru dengan jari-jari 15 digambar di posisi saat ini." 
+                  name="question2" 
+                  onChange={() => handleAnswerChange('question2', 'Lingkaran penuh biru dengan jari-jari 15 digambar di posisi saat ini.')} 
+                />
+                <Form.Check 
+                  type="radio" 
+                  label="Tidak ada yang terjadi."
+                  name="question2" 
+                  onChange={() => handleAnswerChange('question2', 'Tidak ada yang terjadi.')} 
+                />
+              </Form.Group>
+              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+
+              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+            </Form>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+
+      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        {/* Tantangan Accordion */}
+        <Accordion.Item eventKey="1">
+          <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
+          <Accordion.Body>
+          <p>
+            Selesaikan tantangan dibawah ini!
+            Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
+            </p>
+            <Button className=" mb-2" variant="info" onClick={showHint}>
+              Petunjuk
+            </Button>
+
+            <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+              <div className="editor-section">
+                <CodeMirror
+                  value={pythonCodeChallanges}
+                  placeholder={'//Ketikan kode disini!'}
+                  height="290px"
+                  theme="light"
+                  extensions={[python()]}
+                  onChange={(value) => setPythonCodeChallanges(value)}
+                />
+                <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
+                  <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
+                  <Button variant="secondary" onClick={resetCodeChallanges}>
+                    <BsArrowClockwise /> Reset
+                  </Button>
+                  </div>
+                <pre className="output4" style={{height:60}}>{output}</pre>
+              </div>
+              <div className="canvas-section" style={{ position: "relative", width: 400, height: 400,  }}>
+                <div id="mycanvas-challanges" style={{ 
+                  width: 400, 
+                  height: 400, 
+                  position: "relative", 
+                }}></div>
+                {/* <img
+                      src={broccoli}
+                      alt="Target Broccoli"
+                      style={{
+                        position: "absolute",
+                        left: "275px",
+                        top: "75px",
+                        width: "50px", // Sesuaikan ukuran jika perlu
+                        height: "50px",
+                      }}
+                  /> */}
+                  <img
+                      src={map}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "2px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
+                      }}
+                  />
+              </div>
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
       </div>
     </div>
   )

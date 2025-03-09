@@ -13,17 +13,26 @@ import backward100 from './assets/2turtle-backward.gif';
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
+import map from './assets/2-forward-backward.png';
 import { useNavigate } from "react-router-dom";
 
 const correctCommands = {
   '1a': 'forward(100)',
-  '1b': 'right(90)',
-  '1c': 'forward(100)',
-  '1d': 'left(45)',
-  '1e': 'forward(50)'
+  '1b': 'backward(50)',
+  '1c': 'backward(100)'
 };
 
 const ForwardBackward = () => {
+  // hint challanges
+  const showHint = () => {
+    swal(
+      "Petunjuk Tantangan",
+      "Bidawang saat ini berada di tengah layar (titik (0, 0)), sedangkan cacing berada di titik (100, 100). \n\n" +
+      "Tugas kalian adalah menggerakkan Bidawang menuju ke posisi cacing dengan maksimal menggunakan 4x kode perintah. Gunakan forward() atau backward() lalu kombinasikan dengan left() atau right() untuk membuat bidawang berbelok arah. \n\n",
+      "info"
+    );
+  };
+
   //accordion task
   const [completedSteps, setCompletedSteps] = useState([]);
   const [activeKey, setActiveKey] = useState('1a');
@@ -190,13 +199,21 @@ for i in range(100):
   const checkCodeChallanges = () => {
     if (!hasRun) return;
 
-    const validCodes = ["left(45)", "right(315)"];
-    if (validCodes.includes(pythonCodeChallanges.trim())) {
+    const validCode = ["forward(100)", "left(90)", "forward(100)"];
+    const userCodeLines = pythonCodeChallanges.trim().split("\n");
+
+    for (let i = 0; i < userCodeLines.length; i++) {
+        if (userCodeLines[i] !== validCode[i]) {
+            swal("Jawaban Salah", "Urutan perintah harus sesuai!", "error");
+            return;
+        }
+    }
+
+    if (userCodeLines.length === validCode.length) {
         swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else {
-        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
     }
 };
+
 
   const resetCode = () => {
     setPythonCode('');
@@ -212,6 +229,7 @@ for i in range(100):
 
 
   useEffect(() => {
+    runit(); // Jalankan kode saat halaman dimuat
     runit1(); // Jalankan kode saat halaman dimuat
     runit2(); // Jalankan kode saat halaman dimuat
     runitchallanges(); // Jalankan kode saat halaman dimuat
@@ -261,7 +279,7 @@ forward(100)`}
         <br></br>
 
         <h5>2. backward(<i>jarak</i>)</h5>
-        <p>Menggerakkan Bidawang ke belakang sejauh jarak yang ditentukan (dalam piksel), dalam arah berlawanan dengan arah yang sedang dihadapi oleh turtle.</p>
+        <p>Menggerakkan Bidawang ke belakang sejauh jarak yang ditentukan (dalam piksel), dalam arah berlawanan dengan arah yang sedang dihadapi oleh bidawang.</p>
         <Row className="align-items-center">
           <Col md={6}>
             <CodeMirror
@@ -305,42 +323,22 @@ backward(150)`}
               </AccordionItem>
               <AccordionItem eventKey="1b">
                 <AccordionHeader>
-                  <b>2. Berbelok ke kanan</b>
+                  <b>2. Mundur</b>
                   {completedSteps.includes('1b') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
                 </AccordionHeader>
                 <AccordionBody>
-                  <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini untuk memutar Bidawang ke kanan sebesar 90 derajat:</p>
-                  <pre><code>right(90)</code></pre>
+                  <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini untuk membuat Bidawang mundur 50 langkah: </p>
+                  <pre><code>backward(50)</code></pre>
                 </AccordionBody>
               </AccordionItem>
               <AccordionItem eventKey="1c">
                 <AccordionHeader>
-                  <b>3. Maju</b>
+                  <b>3. Mundur</b>
                   {completedSteps.includes('1c') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
                 </AccordionHeader>
                 <AccordionBody>
-                  <p>Gerakkan lagi Bidawang maju sejauh 100 langkah</p>
-                  <pre><code>forward(100)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1d">
-                <AccordionHeader>
-                  <b>4. Berbelok ke kiri</b>
-                  {completedSteps.includes('1d') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Putar Bidawang ke kiri sebesar 45 derajat:</p>
-                  <pre><code>left(45)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1e">
-                <AccordionHeader>
-                  <b>5. Maju</b>
-                  {completedSteps.includes('1e') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Gerakkan Bidawang maju sejauh 50 langkah:</p>
-                  <pre><code>forward(50)</code></pre>
+                  <p>Gerakkan lagi bidawang mundur sejauh 100 langkah:</p>
+                  <pre><code>backward(100)</code></pre>
                 </AccordionBody>
               </AccordionItem>
             </Accordion>
@@ -387,7 +385,6 @@ backward(150)`}
 
         <br/>
 
-        <h4>Kuis</h4>
 
         <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
         {/* Kuis Accordion */}
@@ -465,8 +462,12 @@ backward(150)`}
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
             <p>
-              Coba gunakan perintah <code>left()</code> dan <code>right()</code> untuk mengubah arah objek. Klik tombol di bawah ini untuk mengerjakan tantangan berikut.
+            Selesaikan tantangan dibawah ini!
+            Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
             </p>
+            <Button className=" mb-2" variant="info" onClick={showHint}>
+              Petunjuk
+            </Button>
 
             <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
               <div className="editor-section">
@@ -501,6 +502,17 @@ backward(150)`}
                         top: "75px",
                         width: "50px", // Sesuaikan ukuran jika perlu
                         height: "50px",
+                      }}
+                  />
+                  <img
+                      src={map}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
                       }}
                   />
               </div>

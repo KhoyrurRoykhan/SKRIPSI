@@ -13,16 +13,24 @@ import gabunganleftright from './assets/1gabunganleftright.gif';
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
+import map from './assets/1-left-right.png';
 
 const correctCommands = {
-  '1a': 'forward(100)',
-  '1b': 'right(90)',
-  '1c': 'forward(100)',
-  '1d': 'left(45)',
-  '1e': 'forward(50)'
+  '1a': 'left(90)',
+  '1b': 'right(180)'
 };
 
 const LeftRight = () => {
+  // hint challanges
+  const showHint = () => {
+    swal(
+      "Petunjuk Tantangan",
+      "Bidawang saat ini berada di tengah layar (titik (0, 0)), sedangkan cacing berada di titik (100, 100). \n\n" +
+      "Tugas kalian adalah membuat Bidawang menghadap ke arah cacing dengan 1x perintah, gunakan perintah left() atau right(): \n\n",
+      "info"
+    );
+  };
+
   //accordion task
   const [completedSteps, setCompletedSteps] = useState([]);
   const [activeKey, setActiveKey] = useState('1a');
@@ -68,12 +76,12 @@ const LeftRight = () => {
 
   const handleSubmit = () => {
     const feedbackMessages = {
-      question1: answers.question1 === 'left() memutar turtle ke arah kiri, sementara right() memutar turtle ke arah kanan.' 
+      question1: answers.question1 === 'left() memutar bidawang ke arah kiri, sementara right() memutar bidawang ke arah kanan.' 
         ? 'Benar!' 
-        : 'Salah! left() memutar turtle ke arah kiri, sementara right() memutar turtle ke arah kanan.',
-      question2: answers.question2 === 'Selatan' 
+        : 'Salah!',
+      question2: answers.question2 === 'Selatan (bawah layar)' 
         ? 'Benar!' 
-        : 'Salah! Turtle akan menghadap Selatan.'
+        : 'Salah!'
     };
 
     setFeedback(feedbackMessages);
@@ -194,9 +202,14 @@ for i in range(100):
     if (!hasRun) return;
 
     const validCodes = ["left(45)", "right(315)"];
-    if (validCodes.includes(pythonCodeChallanges.trim())) {
+    const trimmedCode = pythonCodeChallanges.trim();
+
+    // Cek apakah kode yang sedang dijalankan merupakan bagian dari jawaban yang valid
+    const isPartialMatch = validCodes.some(validCode => validCode.startsWith(trimmedCode) || validCode.includes(trimmedCode));
+
+    if (validCodes.includes(trimmedCode)) {
         swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else {
+    } else if (!isPartialMatch) {
         swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
     }
 };
@@ -306,54 +319,25 @@ right(90)`}
             <Accordion activeKey={activeKey} onSelect={(key) => setActiveKey(key)}>
               <AccordionItem eventKey="1a">
                 <AccordionHeader>
-                  <b>1. Maju</b>
+                  <b>1. Berputar ke kiri</b>
                   {completedSteps.includes('1a') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
                 </AccordionHeader>
                 <AccordionBody>
-                  <p>Gerakkan Bidawang maju sejauh 100 langkah dengan perintah dibawah ini:</p>
-                  <pre><code>forward(100)</code></pre>
+                  <p>Buat bidawang berputar 90 derajat ke kiri dengan perintah di bawah ini:</p>
+                  <pre><code>left(90)</code></pre>
                 </AccordionBody>
               </AccordionItem>
               <AccordionItem eventKey="1b">
                 <AccordionHeader>
-                  <b>2. Berbelok ke kanan</b>
+                  <b>2. Berputar ke kanan</b>
                   {completedSteps.includes('1b') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
                 </AccordionHeader>
                 <AccordionBody>
-                  <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini untuk memutar Bidawang ke kanan sebesar 90 derajat:</p>
-                  <pre><code>right(90)</code></pre>
+                  <p>Kemudian lanjutkan pada baris baru dengan perintah dibawah ini untuk memutar Bidawang ke kanan sebesar 180 derajat:</p>
+                  <pre><code>right(180)</code></pre>
                 </AccordionBody>
               </AccordionItem>
-              <AccordionItem eventKey="1c">
-                <AccordionHeader>
-                  <b>3. Maju</b>
-                  {completedSteps.includes('1c') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Gerakkan lagi Bidawang maju sejauh 100 langkah</p>
-                  <pre><code>forward(100)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1d">
-                <AccordionHeader>
-                  <b>4. Berbelok ke kiri</b>
-                  {completedSteps.includes('1d') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Putar Bidawang ke kiri sebesar 45 derajat:</p>
-                  <pre><code>left(45)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1e">
-                <AccordionHeader>
-                  <b>5. Maju</b>
-                  {completedSteps.includes('1e') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Gerakkan Bidawang maju sejauh 50 langkah:</p>
-                  <pre><code>forward(50)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
+              
             </Accordion>
           </Col>
 
@@ -392,7 +376,7 @@ right(90)`}
 
         <h4>Kesimpulan</h4>
         <p>
-          Perintah `left()` dan `right()` dalam pustaka Turtle Graphics memungkinkan pengaturan arah gerakan turtle dengan rotasi ke kiri atau ke kanan berdasarkan derajat yang ditentukan. Perintah ini sangat berguna untuk kontrol arah sebelum melakukan perintah lain dalam pembuatan gambar atau pola.
+          Perintah `left()` dan `right()` memungkinkan pengaturan arah gerakan bidawang dengan rotasi ke kiri atau ke kanan berdasarkan derajat yang ditentukan. Perintah ini sangat berguna untuk kontrol arah sebelum melakukan perintah lain dalam pembuatan gambar atau pola.
         </p>
         <br />
 
@@ -406,59 +390,59 @@ right(90)`}
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa perbedaan utama antara perintah left() dan right() dalam pustaka Turtle Graphics?</Form.Label>
+                <Form.Label>1. Apa perbedaan utama antara perintah left() dan right() ?</Form.Label>
                 <Form.Check 
                   type="radio" 
-                  label="left() memutar turtle ke arah kanan, sementara right() memutar turtle ke arah kiri." 
+                  label="left() memutar bidawang ke arah kanan, sementara right() memutar bidawang ke arah kiri." 
                   name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'left() memutar turtle ke arah kanan, sementara right() memutar turtle ke arah kiri.')} 
+                  onChange={() => handleAnswerChange('question1', 'left() memutar bidawang ke arah kanan, sementara right() memutar bidawang ke arah kiri.')} 
                 />
                 <Form.Check 
                   type="radio" 
-                  label="left() memutar turtle ke arah kiri, sementara right() memutar turtle ke arah kanan." 
+                  label="left() memutar bidawang ke arah kiri, sementara right() memutar bidawang ke arah kanan." 
                   name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'left() memutar turtle ke arah kiri, sementara right() memutar turtle ke arah kanan.')} 
+                  onChange={() => handleAnswerChange('question1', 'left() memutar bidawang ke arah kiri, sementara right() memutar bidawang ke arah kanan.')} 
                 />
                 <Form.Check 
                   type="radio" 
-                  label="left() dan right() hanya digunakan untuk mengubah warna turtle." 
+                  label="left() dan right() hanya digunakan untuk mengubah warna bidawang." 
                   name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'left() dan right() hanya digunakan untuk mengubah warna turtle.')} 
+                  onChange={() => handleAnswerChange('question1', 'left() dan right() hanya digunakan untuk mengubah warna bidawang.')} 
                 />
                 <Form.Check 
                   type="radio" 
-                  label="Keduanya memindahkan turtle ke posisi (0, 0)." 
+                  label="Keduanya memindahkan bidawang ke posisi (0, 0)." 
                   name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Keduanya memindahkan turtle ke posisi (0, 0).')} 
+                  onChange={() => handleAnswerChange('question1', 'Keduanya memindahkan bidawang ke posisi (0, 0).')} 
                 />
               </Form.Group>
               {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Jika turtle menghadap ke timur, dan Anda menggunakan perintah right(90), ke arah mana turtle akan menghadap?</Form.Label>
+                <Form.Label>2. Jika turtle menghadap ke timur (kanan layar), dan Anda menggunakan perintah right(90), ke arah mana turtle akan menghadap?</Form.Label>
                 <Form.Check 
                   type="radio" 
-                  label="Utara" 
+                  label="Utara (atas layar)" 
                   name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Utara')} 
+                  onChange={() => handleAnswerChange('question2', 'Utara (atas layar)')} 
                 />
                 <Form.Check 
                   type="radio" 
-                  label="Barat" 
+                  label="Barat (kiri layar)" 
                   name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Barat')} 
+                  onChange={() => handleAnswerChange('question2', 'Barat (kiri layar)')} 
                 />
                 <Form.Check 
                   type="radio" 
-                  label="Selatan" 
+                  label="Selatan (bawah layar)" 
                   name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Selatan')} 
+                  onChange={() => handleAnswerChange('question2', 'Selatan (bawah layar)')} 
                 />
                 <Form.Check 
                   type="radio" 
-                  label="Timur" 
+                  label="Timur (kanan layar)" 
                   name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Timur')} 
+                  onChange={() => handleAnswerChange('question2', 'Timur (kanan layar)')} 
                 />
               </Form.Group>
               {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
@@ -475,8 +459,12 @@ right(90)`}
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
             <p>
-              Coba gunakan perintah <code>left()</code> dan <code>right()</code> untuk mengubah arah objek. Klik tombol di bawah ini untuk mengerjakan tantangan berikut.
+              Selesaikan tantangan dibawah ini menggunakan perintah <code>left()</code> dan <code>right()</code> untuk mengubah arah objek. 
+              Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
             </p>
+            <Button className=" mb-2" variant="info" onClick={showHint}>
+              Petunjuk
+            </Button>
 
             <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
               <div className="editor-section">
@@ -511,6 +499,17 @@ right(90)`}
                         top: "75px",
                         width: "50px", // Sesuaikan ukuran jika perlu
                         height: "50px",
+                      }}
+                  />
+                  <img
+                      src={map}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
                       }}
                   />
               </div>

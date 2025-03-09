@@ -281,6 +281,7 @@ const runit2 = (code, forceReset = false) => {
           <li><b>(C) Bidawang</b>: Objek yang digerakkan menggunakan perintah kode.</li>
           <li><b>(D) Tombol "Run Code"</b>: Digunakan untuk menjalankan kode yang telah ditulis di text editor. Setelah ditekan, Bidawang akan menjalankan perintah dan menggambar sesuai instruksi.</li>
           <li><b>(E) Tombol "Reset"</b>: Menghapus kode serta hasil gambar di canvas dan mengembalikan Bidawang ke posisi awal.</li>
+          <li><b>(F) Output Log</b>: Digunakan untuk menampilkan output dari program yang dijalankan atau pesan eror.</li>
         </ul>
 
 
