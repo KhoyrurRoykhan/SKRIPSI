@@ -12,7 +12,7 @@ import gabunganleftright from './assets/1gabunganleftright.gif';
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
-import broccoli from './assets/cacingtarget.png';
+import map from './assets/1-fillcolor.png';
 
 const correctCommands = {
     '1a': 'forward(100)',
@@ -474,7 +474,7 @@ end_fill() `}
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                <img
+                {/* <img
                       src={broccoli}
                       alt="Target Broccoli"
                       style={{
@@ -483,6 +483,17 @@ end_fill() `}
                         top: "75px",
                         width: "50px", // Sesuaikan ukuran jika perlu
                         height: "50px",
+                      }}
+                  /> */}
+                  <img
+                      src={map}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
                       }}
                   />
               </div>

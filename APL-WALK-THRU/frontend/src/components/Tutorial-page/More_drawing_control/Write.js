@@ -12,7 +12,7 @@ import gabunganleftright from './assets/1gabunganleftright.gif';
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
-import broccoli from './assets/cacingtarget.png';
+import map from './assets/1-write.png';
 
 const correctCommands = {
     '1a': 'forward(100)',
@@ -23,6 +23,16 @@ const correctCommands = {
   };
 
 const Write = () => {
+  // hint challanges
+  const showHint = () => {
+    swal(
+      "Petunjuk Tantangan",
+      "Bidawang saat ini berada di tengah layar (titik (0, 0)), sedangkan cacing berada di titik (100, 100). \n\n" +
+      "Tugas kalian adalah menggerakkan Bidawang menuju ke posisi cacing dengan maksimal menggunakan 4x kode perintah. Gunakan forward() atau backward() lalu kombinasikan dengan left() atau right() untuk membuat bidawang berbelok arah. \n\n",
+      "info"
+    );
+  };
+
     //accordion task
     const [completedSteps, setCompletedSteps] = useState([]);
     const [activeKey, setActiveKey] = useState('1a');
@@ -165,7 +175,7 @@ for i in range(100):
   
     const runitchallanges = (code, forceReset = false) => {
       setOutputChallanges('');
-      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
+      const imports = 'from turtle import *\nreset()\nshape("turtle")\npenup()\nspeed(0)\nsetposition(-190,0)\nwrite("B",font=("arial",30))\nforward(50)\n# write("I",font=("arial",30))\nforward(50)\nwrite("D",font=("arial",30))\nforward(50)\n# write("A",font=("arial",30))\nforward(50)\nwrite("W",font=("arial",30))\nforward(50)\nwrite("A",font=("arial",30))\nforward(50)\nwrite("N",font=("arial",30))\nforward(50)\nwrite("G",font=("arial",30))\nsetposition(-190,0)\nspeed(1)\n';
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
     
       window.Sk.pre = "outputChallanges";
@@ -444,8 +454,12 @@ forward(100)  `}
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
             <p>
-              Coba gunakan perintah <code>left()</code> dan <code>right()</code> untuk mengubah arah objek. Klik tombol di bawah ini untuk mengerjakan tantangan berikut.
+            Selesaikan tantangan dibawah ini!
+            Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
             </p>
+            <Button className=" mb-2" variant="info" onClick={showHint}>
+              Petunjuk
+            </Button>
 
             <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
               <div className="editor-section">
@@ -471,7 +485,7 @@ forward(100)  `}
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                <img
+                {/* <img
                       src={broccoli}
                       alt="Target Broccoli"
                       style={{
@@ -480,6 +494,17 @@ forward(100)  `}
                         top: "75px",
                         width: "50px", // Sesuaikan ukuran jika perlu
                         height: "50px",
+                      }}
+                  /> */}
+                  <img
+                      src={map}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "4px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
                       }}
                   />
               </div>
