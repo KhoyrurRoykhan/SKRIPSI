@@ -59,30 +59,29 @@ const SetHome = () => {
   };
 
   //kuis
-  const [answers, setAnswers] = useState({
-    question1: '',
-    question2: ''
-  });
+  //kuis
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [feedback, setFeedback] = useState({});
 
-  const [feedback, setFeedback] = useState({
-    question1: '',
-    question2: ''
-  });
+  const correctAnswers = {
+    question1: "Mengembalikan Bidawang ke posisi awal (0, 0) dan mengatur arahnya ke timur.",
+    question2: "Bidawang kembali ke posisi (0, 0) dan menghadap ke timur."
+  };
 
   const handleAnswerChange = (question, answer) => {
-    setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [question]: answer
+    }));
   };
 
   const handleSubmit = () => {
-    const feedbackMessages = {
-      question1: answers.question1 === 'Mengembalikan Bidawang ke posisi awal (0, 0) dan mengatur arahnya ke timur.' 
-        ? 'Benar!' 
-        : 'Salah!',
-      question2: answers.question2 === 'Bidawang kembali ke posisi (0, 0) dan menghadap ke timur.' 
-        ? 'Benar!' 
-        : 'Salah!'
-    };
-    setFeedback(feedbackMessages);
+    const newFeedback = {};
+    Object.keys(correctAnswers).forEach((question) => {
+      newFeedback[question] =
+        selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+    });
+    setFeedback(newFeedback);
   };
 
   const [pythonCode, setPythonCode] = useState(``);
@@ -218,19 +217,53 @@ for i in range(100):
   useEffect(() => {
     runit();
     runit1(); // Jalankan kode saat halaman dimuat
-    runitchallanges(); // Jalankan kode saat halaman dimuat
+    // runitchallanges(); // Jalankan kode saat halaman dimuat
   }, []);
 
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Home</h2>
+        <h2 style={{
+          textAlign: 'center',
+          backgroundColor: '#2DAA9E',
+          color: 'white',
+          padding: '10px 20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          fontWeight: 'bold',
+          fontSize: '24px',
+          letterSpacing: '1px',
+          borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+        }}>
+          Home
+        </h2>
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami cara mengembalikan posisi Bidawang ke titik awal menggunakan <code>home()</code>.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+          Memahami cara mengembalikan posisi Bidawang ke titik awal menggunakan <code>home()</code>.
+          </li>
         </ol>
 
         <hr/>
@@ -271,7 +304,26 @@ home()`}
 
         <hr />
 
-        <h4>Latihan Menggunakan home()</h4>
+        <div
+        style={{
+          backgroundColor: '#F9F9F9',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          // maxWidth: '1000px',
+          margin: 'auto',
+        }}>
+          <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '15px',
+          }}>
+            Latihan Menggunakan home() 🐢
+          </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>home()</code>, ikuti instruksi dibawah ini
         </p>
@@ -330,91 +382,154 @@ home()`}
         </div>
           </Col>
         </Row>
+        </div>
         
-
+        
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
-        <p>
-        Perintah <b>home()</b> memudahkan untuk kembali ke posisi awal (0, 0) dan mengatur arah Bidawang ke posisi semula. Ini berguna untuk memulai kembali proses menggambar dari titik awal. 
-        </p>
-
+        <div
+        style={{
+          backgroundColor: '#F9F9F9',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          // maxWidth: '1000px',
+          margin: 'auto',
+          borderLeft: '5px solid #2DAA9E',
+          borderRight: '5px solid #2DAA9E',
+        }}>
+          <h4 style={{
+            color: '#2DAA9E',
+            fontSize: '24px',
+            fontWeight: 'bold',
+            // borderLeft: '5px solid #2DAA9E',
+            // paddingLeft: '10px',
+            marginBottom: '15px',
+            textAlign: 'center',
+          }}>
+            Kesimpulan
+            </h4>
+          <p>
+          Perintah <b>home()</b> memudahkan untuk kembali ke posisi awal (0, 0) dan mengatur arah Bidawang ke posisi semula. Ini berguna untuk memulai kembali proses menggambar dari titik awal. 
+          </p>
+        </div>
+        
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa fungsi dari perintah home()? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Menghapus seluruh gambar yang telah dibuat." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menghapus seluruh gambar yang telah dibuat.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Mengembalikan Bidawang ke posisi awal (0, 0) dan mengatur arahnya ke timur." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengembalikan Bidawang ke posisi awal (0, 0) dan mengatur arahnya ke timur.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Utara" 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Utara')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Memindahkan Bidawang ke posisi y = 0." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Memindahkan Bidawang ke posisi y = 0.')} 
-                />
+                <Form.Label
+                className="p-3 mb-3"
+                style={{
+                  display: "block",
+                  backgroundColor: "#f8f9fa",
+                  borderLeft: "5px solid #2DAA9E",
+                  borderRight: "5px solid #2DAA9E",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  borderRadius: "5px"
+                }}
+                >
+                  1. Apa fungsi dari perintah home()? 
+                </Form.Label>
+                <div className="row d-flex">
+                {[
+                  "Menghapus seluruh gambar yang telah dibuat.",
+                  "Mengembalikan Bidawang ke posisi awal (0, 0) dan mengatur arahnya ke timur.",
+                  "Utara",
+                  "Memindahkan Bidawang ke posisi y = 0."
+                ].map((answer) => (
+                  <div key={answer} className="col-6 mb-2 d-flex">
+                    <Button
+                      variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                      onClick={() => handleAnswerChange("question1", answer)}
+                      className="w-100 p-3 flex-grow-1"
+                      style={{
+                        fontSize: "18px",
+                        // fontWeight: "bold",
+                        backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                        borderColor: "#2DAA9E",
+                        minHeight: "60px" // Menjaga tinggi tetap konsisten
+                      }}
+                    >
+                      {answer}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Jika posisi awal Bidawang adalah (100, 100) dan arahnya ke barat, apa yang terjadi setelah menggunakan home()? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang tetap di posisi (100, 100)." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang tetap di posisi (100, 100).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang kembali ke posisi (0, 0) dengan arah tetap ke barat." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang kembali ke posisi (0, 0) dengan arah tetap ke barat.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang kembali ke posisi (0, 0) dan menghadap ke timur." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang kembali ke posisi (0, 0) dan menghadap ke timur.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang tetap di posisi (100, 100) tetapi menghadap ke timur."
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang tetap di posisi (100, 100) tetapi menghadap ke timur.')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+                <Form.Label className="p-3 mb-3"
+                style={{
+                  display: "block",
+                  backgroundColor: "#f8f9fa",
+                  borderLeft: "5px solid #2DAA9E",
+                  borderRight: "5px solid #2DAA9E",
+                  fontSize: "18px",
+                  // fontWeight: "bold",
+                  borderRadius: "5px"
+                }}>
+                  2. Jika posisi awal Bidawang adalah (100, 100) dan arahnya ke barat, apa yang terjadi setelah menggunakan home()? 
+                </Form.Label>
+                <div className="row d-flex">
+                  {["Bidawang tetap di posisi (100, 100).", 
+                  "Bidawang kembali ke posisi (0, 0) dengan arah tetap ke barat.", 
+                  "Bidawang kembali ke posisi (0, 0) dan menghadap ke timur.", 
+                  "Bidawang tetap di posisi (100, 100) tetapi menghadap ke timur."].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
-        {/* Tantangan Accordion */}
+      {/* <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
         <Accordion.Item eventKey="1">
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
@@ -487,7 +602,7 @@ home()`}
             </div>
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
       </div>
     </div>
   )

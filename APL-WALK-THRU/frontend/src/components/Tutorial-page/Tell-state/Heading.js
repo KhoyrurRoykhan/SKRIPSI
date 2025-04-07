@@ -71,31 +71,30 @@ const Heading = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [feedback, setFeedback] = useState({});
+
+  const correctAnswers = {
+    question1: "Timur (kanan).",
+    question2: "90"
+  };
+
+  const handleAnswerChange = (question, answer) => {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [question]: answer
+    }));
+  };
+
+  const handleSubmit = () => {
+    const newFeedback = {};
+    Object.keys(correctAnswers).forEach((question) => {
+      newFeedback[question] =
+        selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
     });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
-    };
-  
-    const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'Timur (kanan).' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === '90' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
-    };
+    setFeedback(newFeedback);
+  };
+
   
     const [pythonCode, setPythonCode] = useState(``);
     const [pythonCode1, setPythonCode1] = useState(`    
@@ -255,19 +254,53 @@ for i in range(100):
       runit();
       runit1(); // Jalankan kode saat halaman dimuat
     //   runit2(); // Jalankan kode saat halaman dimuat
-      runitchallanges(); // Jalankan kode saat halaman dimuat
+      // runitchallanges(); // Jalankan kode saat halaman dimuat
     }, []);
 
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Heading</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Heading
+          </h2>
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Mengetahui cara memeriksa arah pergerakan dari bidawang menggunakan heading().</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+          Mengetahui cara memeriksa arah pergerakan dari bidawang menggunakan heading().
+          </li>
         </ol>
 
         <hr/>
@@ -318,7 +351,26 @@ print("Arah setelah putaran:", heading()) `}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan heading()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan heading() 🐢
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>xcor()</code> dan <code>ycor()</code>, ikuti instruksi dibawah ini
         </p>
@@ -406,91 +458,154 @@ print("Arah setelah putaran:", heading()) `}
         </div>
           </Col>
         </Row>
-        
+        </div>
 
         <br></br>
 
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
         <p>
         Perintah <code>heading()</code> berguna untuk memantau arah gerakan bidawang dengan lebih tepat. Pemahaman tentang sistem derajat akan membantu siswa menggambar bentuk dan pola secara lebih akurat. 
         </p>
+        </div>
+        
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Dalam canvas Bidawang, arah 0 derajat mengarah ke mana? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Utara (atas)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Utara (atas).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Timur (kanan)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Timur (kanan).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Barat (kiri)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Barat (kiri).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Selatan (bawah)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Selatan (bawah).')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Dalam canvas Bidawang, arah 0 derajat mengarah ke mana? 
+                  </Form.Label>
+                  <div className="row d-flex">
+                {[
+                  "Utara (atas).",
+                  "Timur (kanan).",
+                  "Barat (kiri).",
+                  "Selatan (bawah)."
+                ].map((answer) => (
+                  <div key={answer} className="col-6 mb-2 d-flex">
+                    <Button
+                      variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                      onClick={() => handleAnswerChange("question1", answer)}
+                      className="w-100 p-3 flex-grow-1"
+                      style={{
+                        fontSize: "18px",
+                        // fontWeight: "bold",
+                        backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                        borderColor: "#2DAA9E",
+                        minHeight: "60px" // Menjaga tinggi tetap konsisten
+                      }}
+                    >
+                      {answer}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Apa hasil dari perintah berikut jika turtle sudah diputar 90 derajat ke kiri?  <pre>print(heading())</pre> </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="0" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '0')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="90" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '90')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="180" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '180')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="270"
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '270')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Apa hasil dari perintah berikut jika turtle sudah diputar 90 derajat ke kiri?  <pre>print(heading())</pre> 
+                  </Form.Label>
+                  <div className="row d-flex">
+                  {["0", 
+                  "90", 
+                  "180", 
+                  "270"].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
-        {/* Tantangan Accordion */}
+      {/* <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
         <Accordion.Item eventKey="1">
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
@@ -534,17 +649,6 @@ print("Arah setelah putaran:", heading()) `}
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "275px",
-                        top: "75px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  />
                   <img
                       src={map}
                       alt="Map"
@@ -560,7 +664,7 @@ print("Arah setelah putaran:", heading()) `}
             </div>
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
       </div>
     </div>
   )

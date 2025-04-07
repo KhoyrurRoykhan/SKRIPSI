@@ -61,30 +61,28 @@ const Dot = () => {
   };
 
   //kuis
-  const [answers, setAnswers] = useState({
-    question1: '',
-    question2: ''
-  });
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [feedback, setFeedback] = useState({});
 
-  const [feedback, setFeedback] = useState({
-    question1: '',
-    question2: ''
-  });
+  const correctAnswers = {
+    question1: "Menggambar titik di posisi saat ini.",
+    question2: "Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini."
+  };
 
   const handleAnswerChange = (question, answer) => {
-    setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [question]: answer
+    }));
   };
 
   const handleSubmit = () => {
-    const feedbackMessages = {
-      question1: answers.question1 === 'Menggambar titik di posisi saat ini.' 
-        ? 'Benar!' 
-        : 'Salah!',
-      question2: answers.question2 === 'Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini.' 
-        ? 'Benar!' 
-        : 'Salah!'
-    };
-    setFeedback(feedbackMessages);
+    const newFeedback = {};
+    Object.keys(correctAnswers).forEach((question) => {
+      newFeedback[question] =
+        selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+    });
+    setFeedback(newFeedback);
   };
 
   const [pythonCode, setPythonCode] = useState(``);
@@ -252,19 +250,51 @@ for i in range(100):
     runit();
     runit1(); // Jalankan kode saat halaman dimuat
     runit2(); // Jalankan kode saat halaman dimuat
-    runitchallanges(); // Jalankan kode saat halaman dimuat
+    // runitchallanges(); // Jalankan kode saat halaman dimuat
   }, []);
 
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Dot</h2>
+        <h2 style={{
+          textAlign: 'center',
+          backgroundColor: '#2DAA9E',
+          color: 'white',
+          padding: '10px 20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          fontWeight: 'bold',
+          fontSize: '24px',
+          letterSpacing: '1px',
+          borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+        }}>Dot</h2>
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami cara menggambar titik menggunakan <code>dot()</code>.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+          Memahami cara menggambar titik menggunakan <code>dot()</code>.
+          </li>
         </ol>
 
         <hr/>
@@ -341,7 +371,25 @@ setposition(200, 200)`}
 
         <hr />
 
-        <h4>Latihan Menggunakan dot()</h4>
+        <div style={{
+          backgroundColor: '#F9F9F9',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          // maxWidth: '1000px',
+          margin: 'auto',
+        }}>
+          <h4 style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '15px',
+          }}
+          >
+            Latihan Menggunakan dot() 🐢
+          </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>dot()</code>, ikuti instruksi dibawah ini
         </p>
@@ -429,91 +477,154 @@ setposition(200, 200)`}
         </div>
           </Col>
         </Row>
-        
+        </div>        
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4
+            style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}
+          >
+            Kesimpulan
+          </h4>
         <p>
         Perintah <code>dot()</code> berfungsi untuk menggambar titik dengan ukuran dan warna yang dapat disesuaikan. Fungsi ini berguna untuk menandai posisi, membuat pola, atau menambah detail pada gambar yang dibuat.
         </p>
+        </div>
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa fungsi dari metode dot()? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Menggambar lingkaran penuh." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menggambar lingkaran penuh.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menggambar busur lingkaran." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menggambar busur lingkaran.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menggambar titik di posisi saat ini." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menggambar titik di posisi saat ini.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menghapus titik pada kanvas." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menghapus titik pada kanvas.')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                  1. Apa fungsi dari metode dot()? 
+                </Form.Label>
+                <div className="row d-flex">
+                {[
+                  "Menggambar lingkaran penuh.",
+                  "Menggambar busur lingkaran.",
+                  "Menggambar titik di posisi saat ini.",
+                  "Menghapus titik pada kanvas."
+                ].map((answer) => (
+                  <div key={answer} className="col-6 mb-2 d-flex">
+                    <Button
+                      variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                      onClick={() => handleAnswerChange("question1", answer)}
+                      className="w-100 p-3 flex-grow-1"
+                      style={{
+                        fontSize: "18px",
+                        // fontWeight: "bold",
+                        backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                        borderColor: "#2DAA9E",
+                        minHeight: "60px" // Menjaga tinggi tetap konsisten
+                      }}
+                    >
+                      {answer}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Apa yang terjadi jika Anda memanggil dot(15, "blue")? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Titik biru dengan ukuran 15 piksel digambar di posisi saat ini." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Titik biru dengan ukuran 15 piksel digambar di posisi saat ini.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Lingkaran penuh biru dengan jari-jari 15 digambar di posisi saat ini." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Lingkaran penuh biru dengan jari-jari 15 digambar di posisi saat ini.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Tidak ada yang terjadi."
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Tidak ada yang terjadi.')} 
-                />
+                <Form.Label
+                className="p-3 mb-3"
+                style={{
+                  display: "block",
+                  backgroundColor: "#f8f9fa",
+                  borderLeft: "5px solid #2DAA9E",
+                  borderRight: "5px solid #2DAA9E",
+                  fontSize: "18px",
+                  // fontWeight: "bold",
+                  borderRadius: "5px"
+                }}>
+                  2. Apa yang terjadi jika Anda memanggil dot(15, "blue")? 
+                </Form.Label>
+                <div className="row d-flex">
+                  {["Titik biru dengan ukuran 15 piksel digambar di posisi saat ini.", 
+                  "Lingkaran biru dengan ukuran 15 piksel digambar di posisi saat ini.", 
+                  "Lingkaran penuh biru dengan jari-jari 15 digambar di posisi saat ini.", 
+                  "Tidak ada yang terjadi."].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
               </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
-        {/* Tantangan Accordion */}
+      {/* <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
         <Accordion.Item eventKey="1">
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
@@ -549,17 +660,6 @@ setposition(200, 200)`}
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                {/* <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "275px",
-                        top: "75px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  /> */}
                   <img
                       src={map}
                       alt="Map"
@@ -575,7 +675,7 @@ setposition(200, 200)`}
             </div>
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
       </div>
     </div>
   )

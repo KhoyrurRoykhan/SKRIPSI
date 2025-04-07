@@ -49,30 +49,28 @@ const Isdown = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [feedback, setFeedback] = useState({});
+
+    const correctAnswers = {
+      question1: "True",
+      question2: "True, False"
     };
-  
+
+    const handleAnswerChange = (question, answer) => {
+      setSelectedAnswers((prev) => ({
+        ...prev,
+        [question]: answer
+      }));
+    };
+
     const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'True' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === 'True, False' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
+      const newFeedback = {};
+      Object.keys(correctAnswers).forEach((question) => {
+        newFeedback[question] =
+          selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+      });
+      setFeedback(newFeedback);
     };
   
     const [pythonCode, setPythonCode] = useState(``);
@@ -208,19 +206,54 @@ home()
       runit();
       runit1(); // Jalankan kode saat halaman dimuat
     //   runit2(); // Jalankan kode saat halaman dimuat
-      runitchallanges(); // Jalankan kode saat halaman dimuat
+      // runitchallanges(); // Jalankan kode saat halaman dimuat
     }, []);
 
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Isdown</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Isdown
+          </h2>
+
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami cara mengecek status pena apakah sedang aktif menggambar atau tidak.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+            Memahami cara mengecek status pena apakah sedang aktif menggambar atau tidak.
+          </li>
         </ol>
 
         <hr/>
@@ -265,7 +298,26 @@ print(isdown())`}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan isdown()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan isdown() 🐢
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>isdown()</code>, ikuti instruksi dibawah ini:
         </p>
@@ -353,96 +405,159 @@ print(isdown())`}
         </div>
           </Col>
         </Row>
-        
+        </div>        
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
-        <p>
-            Perintah <code>isdown()</code>, berguna untuk mengecek status pena secara dinamis dan membantu mengontrol logika penggambaran. 
-        </p>
-
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
+          <p>
+              Perintah <code>isdown()</code>, berguna untuk mengecek status pena secara dinamis dan membantu mengontrol logika penggambaran. 
+          </p>
+        </div>
+        
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa yang dikembalikan oleh metode isdown() jika pena sedang dalam posisi turun? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="True" 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'True')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="False" 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'False')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="None" 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'None')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Error" 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Error')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Apa yang dikembalikan oleh metode isdown() jika pena sedang dalam posisi turun? 
+                  </Form.Label>
+                  <div className="row d-flex">
+                    {[
+                      "True",
+                      "False",
+                      "None",
+                      "Error"
+                    ].map((answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question1", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px" // Menjaga tinggi tetap konsisten
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2.Perhatikan kode berikut:  <pre>pendown()</pre>
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2.Perhatikan kode berikut:  <pre>pendown()</pre>
 <pre>print(isdown()) </pre>
 <pre>penup() </pre>
 <pre>print(isdown())</pre>
-<p>Apa output dari kode tersebut?</p></Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="True, False" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'True, False')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="False, True" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'False, True')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="True, True" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'True, True')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="False, False"
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'False, False')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+<p>Apa output dari kode tersebut?</p>
+                </Form.Label>
+                <div className="row d-flex">
+                  {["True, False", 
+                  "False, True", 
+                  "True, True", 
+                  "False, False"].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+      {/* <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}> */}
         {/* Tantangan Accordion */}
-        <Accordion.Item eventKey="1">
+        {/* <Accordion.Item eventKey="1">
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
             <p>
@@ -488,7 +603,7 @@ print(isdown())`}
             </div>
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
       </div>
     </div>
   )

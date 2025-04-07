@@ -12,7 +12,8 @@ import gabunganleftright from './assets/1gabunganleftright.gif';
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
-import map from './assets/1-fillcolor.png';
+import map from './assets/1-fill.png';
+import grid from './assets/grid.png';
 
 const correctCommands = {
     '1a': 'forward(100)',
@@ -23,6 +24,16 @@ const correctCommands = {
   };
 
 const FillColor = () => {
+  // hint challanges
+  const showHint = () => {
+    swal(
+      "Petunjuk Tantangan",
+      "1. Ubah warna lantai menjadi abu-abu (grey)\n" +
+      "2. Lebar ruangan adalah 300 x 300.\n",
+      "info"
+    );
+  };
+
     //accordion task
     const [completedSteps, setCompletedSteps] = useState([]);
     const [activeKey, setActiveKey] = useState('1a');
@@ -49,30 +60,28 @@ const FillColor = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [feedback, setFeedback] = useState({});
+
+    const correctAnswers = {
+      question1: "Sebuah lingkaran dengan warna isian kuning.",
+      question2: 'Menandai akhir area yang akan diisi warna.' 
     };
-  
+
+    const handleAnswerChange = (question, answer) => {
+      setSelectedAnswers((prev) => ({
+        ...prev,
+        [question]: answer
+      }));
+    };
+
     const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'Sebuah lingkaran dengan warna isian kuning.' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === 'Menandai akhir area yang akan diisi warna.' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
+      const newFeedback = {};
+      Object.keys(correctAnswers).forEach((question) => {
+        newFeedback[question] =
+          selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+      });
+      setFeedback(newFeedback);
     };
   
     const [pythonCode, setPythonCode] = useState(``);
@@ -166,7 +175,7 @@ for i in range(100):
   
     const runitchallanges = (code, forceReset = false) => {
       setOutputChallanges('');
-      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
+      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-150,-150)\npendown()\nspeed(2)\n";
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
     
       window.Sk.pre = "outputChallanges";
@@ -190,10 +199,26 @@ for i in range(100):
     const checkCodeChallanges = () => {
       if (!hasRun) return;
   
-      const validCodes = ["left(45)", "right(315)"];
-      if (validCodes.includes(pythonCodeChallanges.trim())) {
+      const validCodes = [
+          ['fillcolor("grey")', "begin_fill()", "forward(300)", "left(90)", "forward(300)", "left(90)", "forward(300)", "left(90)", "forward(300)", "end_fill()"]
+      ];
+  
+      const userCodeLines = pythonCodeChallanges.trim().split("\n");
+  
+      // Cek apakah kode pengguna merupakan bagian awal dari salah satu jawaban yang valid
+      const isPartialMatch = validCodes.some(validCode =>
+          validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
+      );
+  
+      // Cek apakah kode pengguna sudah lengkap dan benar
+      const isExactMatch = validCodes.some(validCode =>
+          validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
+      );
+  
+      if (isExactMatch) {
+          console.log("OK");
           swal("Jawaban Benar!", "Kamu berhasil!", "success");
-      } else {
+      } else if (!isPartialMatch) {
           swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
       }
   };
@@ -221,13 +246,48 @@ for i in range(100):
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Fillcolor, Begin_fill, dan End_fill</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Fillcolor, Begin_fill, dan End_fill
+          </h2>
+          
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami cara kerja fungsi fillcolor, begin_fill, dan end_fill dalam mengatur warna isian pada bentuk geometris.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+            Memahami cara kerja fungsi fillcolor, begin_fill, dan end_fill dalam mengatur warna isian pada bentuk geometris.
+          </li>
         </ol>
 
         <hr/>
@@ -272,7 +332,26 @@ end_fill() `}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan fillcolor()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan fillcolor() 🐢
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>fillcolor()</code>, ikuti instruksi dibawah ini:
         </p>
@@ -353,104 +432,179 @@ end_fill() `}
         </div>
           </Col>
         </Row>
-        
+        </div>        
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
         <p>
             Perintah <code>fillcolor()</code> digunakan untuk mengatur warna isian, sedangkan proses pengisian warna dilakukan dengan bantuan <code>begin_fill()</code> dan <code>end_fill()</code>. Untuk hasil optimal, pastikan area yang digambar adalah bentuk tertutup.
         </p>
+        </div>
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Perhatikan kode berikut:
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Perhatikan kode berikut:
                 <pre>forward(100)</pre>
                 <pre>begin_fill()</pre>
                 <pre>circle(50)</pre>
                 <pre>end_fill()</pre> 
-                <p>Apa hasil dari kode tersebut? </p></Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Sebuah lingkaran dengan warna garis kuning tanpa isian." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Sebuah lingkaran dengan warna garis kuning tanpa isian.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Sebuah lingkaran dengan warna isian kuning." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Sebuah lingkaran dengan warna isian kuning.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Sebuah lingkaran dengan warna garis hitam dan isian kuning." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Sebuah lingkaran dengan warna garis hitam dan isian kuning.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Tidak ada lingkaran yang digambar." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Tidak ada lingkaran yang digambar.')} 
-                />
+                <p>Apa hasil dari kode tersebut? </p>
+                </Form.Label>
+                <div className="row d-flex">
+                    {[
+                      "Sebuah lingkaran dengan warna garis kuning tanpa isian.",
+                      "Sebuah lingkaran dengan warna isian kuning.",
+                      "Sebuah lingkaran dengan warna garis hitam dan isian kuning.",
+                      "Tidak ada lingkaran yang digambar."
+                    ].map((answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question1", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px" // Menjaga tinggi tetap konsisten
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Apa fungsi dari end_fill() dalam proses pengisian warna?</Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label='Mengatur warna isian menjadi transparan.' 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Mengatur warna isian menjadi transparan.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label='Menandai akhir area yang akan diisi warna.'
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Menandai akhir area yang akan diisi warna.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menonaktifkan pengaturan warna pada turtle." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Menonaktifkan pengaturan warna pada turtle.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label='Menghapus warna isian dari bentuk yang digambar.'
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Menghapus warna isian dari bentuk yang digambar.')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Apa fungsi dari end_fill() dalam proses pengisian warna?
+                  </Form.Label>
+                  <div className="row d-flex">
+                  {['Mengatur warna isian menjadi transparan.', 
+                  'Menandai akhir area yang akan diisi warna.', 
+                  "Menonaktifkan pengaturan warna pada turtle.", 
+                  'Menghapus warna isian dari bentuk yang digambar.'].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+      <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Tantangan Accordion */}
         <Accordion.Item eventKey="1">
-          <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
+        <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
-            <p>
-              Coba gunakan perintah <code>left()</code> dan <code>right()</code> untuk mengubah arah objek. Klik tombol di bawah ini untuk mengerjakan tantangan berikut.
+          <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+            Selesaikan tantangan dibawah ini!
+            Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
             </p>
+            <Button className=" mb-2" variant="info" onClick={showHint}>
+              Petunjuk
+            </Button>
 
-            <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+            <div className="skulpt-container" style={{
+                  border: "3px solid #ccc",
+                  borderRadius: "10px",
+                  padding: "15px",
+                  // display: "flex",
+                  // flexWrap: "wrap",
+                  gap: "20px",
+                  justifyContent: "center",
+                  backgroundColor: "#f9f9f9",
+                }}>
               <div className="editor-section">
                 <CodeMirror
                   value={pythonCodeChallanges}
@@ -459,6 +613,11 @@ end_fill() `}
                   theme="light"
                   extensions={[python()]}
                   onChange={(value) => setPythonCodeChallanges(value)}
+                  style={{
+                    border: "2px solid #2DAA9E",
+                    borderRadius: "8px",
+                    padding: "5px",
+                  }}
                 />
                 <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
                   <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
@@ -466,9 +625,23 @@ end_fill() `}
                     <BsArrowClockwise /> Reset
                   </Button>
                   </div>
-                <pre id='outputChallanges' className="output" style={{height:60}}>{outputChallanges}</pre>
+                <pre id='outputChallanges' className="output"style={{
+                    height: "60px",
+                    marginTop: '5px',
+                    border: "2px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    backgroundColor: "#fff",
+                  }}>{outputChallanges}</pre>
               </div>
-              <div className="canvas-section" style={{ position: "relative", width: 400, height: 400,  }}>
+              <div className="canvas-section" style={{
+                position: "relative",
+                width: "400px",
+                height: "405px",
+                borderRadius: "10px",
+                border: "3px solid #2DAA9E",
+                // overflow: "hidden"
+              }}>
                 <div id="mycanvas-challanges" style={{ 
                   width: 400, 
                   height: 400, 
@@ -487,6 +660,17 @@ end_fill() `}
                   /> */}
                   <img
                       src={map}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
+                      }}
+                  />
+                  <img
+                      src={grid}
                       alt="Map"
                       style={{
                         position: "absolute",

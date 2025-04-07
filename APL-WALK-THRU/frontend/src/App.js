@@ -24,6 +24,8 @@ import TantanganDua from "./components/Challanges-page/all-challanges/TantanganD
 import ChallangeOne from "./components/Challanges-page/all-challanges/ChallangeOne";
 import Tutorialpage from "./components/Tutorial-page/Tutorial-page";
 import Texteditor from "./components/Tutorial-page/Texteditor";
+import Tampung from "./components/Tutorial-page/Turtle-motion/Tampung";
+import LandingNew from "./components/Landing-page/LandingNew";
 
 
 
@@ -61,6 +63,9 @@ function App() {
       <Route path="/susursungai/1" element={<><Navigasibar/><Baritoriver/></>}/>
 
       <Route path="/texteditor" element={<><Navigasibar/><Texteditor/></>}/>
+      <Route path="/tampung" element={<Tampung/>}/>
+
+      <Route path="/cobalanding" element={<><LandingNew/></>}/>
 
 
 

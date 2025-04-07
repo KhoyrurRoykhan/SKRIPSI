@@ -49,30 +49,28 @@ const Color = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [feedback, setFeedback] = useState({});
+
+    const correctAnswers = {
+      question1: "Bidawang menggambar garis merah sepanjang 100 piksel.",
+      question2: '"bold_red"' 
     };
-  
+
+    const handleAnswerChange = (question, answer) => {
+      setSelectedAnswers((prev) => ({
+        ...prev,
+        [question]: answer
+      }));
+    };
+
     const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'Bidawang menggambar garis merah sepanjang 100 piksel.' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === '"bold_red"' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
+      const newFeedback = {};
+      Object.keys(correctAnswers).forEach((question) => {
+        newFeedback[question] =
+          selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+      });
+      setFeedback(newFeedback);
     };
   
     const [pythonCode, setPythonCode] = useState(``);
@@ -221,19 +219,54 @@ for i in range(100):
       runit();
       runit1(); // Jalankan kode saat halaman dimuat
     //   runit2(); // Jalankan kode saat halaman dimuat
-      runitchallanges(); // Jalankan kode saat halaman dimuat
+      // runitchallanges(); // Jalankan kode saat halaman dimuat
     }, []);
 
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Pencolor</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Pencolor
+          </h2>
+
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami cara mengubah warna garis pada saat menggambar.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+            Memahami cara mengubah warna garis pada saat menggambar.
+          </li>
         </ol>
 
         <hr/>
@@ -281,171 +314,252 @@ left(90)`}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan pencolor()</h4>
-        <p>
-        Untuk lebih mudah memahami cara kerja perintah <code>pencolor()</code>, ikuti instruksi dibawah ini:
-        </p>
-        <Row>
-          <Col xs={3} style={{ fontSize: 15 }}>
-            <Accordion activeKey={activeKey} onSelect={(key) => setActiveKey(key)}>
-              <AccordionItem eventKey="1a">
-                <AccordionHeader>
-                  <b>1. Pena Biru</b>
-                  {completedSteps.includes('1a') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Ubah warna pena menjadi biru dengan perintah dibawah ini:</p>
-                  <pre><code>pencolor("blue")</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1b">
-                <AccordionHeader>
-                  <b>2. Maju</b>
-                  {completedSteps.includes('1b') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini untuk menggerakan bidawang maju 100 langkah:</p>
-                  <pre><code>forward(100)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1c">
-                <AccordionHeader>
-                  <b>3. Pena Merah</b>
-                  {completedSteps.includes('1c') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Ubah lagi warna pena menjadi merah:</p>
-                  <pre><code>pencolor("red")</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-              <AccordionItem eventKey="1d">
-                <AccordionHeader>
-                  <b>4. Maju</b>
-                  {completedSteps.includes('1d') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
-                </AccordionHeader>
-                <AccordionBody>
-                  <p>Gerakkan bidawang maju lagi sejauh 100 langkah:</p>
-                  <pre><code>forward(100)</code></pre>
-                </AccordionBody>
-              </AccordionItem>
-            </Accordion>
-          </Col>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        > 
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan pencolor() 🐢
+            </h4>
+          <p>
+          Untuk lebih mudah memahami cara kerja perintah <code>pencolor()</code>, ikuti instruksi dibawah ini:
+          </p>
+          <Row>
+            <Col xs={3} style={{ fontSize: 15 }}>
+              <Accordion activeKey={activeKey} onSelect={(key) => setActiveKey(key)}>
+                <AccordionItem eventKey="1a">
+                  <AccordionHeader>
+                    <b>1. Pena Biru</b>
+                    {completedSteps.includes('1a') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                  </AccordionHeader>
+                  <AccordionBody>
+                    <p>Ubah warna pena menjadi biru dengan perintah dibawah ini:</p>
+                    <pre><code>pencolor("blue")</code></pre>
+                  </AccordionBody>
+                </AccordionItem>
+                <AccordionItem eventKey="1b">
+                  <AccordionHeader>
+                    <b>2. Maju</b>
+                    {completedSteps.includes('1b') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                  </AccordionHeader>
+                  <AccordionBody>
+                    <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini untuk menggerakan bidawang maju 100 langkah:</p>
+                    <pre><code>forward(100)</code></pre>
+                  </AccordionBody>
+                </AccordionItem>
+                <AccordionItem eventKey="1c">
+                  <AccordionHeader>
+                    <b>3. Pena Merah</b>
+                    {completedSteps.includes('1c') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                  </AccordionHeader>
+                  <AccordionBody>
+                    <p>Ubah lagi warna pena menjadi merah:</p>
+                    <pre><code>pencolor("red")</code></pre>
+                  </AccordionBody>
+                </AccordionItem>
+                <AccordionItem eventKey="1d">
+                  <AccordionHeader>
+                    <b>4. Maju</b>
+                    {completedSteps.includes('1d') && <BsCheckCircle style={{ color: 'green', marginLeft: 10 }} />}
+                  </AccordionHeader>
+                  <AccordionBody>
+                    <p>Gerakkan bidawang maju lagi sejauh 100 langkah:</p>
+                    <pre><code>forward(100)</code></pre>
+                  </AccordionBody>
+                </AccordionItem>
+              </Accordion>
+            </Col>
 
 
 
-          <Col xs={9}>
-          <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
-          <div className="editor-section">
-            {/* <h5>Python Turtle Code Editor</h5> */}
-            <CodeMirror
-              value={pythonCode}
-              placeholder={'//Ketikan kode disini!'}
-              height="290px"
-              theme="light"
-              extensions={[python()]}
-              onChange={(value) => setPythonCode(value)}
-            />
-            <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
-              <Button variant="success" onClick={() => { runit(); checkCode(); }}>Run Code</Button>
-              <Button variant="secondary" onClick={resetCode}>
-                <BsArrowClockwise /> Reset
-              </Button>
-              </div>
-            <pre id='output' className="output" style={{height:60}}>{output}</pre>
+            <Col xs={9}>
+            <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+            <div className="editor-section">
+              {/* <h5>Python Turtle Code Editor</h5> */}
+              <CodeMirror
+                value={pythonCode}
+                placeholder={'//Ketikan kode disini!'}
+                height="290px"
+                theme="light"
+                extensions={[python()]}
+                onChange={(value) => setPythonCode(value)}
+              />
+              <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
+                <Button variant="success" onClick={() => { runit(); checkCode(); }}>Run Code</Button>
+                <Button variant="secondary" onClick={resetCode}>
+                  <BsArrowClockwise /> Reset
+                </Button>
+                </div>
+              <pre id='output' className="output" style={{height:60}}>{output}</pre>
+            </div>
+            <div className="canvas-section" style={{width: 400, height: 400}}>
+              <div  style={{width: 400, height: 400}} id="mycanvas"></div>
+            </div>
           </div>
-          <div className="canvas-section" style={{width: 400, height: 400}}>
-            <div  style={{width: 400, height: 400}} id="mycanvas"></div>
-          </div>
-        </div>
-          </Col>
-        </Row>
-        
+            </Col>
+          </Row>
+        </div>        
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
-        <p>
-            Perintah <code>pencolor()</code> digunakan untuk mengatur warna garis lintasan yang dilalui oleh bidawang. 
-        </p>
-
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
+          <p>
+              Perintah <code>pencolor()</code> digunakan untuk mengatur warna garis lintasan yang dilalui oleh bidawang. 
+          </p>
+        </div>
+        
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa yang terjadi jika kode berikut dijalankan? <pre>pencolor("red")</pre>
-                <pre>forward(100)</pre> </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang menggambar garis merah sepanjang 100 piksel." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang menggambar garis merah sepanjang 100 piksel.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang menggambar garis hitam sepanjang 100 piksel." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang menggambar garis hitam sepanjang 100 piksel.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang menggambar garis tanpa warna sepanjang 100 piksel." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang menggambar garis tanpa warna sepanjang 100 piksel.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang tidak menggambar garis." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang tidak menggambar garis. ')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Apa yang terjadi jika kode berikut dijalankan? <pre>pencolor("red")</pre>
+                <pre>forward(100)</pre> 
+                </Form.Label>
+                <div className="row d-flex">
+                    {[
+                      "Bidawang menggambar garis merah sepanjang 100 piksel.",
+                      "Bidawang menggambar garis hitam sepanjang 100 piksel.",
+                      "Bidawang menggambar garis tanpa warna sepanjang 100 piksel.",
+                      "Bidawang tidak menggambar garis."
+                    ].map((answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question1", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px" // Menjaga tinggi tetap konsisten
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Apa format yang tidak valid untuk parameter warna dalam fungsi pencolor()?</Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label='"blue"' 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '"blue"')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label='"#00FF00"'
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '"#00FF00"')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="(1,0,0)" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '(1,0,0)')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label='"bold_red"'
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '"bold_red"')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Apa format yang tidak valid untuk parameter warna dalam fungsi pencolor()?
+                  </Form.Label>
+                  <div className="row d-flex">
+                  {['"blue"', 
+                  '"#00FF00"', 
+                  "(1,0,0)", 
+                  '"bold_red"'].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+      {/* <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}> */}
         {/* Tantangan Accordion */}
-        <Accordion.Item eventKey="1">
+        {/* <Accordion.Item eventKey="1">
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
             <p>
@@ -491,7 +605,7 @@ left(90)`}
             </div>
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
       </div>
     </div>
   )

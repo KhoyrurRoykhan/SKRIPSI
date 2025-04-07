@@ -16,14 +16,10 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7); /* Enhanced shadow on hover */
 }
 
-.navbar-brand {
-  font-size: 1.5rem; /* Larger brand text */
-  font-weight: bold; /* Bold brand text */
-}
 
 .nav-link {
   color: white; /* Link color */
-  margin-left: 20px; /* Space between links */
+  margin-left: 0px; /* Space between links */
   transition: color 0.3s, transform 0.3s; /* Smooth transition for hover */
 }
 

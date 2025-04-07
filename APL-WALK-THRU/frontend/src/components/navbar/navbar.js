@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { FaBook, FaTrophy, FaWater } from 'react-icons/fa'; // Import icons
+import { FaBomb, FaBook, FaBookReader, FaGamepad, FaLeanpub, FaRedRiver, FaScrewdriver, FaTrophy, FaWalking, FaWater } from 'react-icons/fa'; // Import icons
 import './assets/navbar.css';
 
 const Navigasibar = () => {
@@ -33,13 +33,13 @@ const Navigasibar = () => {
   return (
     <Navbar className="bg-success fixed-top">
       <Container>
-        <Navbar.Brand style={{color: 'white'}} href="/">WALK THROUGH</Navbar.Brand>
+      <Nav.Link style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold' }} href="/">BidGeometry</Nav.Link>
         <Navbar.Toggle />
-        <Navbar.Collapse id="basic-navbar-nav" >
+        <Navbar.Collapse id="basic-navbar-nav" style={{ marginLeft: '20px'}}>
           <Nav className="me-auto">
-            <Nav.Link style={{color: 'white'}} className='ml-5' href="/belajarturtle"><FaBook /> Belajar Turtle</Nav.Link>
-            <Nav.Link style={{color: 'white'}} className='ml-5' href="/challanges"><FaTrophy /> Tantangan</Nav.Link>
-            <Nav.Link style={{color: 'white'}} className='ml-5' href="/susursungai"><FaWater /> Susur Sungai</Nav.Link>
+            <Nav.Link style={{color: 'white'}} className='ml-5' href="/belajarturtle"><FaBookReader /> Belajar Turtle</Nav.Link>
+            <Nav.Link style={{color: 'white'}} className='ml-5' href="/challanges"><FaGamepad /> Tantangan</Nav.Link>
+            <Nav.Link style={{color: 'white'}} className='ml-5' href="/susursungai"><FaScrewdriver /> Susur Sungai</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end" style={{color: 'white'}}>

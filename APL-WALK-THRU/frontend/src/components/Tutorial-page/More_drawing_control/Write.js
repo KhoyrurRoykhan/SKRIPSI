@@ -27,8 +27,7 @@ const Write = () => {
   const showHint = () => {
     swal(
       "Petunjuk Tantangan",
-      "Bidawang saat ini berada di tengah layar (titik (0, 0)), sedangkan cacing berada di titik (100, 100). \n\n" +
-      "Tugas kalian adalah menggerakkan Bidawang menuju ke posisi cacing dengan maksimal menggunakan 4x kode perintah. Gunakan forward() atau backward() lalu kombinasikan dengan left() atau right() untuk membuat bidawang berbelok arah. \n\n",
+      "Lengkapi kata pada canvas:\n\n1. Jarak tiap huruf tersebut adalah 50.\n2. Gunakan font arial ukuran 30.",
       "info"
     );
   };
@@ -59,30 +58,28 @@ const Write = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [feedback, setFeedback] = useState({});
+
+    const correctAnswers = {
+      question1: "Mengatur perataan teks (kiri, tengah, atau kanan).",
+      question2: 'Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi tengah bidawang.' 
     };
-  
+
+    const handleAnswerChange = (question, answer) => {
+      setSelectedAnswers((prev) => ({
+        ...prev,
+        [question]: answer
+      }));
+    };
+
     const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'Mengatur perataan teks (kiri, tengah, atau kanan).' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === 'Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi tengah bidawang.' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
+      const newFeedback = {};
+      Object.keys(correctAnswers).forEach((question) => {
+        newFeedback[question] =
+          selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+      });
+      setFeedback(newFeedback);
     };
   
     const [pythonCode, setPythonCode] = useState(``);
@@ -199,10 +196,26 @@ for i in range(100):
     const checkCodeChallanges = () => {
       if (!hasRun) return;
   
-      const validCodes = ["left(45)", "right(315)"];
-      if (validCodes.includes(pythonCodeChallanges.trim())) {
+      const validCodes = [
+          ['forward(50)', 'write("I",font=("arial",30))', "forward(50)", "forward(50)", 'write("A",font=("arial",30))']
+      ];
+  
+      const userCodeLines = pythonCodeChallanges.trim().split("\n");
+  
+      // Cek apakah kode pengguna merupakan bagian awal dari salah satu jawaban yang valid
+      const isPartialMatch = validCodes.some(validCode =>
+          validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
+      );
+  
+      // Cek apakah kode pengguna sudah lengkap dan benar
+      const isExactMatch = validCodes.some(validCode =>
+          validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
+      );
+  
+      if (isExactMatch) {
+          console.log("OK");
           swal("Jawaban Benar!", "Kamu berhasil!", "success");
-      } else {
+      } else if (!isPartialMatch) {
           swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
       }
   };
@@ -224,19 +237,54 @@ for i in range(100):
       runit();
       runit1(); // Jalankan kode saat halaman dimuat
     //   runit2(); // Jalankan kode saat halaman dimuat
-      runitchallanges(); // Jalankan kode saat halaman dimuat
+      // runitchallanges(); // Jalankan kode saat halaman dimuat
     }, []);
 
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Write</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Write
+          </h2>
+
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>memahami fungsi write() untuk menampilkan teks pad canvas.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+          memahami fungsi write() untuk menampilkan teks pad canvas.
+          </li>
         </ol>
 
         <hr/>
@@ -282,7 +330,26 @@ forward(100)  `}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan write()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan write() 🐢
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>write()</code>, ikuti instruksi dibawah ini:
         </p>
@@ -362,94 +429,157 @@ forward(100)  `}
         </div>
           </Col>
         </Row>
-        
+        </div>        
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
         <p>
             Perintah <code>write()</code> memungkinkan turtle untuk menampilkan teks di layar, sehingga dapat digunakan untuk memberikan informasi tambahan pada gambar.
         </p>
+        </div>
+        
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa fungsi dari parameter align dalam metode write()?</Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Mengatur posisi turtle setelah menulis teks." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengatur posisi turtle setelah menulis teks.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menentukan jenis font yang digunakan." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menentukan jenis font yang digunakan.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Mengatur perataan teks (kiri, tengah, atau kanan)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengatur perataan teks (kiri, tengah, atau kanan).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Mengatur warna teks." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengatur warna teks.')} 
-                />
+                <Form.Label 
+                className="p-3 mb-3"
+                style={{
+                  display: "block",
+                  backgroundColor: "#f8f9fa",
+                  borderLeft: "5px solid #2DAA9E",
+                  borderRight: "5px solid #2DAA9E",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  borderRadius: "5px"
+                }}>
+                  1. Apa fungsi dari parameter align dalam metode write()?
+                </Form.Label>
+                <div className="row d-flex">
+                    {[
+                      "Mengatur posisi turtle setelah menulis teks.",
+                      "Menentukan jenis font yang digunakan.",
+                      "Mengatur perataan teks (kiri, tengah, atau kanan).",
+                      "Mengatur warna teks."
+                    ].map((answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question1", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px" // Menjaga tinggi tetap konsisten
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Perhatikan kode berikut:
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Perhatikan kode berikut:
                     <pre>write("Belajar Python!", align="center", font=("Arial", 12, "italic"))</pre>
                     <p>Apa yang akan terjadi? </p>
                 </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label='Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi kiri bidawang.' 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi kiri bidawang.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label='Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi tengah bidawang.'
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi tengah bidawang.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Teks ditulis di layar dengan font Arial, ukuran 12, tetapi tidak bergaya italic." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Teks ditulis di layar dengan font Arial, ukuran 12, tetapi tidak bergaya italic.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label='Tidak ada teks yang ditulis karena font tidak valid.'
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Tidak ada teks yang ditulis karena font tidak valid.')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+                <div className="row d-flex">
+                  {['Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi kiri bidawang.', 
+                  'Teks ditulis di layar dengan font Arial, ukuran 12, dan bergaya italic di posisi tengah bidawang.', 
+                  "Teks ditulis di layar dengan font Arial, ukuran 12, tetapi tidak bergaya italic.", 
+                  'Tidak ada teks yang ditulis karena font tidak valid.'].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
-        {/* Tantangan Accordion */}
+      {/* <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+
         <Accordion.Item eventKey="1">
           <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
@@ -485,17 +615,7 @@ forward(100)  `}
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                {/* <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "275px",
-                        top: "75px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  /> */}
+
                   <img
                       src={map}
                       alt="Map"
@@ -511,7 +631,7 @@ forward(100)  `}
             </div>
           </Accordion.Body>
         </Accordion.Item>
-      </Accordion>
+      </Accordion> */}
       </div>
     </div>
   )

@@ -13,7 +13,9 @@ import gabunganleftright from './assets/1gabunganleftright.gif';
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
+import hartakarun from './assets/harta-karun.png';
 import map from './assets/4-distance.png';
+import grid from './assets/grid.png';
 
 const correctCommands = {
   '1a': 'forward(100)',
@@ -26,7 +28,7 @@ const Distance = () => {
   const showHint = () => {
     swal(
       "Petunjuk Tantangan",
-      "Tugas kalian adalah memeriksa posisi A dan B kemudian masukan hasilnya pada kolom jawaban yg sudah di sediakan",
+      "1. Periksa jarak antara bidawang dan peti harta karun.\n2. Setelah mengetahui jaraknya arahkan bidawang menghadap ke peti harta karun lalu gerakan jauh jarak yang sudah didapatkan.",
       "info"
     );
   };
@@ -57,31 +59,30 @@ const Distance = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [feedback, setFeedback] = useState({});
+
+  const correctAnswers = {
+    question1: "Menghitung jarak Euclidean antara posisi saat ini dan koordinat (x, y).",
+    question2: "5"
+  };
+
+  const handleAnswerChange = (question, answer) => {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [question]: answer
+    }));
+  };
+
+  const handleSubmit = () => {
+    const newFeedback = {};
+    Object.keys(correctAnswers).forEach((question) => {
+      newFeedback[question] =
+        selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
     });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
-    };
-  
-    const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'Menghitung jarak Euclidean antara posisi saat ini dan koordinat (x, y).' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === '5' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
-    };
+    setFeedback(newFeedback);
+  };
+
   
     const [pythonCode, setPythonCode] = useState(``);
     const [pythonCode1, setPythonCode1] = useState(`    
@@ -244,13 +245,48 @@ for i in range(100):
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Distance</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Distance
+            </h2>
+            
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami cara kerja fungsi distance()</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+          Memahami cara kerja fungsi distance().
+          </li>
         </ol>
 
         <hr/>
@@ -296,7 +332,26 @@ print(distance(100, 100))`}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan distance()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan distance() 🐢
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>distance()</code>, ikuti instruksi dibawah ini
         </p>
@@ -364,93 +419,154 @@ print(distance(100, 100))`}
         </div>
           </Col>
         </Row>
-        
+        </div>
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
         <p>
         Perintah <code>heading()</code> berguna untuk memantau arah gerakan bidawang dengan lebih tepat. Pemahaman tentang sistem derajat akan membantu siswa menggambar bentuk dan pola secara lebih akurat. 
         </p>
+        </div>
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa fungsi dari metode distance(x, y)? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Mengembalikan arah turtle menuju titik (x, y)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengembalikan arah turtle menuju titik (x, y).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menghitung jarak Euclidean antara posisi saat ini dan koordinat (x, y)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menghitung jarak Euclidean antara posisi saat ini dan koordinat (x, y).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Mengatur turtle untuk bergerak ke posisi (x, y)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengatur turtle untuk bergerak ke posisi (x, y).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menghapus jarak antara dua titik." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menghapus jarak antara dua titik.')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Apa fungsi dari metode distance(x, y)? 
+                  </Form.Label>
+                  <div className="row d-flex">
+                {[
+                  "Mengembalikan arah turtle menuju titik (x, y).",
+                  "Menghitung jarak Euclidean antara posisi saat ini dan koordinat (x, y).",
+                  "Mengatur turtle untuk bergerak ke posisi (x, y).",
+                  "Menghapus jarak antara dua titik."
+                ].map((answer) => (
+                  <div key={answer} className="col-6 mb-2 d-flex">
+                    <Button
+                      variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                      onClick={() => handleAnswerChange("question1", answer)}
+                      className="w-100 p-3 flex-grow-1"
+                      style={{
+                        fontSize: "18px",
+                        // fontWeight: "bold",
+                        backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                        borderColor: "#2DAA9E",
+                        minHeight: "60px" // Menjaga tinggi tetap konsisten
+                      }}
+                    >
+                      {answer}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Jika turtle berada di koordinat (0, 0), apa hasil dari perintah berikut?  <pre>print(distance(3, 4)) </pre> </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="3" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '3')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="4" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '4')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="7" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '7')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="5"
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '5')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Jika turtle berada di koordinat (0, 0), apa hasil dari perintah berikut?  <pre>print(distance(3, 4)) </pre> 
+                  </Form.Label>
+                  <div className="row d-flex">
+                  {["3", 
+                  "4", 
+                  "7", 
+                  "5"].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
               </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+              <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+      <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Tantangan Accordion */}
         <Accordion.Item eventKey="1">
-          <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
+        <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
           <p>
             Selesaikan tantangan dibawah ini!
@@ -460,7 +576,16 @@ print(distance(100, 100))`}
               Petunjuk
             </Button>
 
-            <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+            <div className="skulpt-container" style={{
+                  border: "3px solid #ccc",
+                  borderRadius: "10px",
+                  padding: "15px",
+                  // display: "flex",
+                  // flexWrap: "wrap",
+                  gap: "20px",
+                  justifyContent: "center",
+                  backgroundColor: "#f9f9f9",
+                }}>
               <div className="editor-section">
                 <CodeMirror
                   value={pythonCodeChallanges}
@@ -469,6 +594,11 @@ print(distance(100, 100))`}
                   theme="light"
                   extensions={[python()]}
                   onChange={(value) => setPythonCodeChallanges(value)}
+                  style={{
+                    border: "2px solid #2DAA9E",
+                    borderRadius: "8px",
+                    padding: "5px",
+                  }}
                 />
                 <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
                   <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
@@ -476,34 +606,60 @@ print(distance(100, 100))`}
                     <BsArrowClockwise /> Reset
                   </Button>
                   </div>
-                <pre id='outputChallanges' className="output" style={{height:60}}>{outputChallanges}</pre>
+                <pre id='outputChallanges' className="output"style={{
+                    height: "60px",
+                    marginTop: '5px',
+                    border: "2px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    backgroundColor: "#fff",
+                  }}>{outputChallanges}</pre>
               </div>
-              <div className="canvas-section" style={{ position: "relative", width: 400, height: 400,  }}>
+              <div className="canvas-section" 
+              style={{
+                position: "relative",
+                width: "400px",
+                height: "405px",
+                borderRadius: "10px",
+                border: "3px solid #2DAA9E",
+                // overflow: "hidden"
+              }}>
                 <div id="mycanvas-challanges" style={{ 
                   width: 400, 
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "325px",
-                        top: "25px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  />
+                
                   <img
                       src={map}
                       alt="Map"
                       style={{
                         position: "absolute",
                         left: "0px",
-                        top: "4px",
+                        top: "0px",
                         width: "400px", // Sesuaikan ukuran jika perlu
                         height: "400px",
+                      }}
+                  />
+                  <img
+                      src={grid}
+                      alt="grid"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
+                      }}
+                  />
+                  <img
+                      src={hartakarun}
+                      alt="Target Broccoli"
+                      style={{
+                        position: "absolute",
+                        left: "325px",
+                        top: "23px",
+                        width: "50px", // Sesuaikan ukuran jika perlu
+                        height: "50px",
                       }}
                   />
               </div>

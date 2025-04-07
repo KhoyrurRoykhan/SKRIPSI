@@ -13,7 +13,10 @@ import backward100 from './assets/2turtle-backward.gif';
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
+import ikan from './assets/ikan.png';
+import sawi from './assets/sawi.png';
 import map from './assets/1-position.png';
+import grid from './assets/grid.png';
 import { useNavigate } from "react-router-dom";
 
 const correctCommands = {
@@ -76,30 +79,28 @@ const Position = () => {
   };
 
   //kuis
-  const [answers, setAnswers] = useState({
-    question1: '',
-    question2: ''
-  });
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [feedback, setFeedback] = useState({});
 
-  const [feedback, setFeedback] = useState({
-    question1: '',
-    question2: ''
-  });
+  const correctAnswers = {
+    question1: "Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y).",
+    question2: "(50, 100)"
+  };
 
   const handleAnswerChange = (question, answer) => {
-    setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [question]: answer
+    }));
   };
 
   const handleSubmit = () => {
-    const feedbackMessages = {
-      question1: answers.question1 === 'Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y).' 
-        ? 'Benar!' 
-        : 'Salah!',
-      question2: answers.question2 === '(50, 100)' 
-        ? 'Benar!' 
-        : 'Salah!'
-    };
-    setFeedback(feedbackMessages);
+    const newFeedback = {};
+    Object.keys(correctAnswers).forEach((question) => {
+      newFeedback[question] =
+        selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+    });
+    setFeedback(newFeedback);
   };
 
   const [pythonCode, setPythonCode] = useState(``);
@@ -303,13 +304,48 @@ for i in range(1):
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>Position</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            Position
+          </h2>
+
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami fungsi dan penggunaan <code>position()</code>.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+            Memahami fungsi dan penggunaan <code>position()</code>.
+          </li>
         </ol>
 
         <hr/>
@@ -378,7 +414,26 @@ print("Posisi setelah bergerak:", position())`}
 
         <hr />
 
-        <h4>Latihan Menggunakan setposition()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan setposition() 🐢  
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>setposition()</code>, ikuti instruksi dibawah ini
         </p>
@@ -476,93 +531,156 @@ print("Posisi setelah bergerak:", position())`}
         </div>
           </Col>
         </Row>
-        
+        </div>
+                
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
         <p>
-        Perintah <code>position()</code> untuk mengetahui posisi saat ini dari Bidawang. Fungsi ini berguna untuk memantau pergerakan dan membantu dalam menggambar pola atau bentuk yang presisi.
+          Perintah <code>position()</code> untuk mengetahui posisi saat ini dari Bidawang. Fungsi ini berguna untuk memantau pergerakan dan membantu dalam menggambar pola atau bentuk yang presisi.
         </p>
+        </div>
+        
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa fungsi dari position()? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Memberitahu arah pergerakan turtle saat ini." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Memberitahu arah pergerakan turtle saat ini.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Menghapus posisi turtle sebelumnya." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Menghapus posisi turtle sebelumnya.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y)." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Mengatur posisi turtle ke titik tertentu." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Mengatur posisi turtle ke titik tertentu.')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Apa fungsi dari position()? 
+                  </Form.Label>
+                  <div className="row d-flex">
+                {[
+                  "Memberitahu arah pergerakan turtle saat ini.",
+                  "Menghapus posisi turtle sebelumnya.",
+                  "Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y).",
+                  "Mengatur posisi turtle ke titik tertentu."
+                ].map((answer) => (
+                  <div key={answer} className="col-6 mb-2 d-flex">
+                    <Button
+                      variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                      onClick={() => handleAnswerChange("question1", answer)}
+                      className="w-100 p-3 flex-grow-1"
+                      style={{
+                        fontSize: "18px",
+                        // fontWeight: "bold",
+                        backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                        borderColor: "#2DAA9E",
+                        minHeight: "60px" // Menjaga tinggi tetap konsisten
+                      }}
+                    >
+                      {answer}
+                    </Button>
+                  </div>
+                ))}
+              </div>
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Apa hasil dari perintah berikut jika turtle berada di posisi (50, 100)? <pre>print(position()) </pre> </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="(50, 100)" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '(50, 100)')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="0" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '0')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="(0, 0)" 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '(0, 0)')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="[50, 100]"
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', '[50, 100]')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Apa hasil dari perintah berikut jika turtle berada di posisi (50, 100)? <pre>print(position()) </pre> 
+                  </Form.Label>
+                  <div className="row d-flex">
+                  {["(50, 100)", 
+                  "0", 
+                  "(0, 0)", 
+                  "[50, 100]"].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+                </Form.Group>
+                {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+      <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Tantangan Accordion */}
         <Accordion.Item eventKey="1">
-          <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
+        <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
           <p>
             Selesaikan tantangan dibawah ini!
@@ -582,7 +700,16 @@ print("Posisi setelah bergerak:", position())`}
             </Button>
             </div>
 
-            <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+            <div className="skulpt-container" style={{
+                  border: "3px solid #ccc",
+                  borderRadius: "10px",
+                  padding: "15px",
+                  // display: "flex",
+                  // flexWrap: "wrap",
+                  gap: "20px",
+                  justifyContent: "center",
+                  backgroundColor: "#f9f9f9",
+                }}>
               <div className="editor-section">
                 <CodeMirror
                   value={pythonCodeChallanges}
@@ -591,6 +718,11 @@ print("Posisi setelah bergerak:", position())`}
                   theme="light"
                   extensions={[python()]}
                   onChange={(value) => setPythonCodeChallanges(value)}
+                  style={{
+                    border: "2px solid #2DAA9E",
+                    borderRadius: "8px",
+                    padding: "5px",
+                  }}
                 />
                 <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
                   <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
@@ -598,45 +730,72 @@ print("Posisi setelah bergerak:", position())`}
                     <BsArrowClockwise /> Reset
                   </Button>
                   </div>
-                <pre id='outputChallanges' className="output" style={{height:100}}>{outputChallanges}</pre>
+                <pre id='outputChallanges' className="output"style={{
+                    height: "60px",
+                    marginTop: '5px',
+                    border: "2px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    backgroundColor: "#fff",
+                  }}>{outputChallanges}</pre>
               </div>
-              <div className="canvas-section" style={{ position: "relative", width: 400, height: 400,  }}>
+              <div className="canvas-section" 
+              style={{
+                position: "relative",
+                width: "400px",
+                height: "405px",
+                borderRadius: "10px",
+                border: "3px solid #2DAA9E",
+                // overflow: "hidden"
+              }}>
                 <div id="mycanvas-challanges" style={{ 
                   width: 400, 
                   height: 400, 
                   position: "relative", 
                 }}></div>
-                <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "75px",
-                        top: "75px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  />
-                  <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "25px",
-                        top: "275px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  />
+                
                   <img
                       src={map}
                       alt="Map"
                       style={{
                         position: "absolute",
-                        left: "2px",
+                        left: "0px",
                         top: "0px",
                         width: "400px", // Sesuaikan ukuran jika perlu
                         height: "400px",
+                      }}
+                  />
+                  <img
+                      src={grid}
+                      alt="grid"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
+                      }}
+                  />
+                  <img
+                      src={sawi}
+                      alt="Target Sawi"
+                      style={{
+                        position: "absolute",
+                        left: "81px",
+                        top: "79px",
+                        width: "40px", // Sesuaikan ukuran jika perlu
+                        height: "40px",
+                      }}
+                  />
+                  <img
+                      src={ikan}
+                      alt="Target Ikan"
+                      style={{
+                        position: "absolute",
+                        left: "32px",
+                        top: "275px",
+                        width: "40px", // Sesuaikan ukuran jika perlu
+                        height: "40px",
                       }}
                   />
               </div>

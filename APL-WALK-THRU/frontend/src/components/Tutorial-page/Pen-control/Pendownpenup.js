@@ -12,7 +12,9 @@ import gabunganleftright from './assets/1gabunganleftright.gif';
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
+import teratai from './assets/teratai.png';
 import map from './assets/1-penup-pendown.png';
+import grid from './assets/grid.png';
 
 const correctCommands = {
     '1a': 'forward(100)',
@@ -28,7 +30,7 @@ const Pendownpenup = () => {
     swal(
       "Petunjuk Tantangan",
       "Bidawang saat ini berada di tengah layar (titik (0, 0)), sedangkan cacing berada di titik (100, 100). \n\n" +
-      "Tugas kalian adalah menggerakkan Bidawang menuju ke posisi cacing dengan maksimal menggunakan 4x kode perintah. Gunakan forward() atau backward() lalu kombinasikan dengan left() atau right() untuk membuat bidawang berbelok arah. \n\n",
+      "1. Buat Bidawang bergerak melewati dinding tanpa meninggalkan jejak, tebal dinding tersebut adalah 50. \n2. Gerakan bidawang menuju ke bunga teratai yang ada di posisi (150,100).\n",
       "info"
     );
   };
@@ -59,30 +61,28 @@ const Pendownpenup = () => {
     };
   
     //kuis
-    const [answers, setAnswers] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const [feedback, setFeedback] = useState({
-      question1: '',
-      question2: ''
-    });
-  
-    const handleAnswerChange = (question, answer) => {
-      setAnswers(prevAnswers => ({ ...prevAnswers, [question]: answer }));
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [feedback, setFeedback] = useState({});
+
+    const correctAnswers = {
+      question1: "Bidawang tidak akan menggambar garis saat bergerak.",
+      question2: "Bidawang menggambar garis dari (100, 100) ke (200, 200)."
     };
-  
+
+    const handleAnswerChange = (question, answer) => {
+      setSelectedAnswers((prev) => ({
+        ...prev,
+        [question]: answer
+      }));
+    };
+
     const handleSubmit = () => {
-      const feedbackMessages = {
-        question1: answers.question1 === 'Bidawang tidak akan menggambar garis saat bergerak.' 
-          ? 'Benar!' 
-          : 'Salah!',
-        question2: answers.question2 === 'Bidawang menggambar garis dari (100, 100) ke (200, 200).' 
-          ? 'Benar!' 
-          : 'Salah!'
-      };
-      setFeedback(feedbackMessages);
+      const newFeedback = {};
+      Object.keys(correctAnswers).forEach((question) => {
+        newFeedback[question] =
+          selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
+      });
+      setFeedback(newFeedback);
     };
   
     const [pythonCode, setPythonCode] = useState(``);
@@ -179,7 +179,7 @@ for i in range(100):
   
     const runitchallanges = (code, forceReset = false) => {
       setOutputChallanges('');
-      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
+      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-150,0)\npendown()\nspeed(1)\n";
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
     
       window.Sk.pre = "outputChallanges";
@@ -203,13 +203,28 @@ for i in range(100):
     const checkCodeChallanges = () => {
       if (!hasRun) return;
   
-      const validCodes = ["left(45)", "right(315)"];
-      if (validCodes.includes(pythonCodeChallanges.trim())) {
+      const validCodeSteps = [
+          "penup()", "forward(50)", "pendown()", "forward(100)",
+          "left(90)", "forward(100)", "right(90)", "forward(150)"
+      ];
+  
+      const userCodeLines = pythonCodeChallanges.trim().split("\n");
+  
+      // Cek apakah input pengguna merupakan bagian awal dari jawaban yang benar
+      const isPartialMatch = validCodeSteps.slice(0, userCodeLines.length)
+          .every((code, index) => code === userCodeLines[index]);
+  
+      // Cek apakah input pengguna sudah benar sepenuhnya
+      const isExactMatch = userCodeLines.length === validCodeSteps.length &&
+          userCodeLines.every((code, index) => code === validCodeSteps[index]);
+  
+      if (isExactMatch) {
           swal("Jawaban Benar!", "Kamu berhasil!", "success");
-      } else {
+      } else if (!isPartialMatch) {
           swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
       }
   };
+  
   
     const resetCode = () => {
       setPythonCode('');
@@ -234,13 +249,48 @@ for i in range(100):
   return (
     <div className='content' style={{paddingLeft:50, paddingRight:50}}>
       <div>
-        <h2 style={{textAlign:'center'}}>pendown & penup</h2>
+        <h2 style={{
+            textAlign: 'center',
+            backgroundColor: '#2DAA9E',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'bold',
+            fontSize: '24px',
+            letterSpacing: '1px',
+            borderLeft: '10px solid orange' // Border kiri dengan warna oranye
+          }}>
+            pendown & penup
+          </h2>
+          
         <hr></hr>
         <br/>
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ol>
-          <li>Memahami perbedaan antara mode menggambar dan mode tidak menggambar.</li>
+        <h4
+          style={{
+            color: '#2DAA9E',
+            fontSize: '22px',
+            fontWeight: 'bold',
+            borderLeft: '5px solid #2DAA9E',
+            paddingLeft: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          Tujuan Pembelajaran
+        </h4>
+        <ol
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '15px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            listStylePosition: 'inside',
+          }}
+        >
+          <li style={{ marginBottom: '8px' }}>
+          Memahami perbedaan antara mode menggambar dan mode tidak menggambar.
+          </li>
         </ol>
 
         <hr/>
@@ -283,7 +333,26 @@ circle(30) `}
         <br></br>
         <hr />
 
-        <h4>Latihan Menggunakan penup() dan pendown()</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              borderLeft: '5px solid #2DAA9E',
+              paddingLeft: '10px',
+              marginBottom: '15px',
+            }}>
+              Latihan Menggunakan penup() dan pendown() 🐢
+            </h4>
         <p>
         Untuk lebih mudah memahami cara kerja perintah <code>penup()</code> dan <code>pendown()</code>, ikuti instruksi dibawah ini
         </p>
@@ -371,98 +440,161 @@ circle(30) `}
         </div>
           </Col>
         </Row>
-        
+        </div>        
 
         <br></br>
-
         <hr/>
 
-        <h4>Kesimpulan</h4>
+        <div
+          style={{
+            backgroundColor: '#F9F9F9',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            // maxWidth: '1000px',
+            margin: 'auto',
+            borderLeft: '5px solid #2DAA9E',
+            borderRight: '5px solid #2DAA9E',
+          }}
+        >
+          <h4 style={{
+              color: '#2DAA9E',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              // borderLeft: '5px solid #2DAA9E',
+              // paddingLeft: '10px',
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}>
+              Kesimpulan
+            </h4>
         <p>
         Perintah <code>pendown()</code> dan <code>penup()</code> sangat penting untuk mengontrol kapan turtle menggambar atau hanya bergerak tanpa meninggalkan jejak. Penggunaan yang tepat membantu dalam pembuatan bentuk yang terpisah. 
         </p>
+        </div>
+        
 
         <br/>
 
-        <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Kuis Accordion */}
         <Accordion.Item eventKey="0">
-          <Accordion.Header><h4>Kuis</h4></Accordion.Header>
+        <Accordion.Header>
+            <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
+          </Accordion.Header>
           <Accordion.Body>
             <Form>
               <Form.Group controlId="question1">
-                <Form.Label>1. Apa yang terjadi jika metode pendown() tidak dipanggil setelah penup()? </Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang akan terus menggambar saat bergerak." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang akan terus menggambar saat bergerak.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang akan berhenti bergerak." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang akan berhenti bergerak.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang tidak akan menggambar garis saat bergerak." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang tidak akan menggambar garis saat bergerak.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang akan menggambar lingkaran secara otomatis." 
-                  name="question1" 
-                  onChange={() => handleAnswerChange('question1', 'Bidawang akan menggambar lingkaran secara otomatis.')} 
-                />
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    1. Apa yang terjadi jika metode pendown() tidak dipanggil setelah penup()? 
+                  </Form.Label>
+                  <div className="row d-flex">
+                {[
+                  "Bidawang akan terus menggambar saat bergerak.",
+                  "Bidawang akan berhenti bergerak.",
+                  "Bidawang tidak akan menggambar garis saat bergerak.",
+                  "Bidawang akan menggambar lingkaran secara otomatis."
+                ].map((answer) => (
+                  <div key={answer} className="col-6 mb-2 d-flex">
+                    <Button
+                      variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                      onClick={() => handleAnswerChange("question1", answer)}
+                      className="w-100 p-3 flex-grow-1"
+                      style={{
+                        fontSize: "18px",
+                        // fontWeight: "bold",
+                        backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                        borderColor: "#2DAA9E",
+                        minHeight: "60px" // Menjaga tinggi tetap konsisten
+                      }}
+                    >
+                      {answer}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
               </Form.Group>
-              {feedback.question1 && <Alert variant={feedback.question1 === 'Benar!' ? 'success' : 'danger'}>{feedback.question1}</Alert>}
+              {feedback.question1 && (
+                <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question1}
+                </Alert>
+              )}
 
               <Form.Group controlId="question2">
-                <Form.Label>2. Perhatikan kode berikut:  <pre>penup()</pre>
+                <Form.Label className="p-3 mb-3"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "5px solid #2DAA9E",
+                    borderRight: "5px solid #2DAA9E",
+                    fontSize: "18px",
+                    // fontWeight: "bold",
+                    borderRadius: "5px"
+                  }}>
+                    2. Perhatikan kode berikut:  <pre>penup()</pre>
 <pre>goto(100, 100)</pre>
 <pre>pendown()</pre>
 <pre>43</pre>
 <pre>goto(200, 200) </pre> 
 <p>Apa yang terjadi setelah kode tersebut dijalankan?</p></Form.Label>
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang menggambar garis dari titik awal ke (100, 100)." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang menggambar garis dari titik awal ke (100, 100).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang menggambar garis dari (100, 100) ke (200, 200)." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang menggambar garis dari (100, 100) ke (200, 200).')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang tidak menggambar sama sekali." 
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang tidak menggambar sama sekali.')} 
-                />
-                <Form.Check 
-                  type="radio" 
-                  label="Bidawang hanya menggambar lingkaran."
-                  name="question2" 
-                  onChange={() => handleAnswerChange('question2', 'Bidawang hanya menggambar lingkaran.')} 
-                />
-              </Form.Group>
-              {feedback.question2 && <Alert variant={feedback.question2 === 'Benar!' ? 'success' : 'danger'}>{feedback.question2}</Alert>}
 
-              <Button variant="primary" onClick={handleSubmit} className="mt-3">Periksa Jawaban</Button>
+                  <div className="row d-flex">
+                  {["Bidawang menggambar garis dari titik awal ke (100, 100).", 
+                  "Bidawang menggambar garis dari (100, 100) ke (200, 200).", 
+                  "Bidawang tidak menggambar sama sekali.", 
+                  "Bidawang hanya menggambar lingkaran."].map(
+                    (answer) => (
+                      <div key={answer} className="col-6 mb-2 d-flex">
+                        <Button
+                          variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                          onClick={() => handleAnswerChange("question2", answer)}
+                          className="w-100 p-3 flex-grow-1"
+                          style={{
+                            fontSize: "18px",
+                            // fontWeight: "bold",
+                            backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                            borderColor: "#2DAA9E",
+                            minHeight: "60px"
+                          }}
+                        >
+                          {answer}
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
+
+              </Form.Group>
+              {feedback.question2 && (
+                <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                  {feedback.question2}
+                </Alert>
+              )}
+
+            <div className="text-center">
+              <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
+                Periksa Jawaban
+              </Button>
+            </div>
             </Form>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
 
-      <Accordion className="mb-4" style={{ outline: '3px solid lightblue' }}>
+      <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
         {/* Tantangan Accordion */}
         <Accordion.Item eventKey="1">
-          <Accordion.Header><h4>Tantangan</h4></Accordion.Header>
+        <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
           <Accordion.Body>
             <p>
             Selesaikan tantangan dibawah ini!
@@ -472,7 +604,16 @@ circle(30) `}
               Petunjuk
             </Button>
 
-            <div className="skulpt-container" style={{border: "2px solid #ccc"}}>
+            <div className="skulpt-container" style={{
+                  border: "3px solid #ccc",
+                  borderRadius: "10px",
+                  padding: "15px",
+                  // display: "flex",
+                  // flexWrap: "wrap",
+                  gap: "20px",
+                  justifyContent: "center",
+                  backgroundColor: "#f9f9f9",
+                }}>
               <div className="editor-section">
                 <CodeMirror
                   value={pythonCodeChallanges}
@@ -481,6 +622,11 @@ circle(30) `}
                   theme="light"
                   extensions={[python()]}
                   onChange={(value) => setPythonCodeChallanges(value)}
+                  style={{
+                    border: "2px solid #2DAA9E",
+                    borderRadius: "8px",
+                    padding: "5px",
+                  }}
                 />
                 <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
                   <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
@@ -488,20 +634,35 @@ circle(30) `}
                     <BsArrowClockwise /> Reset
                   </Button>
                   </div>
-                <pre id='outputChallanges' className="output" style={{height:60}}>{outputChallanges}</pre>
+                <pre id='outputChallanges' className="output"style={{
+                    height: "60px",
+                    marginTop: '5px',
+                    border: "2px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    backgroundColor: "#fff",
+                  }}>{outputChallanges}</pre>
               </div>
-              <div className="canvas-section" style={{ position: "relative", width: 400, height: 400,  }}>
+              <div className="canvas-section" 
+              style={{
+                position: "relative",
+                width: "400px",
+                height: "405px",
+                borderRadius: "10px",
+                border: "3px solid #2DAA9E",
+                // overflow: "hidden"
+              }}>
                 <div id="mycanvas-challanges" style={{ 
                   width: 400, 
                   height: 400, 
                   position: "relative", 
                 }}></div>
                 {/* <img
-                      src={broccoli}
+                      src={teratai}
                       alt="Target Broccoli"
                       style={{
                         position: "absolute",
-                        left: "275px",
+                        left: "320px",
                         top: "75px",
                         width: "50px", // Sesuaikan ukuran jika perlu
                         height: "50px",
@@ -513,7 +674,18 @@ circle(30) `}
                       style={{
                         position: "absolute",
                         left: "0px",
-                        top: "4px",
+                        top: "0px",
+                        width: "400px", // Sesuaikan ukuran jika perlu
+                        height: "400px",
+                      }}
+                  />
+                  <img
+                      src={grid}
+                      alt="Map"
+                      style={{
+                        position: "absolute",
+                        left: "0px",
+                        top: "0px",
                         width: "400px", // Sesuaikan ukuran jika perlu
                         height: "400px",
                       }}

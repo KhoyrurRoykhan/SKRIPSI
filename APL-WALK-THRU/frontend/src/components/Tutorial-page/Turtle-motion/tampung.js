@@ -1,136 +1,332 @@
-import React from 'react';
-import SidebarTutor from '../SidebarTutor';
+import React, { useState, useEffect, useRef } from 'react';
+import CodeMirror from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { Accordion, Container, Row, Col, Button, Form, Alert, Card, Image, AccordionItem, AccordionHeader, AccordionBody } from 'react-bootstrap';
+import { BsArrowClockwise, BsCheckCircle } from 'react-icons/bs'; // Import ikon Bootstrap
 import '../assets/tutor.css';
+import '../asset_skulpt/SkulptTurtleRunner.css';
+import forward100 from './assets/2turtle-forward.gif';
+import backward100 from './assets/2turtle-backward.gif';
+// import combinedForwardBackward from './assets/combinedForwardBackward.gif';
+import peringatan from './assets/peringatan.gif';
+// Challange
+import swal from 'sweetalert'; // Import SweetAlert
+import papuyu from './assets/papuyu-1.png';
+import broccoli from './assets/cacingtarget.png';
+import map from './assets/2-forward-backward-b.png';
+import tilemap from './assets/2-forward-backward-tilemap.png';
+import { useNavigate } from "react-router-dom";
 
-const Dot = () => {
+const correctCommands = {
+  '1a': 'forward(100)',
+  '1b': 'backward(50)',
+  '1c': 'backward(100)'
+};
+
+const KuisAccordion = () => {
+  // hint challanges
+  const showHint = () => {
+    swal(
+      "Petunjuk Tantangan",
+      "Bidawang saat ini berada di tengah layar (titik (0, 0)), sedangkan cacing berada di titik (100, 100). \n\n" +
+      "1. Gerakan Bidawang menuju ke posisi cacing tanpa menabrak dinding.\n 2. Gunakan forward() atau backward() lalu kombinasikan dengan left() atau right() untuk membuat bidawang berbelok arah. \n\n",
+      "info"
+    );
+  };
+
+  const [pythonCodeChallanges, setPythonCodeChallanges] = useState(``);
+  const [currentStep, setCurrentStep] = useState(0); // Track the current step
+  const [output, setOutput] = useState('');
+
+  const outf = (text) => {
+    setOutput((prev) => prev + text);
+  };
+
+  const builtinRead = (x) => {
+    if (window.Sk.builtinFiles === undefined || window.Sk.builtinFiles['files'][x] === undefined) {
+      throw `File not found: '${x}'`;
+    }
+    return window.Sk.builtinFiles['files'][x];
+  };
+
+  const runitchallanges = (code = '', forceReset = false) => {
+    setOutput('');
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-100,-100)\npendown()\nspeed(2)\n";
+    const prog = forceReset ? imports : imports + code;
+  
+    window.Sk.pre = "output4";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
+  
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+      () => {
+        if (!forceReset && code.trim().length > 0) {
+          setHasRun(true);
+          checkCodeChallanges(code); // Panggil dengan kode aktual
+        }
+      },
+      (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
+  
+  
+
+  const [hasRun, setHasRun] = useState(false);
+
+  const validCode = ["forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)"];
+
+  const checkCodeChallanges = (userCode) => {
+    const trimmedCode = userCode.trim();
+    if (!trimmedCode) return;
+  
+    const userCodeLines = trimmedCode.split("\n").map(line => line.trim());
+    const linesToCheck = userCodeLines.slice(currentStep);
+  
+    const forwardRegex = /^forward\((\d+)\)$/;
+    const leftRegex = /^left\((\d+)\)$/;
+  
+    let step = currentStep;
+  
+    for (let i = 0; i < linesToCheck.length; i++) {
+      const currentLine = linesToCheck[i];
+  
+      if (step >= validCode.length) break;
+  
+      // STEP 0, 2, 4 → forward(200)
+      if ([0, 2, 4].includes(step)) {
+        const match = currentLine.match(forwardRegex);
+        if (match) {
+          const value = parseInt(match[1]);
+          if (value < 200) {
+            return swal("Jawaban Salah", "Pergerakan bidawang kurang jauh", "error").then(() => {
+              initializeTurtle();
+              setCurrentStep(0);
+              setPythonCodeChallanges('');
+              setHasRun(false);
+            });
+          } else if (value > 200) {
+            return swal("Jawaban Salah", "Bidawang keluar jalur", "error").then(() => {
+              initializeTurtle();
+              setCurrentStep(0);
+              setPythonCodeChallanges('');
+              setHasRun(false);
+            });
+          }
+        } else {
+          return swal("Jawaban Salah", "Perintah yang anda masukkan salah", "error").then(() => {
+            initializeTurtle();
+            setCurrentStep(0);
+            setPythonCodeChallanges('');
+            setHasRun(false);
+          });
+        }
+      }
+  
+      // STEP 1, 3 → left(90)
+      else if ([1, 3].includes(step)) {
+        const match = currentLine.match(leftRegex);
+        if (match) {
+          const value = parseInt(match[1]);
+          if (value < 90) {
+            return swal("Jawaban Salah", "Sudut kurang besar", "error").then(() => {
+              initializeTurtle();
+              setCurrentStep(0);
+              setPythonCodeChallanges('');
+              setHasRun(false);
+            });
+          } else if (value > 90) {
+            return swal("Jawaban Salah", "Sudut terlalu besar", "error").then(() => {
+              initializeTurtle();
+              setCurrentStep(0);
+              setPythonCodeChallanges('');
+              setHasRun(false);
+            });
+          }
+        } else {
+          return swal("Jawaban Salah", "Perintah yang anda masukkan salah", "error").then(() => {
+            initializeTurtle();
+            setCurrentStep(0);
+            setPythonCodeChallanges('');
+            setHasRun(false);
+          });
+        }
+      }
+  
+      step++;
+    }
+  
+    const newStep = currentStep + linesToCheck.length;
+    setCurrentStep(newStep);
+    console.log("Step setelah cek:", newStep);
+  
+    if (newStep >= validCode.length) {
+      swal("Jawaban Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+    }
+  };
+  
+  
+  
+
+  const initializeTurtle = () => {
+    const imports = "from turtle import *\nshape('turtle')\n";
+    const initialPosition = "reset()\nspeed(0)\npenup()\nsetpos(-100, -100)\npendown()\nspeed(2)\n"; // Set initial position
+    const prog = imports + initialPosition;
+
+    window.Sk.pre = "output";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
+
+    window.Sk.misceval.asyncToPromise(() => 
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+      () => {},
+      (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
+
+  const resetCodeChallanges = () => {
+    setPythonCodeChallanges('');
+    setCurrentStep(0);
+    setOutput('');
+    setHasRun(false); // <- Penting agar tidak menjalankan evaluasi otomatis
+    runitchallanges('', true);
+  };
+  
+  
+
+  useEffect(() => {
+    runitchallanges(); // Jalankan kode saat halaman dimuat
+  }, []);
+
   return (
-    <div className='content' style={{paddingLeft:50, paddingRight:50}}>
-      <div>
-        <h2 className='mt-3' style={{textAlign:'center'}}>Dot</h2>
+    <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
+        {/* Tantangan Accordion */}
+        <Accordion.Item eventKey="1">
+          <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
+          <Accordion.Body>
+            <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+            Selesaikan tantangan dibawah ini!
+            Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
+            </p>
+            <Button className=" mb-2" variant="info" onClick={showHint}>
+              Petunjuk
+            </Button>
 
-        <hr/>
+            <div className="skulpt-container" style={{
+                  border: "3px solid #ccc",
+                  borderRadius: "10px",
+                  padding: "15px",
+                  // display: "flex",
+                  // flexWrap: "wrap",
+                  gap: "20px",
+                  justifyContent: "center",
+                  backgroundColor: "#f9f9f9",
+                }}>
+              <div className="editor-section">
+                <CodeMirror
+                  value={pythonCodeChallanges}
+                  height="290px"
+                  theme="light"
+                  extensions={[python()]}
+                  onChange={(value) => setPythonCodeChallanges(value)}
+                  style={{
+                    border: "2px solid #2DAA9E",
+                    borderRadius: "8px",
+                    padding: "5px",
+                  }}
+                />
+                <div style={{ marginTop: '5px', display: 'flex', gap: '10px' }}>
+                <Button variant="success" onClick={() => runitchallanges(pythonCodeChallanges)}>Run Code</Button>
+                  <Button variant="secondary" onClick={resetCodeChallanges}>
+                    <BsArrowClockwise /> Reset
+                  </Button>
+                  </div>
+                <pre className="output"style={{
+                    height: "60px",
+                    marginTop: '5px',
+                    border: "2px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    backgroundColor: "#fff",
+                  }}>
+                  {output}
+                </pre>
+              </div>
+              <div className="canvas-section" 
+              style={{
+                position: "relative",
+                width: "400px",
+                height: "405px",
+                borderRadius: "10px",
+                border: "3px solid #2DAA9E",
+                // overflow: "hidden"
+              }}>
+                <div id="mycanvas-challanges" style={{ 
+                  width: 400, 
+                  height: 400, 
+                  position: "relative", 
+                }}></div>
+                {/* Conditional rendering of warning images based on currentStep */}
+                {currentStep === 1 && (
+                  <img
+                    src={peringatan}
+                    alt="warning"
+                    style={{
+                      position: "absolute",
+                      left: "330px",
+                      top: "280px",
+                      width: "40px",
+                      height: "40px",
+                      zIndex: 10,
+                    }}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <img
+                    src={peringatan}
+                    alt="warning"
+                    style={{
+                      position: "absolute",
+                      left: "280px",
+                      top: "35px",
+                      width: "40px",
+                      height: "40px",
+                      zIndex: 10,
+                    }}
+                  />
+                )}
+                
 
-        <h4>Tujuan Pembelajaran</h4>
-        <ul>
-          <li>Memahami cara menggambar titik menggunakan <code>dot()</code>.</li>
-          <li>Mengerti parameter yang digunakan dalam fungsi <code>dot()</code> untuk mengubah ukuran dan warna titik.</li>
-        </ul>
+                <img
+                  src={tilemap}
+                  alt="Map"
+                  style={{
+                    position: "absolute",
+                    left: "0px",
+                    top: "0px",
+                    width: "400px",
+                    height: "400px",
+                  }}
+                  />
+                  <img
+                  src={map}
+                  alt="Map"
+                  style={{
+                    position: "absolute",
+                    left: "0px",
+                    top: "0px",
+                    width: "400px",
+                    height: "400px",
+                  }}
+                  />
+              </div>
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+  );
+};
 
-        <hr />
-
-        <h4>Definisi Turtle <code>dot()</code></h4>
-        <p>
-          Dalam pustaka <strong>Turtle Graphics</strong>, metode <code>dot()</code> digunakan untuk menggambar titik pada posisi turtle saat ini. Titik ini dapat diatur ukuran dan warnanya. Fungsi ini sangat berguna untuk menandai posisi tertentu dalam gambar atau untuk menggambar pola dengan titik.
-        </p>
-
-        <h4>Fungsi:</h4>
-        <p><code>dot(ukuran, warna)</code>: Menggambar titik dengan ukuran dan warna yang ditentukan. Parameter <code>warna</code> opsional dan dapat diisi dengan nama warna atau kode heksadesimal.</p>
-        <ul>
-          <li><strong>ukuran</strong>: Ukuran titik yang ingin digambar. Nilai default adalah 5.</li>
-          <li><strong>warna</strong>: Warna titik yang ingin digambar. Jika tidak ditentukan, warna default adalah warna pena saat ini.</li>
-        </ul>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar titik dengan ukuran 10 dan warna default
-t.dot(10)
-
-turtle.done()`}
-          </code>
-        </pre>
-
-        <hr />
-
-        <h4>Contoh Penggunaan <code>dot()</code></h4>
-        <p>Berikut adalah beberapa contoh penggunaan <code>dot()</code> untuk menggambar titik:</p>
-
-        <h4>Menggambar Titik dengan Ukuran dan Warna yang Berbeda</h4>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar titik dengan ukuran 20 dan warna merah
-t.dot(20, "red")
-
-# Pindahkan turtle untuk menggambar titik berikutnya
-t.penup()
-t.setposition(50, 50)
-t.pendown()
-
-# Menggambar titik dengan ukuran 15 dan warna biru
-t.dot(15, "blue")
-
-turtle.done()`}
-          </code>
-        </pre>
-
-        <h4>Menggambar Titik di Berbagai Posisi</h4>
-        <p>Anda bisa memindahkan turtle ke posisi yang berbeda sebelum menggambar titik:</p>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar titik di posisi (0, 0)
-t.dot(10, "green")
-
-# Pindahkan turtle ke posisi lain
-t.penup()
-t.setposition(-50, -50)
-t.pendown()
-
-# Menggambar titik di posisi (-50, -50)
-t.dot(10, "purple")
-
-turtle.done()`}
-          </code>
-        </pre>
-
-        <h4>Menggambar Pola dengan Titik</h4>
-        <p>Anda dapat menggunakan loop untuk menggambar pola titik:</p>
-        <pre>
-          <code>
-            {`import turtle
-
-t = turtle.Turtle()
-
-# Menggambar pola titik
-for i in range(10):
-    t.dot(10, "orange")
-    t.penup()
-    t.forward(20)
-    t.pendown()
-
-turtle.done()`}
-          </code>
-        </pre>
-
-        <hr />
-
-        <h4>Kesimpulan</h4>
-        <p>
-          Perintah <code>dot()</code> dalam pustaka <strong>Turtle Graphics</strong> memungkinkan Anda menggambar titik dengan ukuran dan warna yang dapat disesuaikan. Fungsi ini berguna untuk menandai posisi, membuat pola, atau menambah detail pada gambar yang Anda buat.
-        </p>
-
-        <hr />
-
-        <h4>Kuis</h4>
-        <p>Apa yang dilakukan perintah <code>t.dot(30, "blue")</code>?</p>
-        <ul>
-          <li>[ ] Menggambar titik dengan ukuran 30 dan warna biru</li>
-          <li>[ ] Menghapus titik yang sudah ada</li>
-          <li>[ ] Mengganti warna pena menjadi biru</li>
-          <li>[ ] Menggambar lingkaran dengan jari-jari 30</li>
-        </ul>
-      </div>
-    </div>
-  )
-}
-
-export default Dot
+export default KuisAccordion;

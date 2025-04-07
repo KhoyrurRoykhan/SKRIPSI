@@ -74,8 +74,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "intro-1"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                          ? "btn-success"
+                          : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Pendahuluan />, "intro-1")}
                     >
@@ -103,8 +103,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                          ? "btn-success"
+                          : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<LeftRight />, "menu1")}
                     >
@@ -113,8 +113,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.1"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<ForwardBackward />, "menu1.1")
@@ -125,8 +125,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<SetPosition />, "menu1.2")
@@ -137,8 +137,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.3"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<SetXY />, "menu1.3")
@@ -149,8 +149,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.4"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<SetHeading />, "menu1.4")
@@ -161,8 +161,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.5"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<SetHome/>, "menu1.5")
@@ -173,8 +173,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.6"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<Circle/>, "menu1.6")
@@ -185,8 +185,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu1.7"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() =>
                         handleContentChange(<Dot/>, "menu1.7")
@@ -206,8 +206,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Position/>, "menu2")}
                     >
@@ -216,8 +216,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu2.2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Xykoordinat/>, "menu2.2")}
                     >
@@ -226,8 +226,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu2.3"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Heading/>, "menu2.3")}
                     >
@@ -236,8 +236,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu2.4"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Distance/>, "menu2.4")}
                     >
@@ -254,8 +254,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu3.1"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Pendownpenup/>, "menu3.1")}
                     >
@@ -264,8 +264,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu3.2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Pensize/>, "menu3.2")}
                     >
@@ -274,8 +274,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu3.3"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Isdown/>, "menu3.3")}
                     >
@@ -292,8 +292,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu4.1"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Color/>, "menu4.1")}
                     >
@@ -302,8 +302,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu4.2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<FillColor/>, "menu4.2")}
                     >
@@ -320,8 +320,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu5.1"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Reset/>, "menu5.1")}
                     >
@@ -330,8 +330,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu5.2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Clear/>, "menu5.2")}
                     >
@@ -340,8 +340,8 @@ const Tutorialpage = () => {
                     <button
                       className={`btn text-start mb-2 ${
                         activeButton === "menu5.3"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
+                        ? "btn-success"
+                        : "btn-outline-success"
                       }`}
                       onClick={() => handleContentChange(<Write/>, "menu5.3")}
                     >
