@@ -101,8 +101,10 @@ for i in range(100):
 `);
 
   const [pythonCodeChallanges, setPythonCodeChallanges] = useState(``);
-
+  const [currentStep, setCurrentStep] = useState(0); // Track the current step
   const [output, setOutput] = useState('');
+  const pythonCodeRef = useRef('');
+
 
   const outf = (text) => {
     setOutput((prev) => prev + text);
@@ -150,7 +152,7 @@ for i in range(100):
   };
 
 
-  const runitchallanges = (code, forceReset = false) => {
+  const runitchallanges = (code, forceReset = false, skipCheck = false) => {
     setOutput('');
     const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-100,-100)\nspeed(2)\npendown()\n";
     const prog = forceReset ? imports : imports + pythonCodeChallanges;
@@ -159,45 +161,66 @@ for i in range(100):
     window.Sk.configure({ output: outf, read: builtinRead });
     (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
   
-    window.Sk.misceval.asyncToPromise(() => 
-        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
     ).then(
-        () => {
-          console.log('success');
-          setHasRun(true);
-          checkCodeChallanges();
-        },
-        (err) => setOutput((prev) => prev + err.toString())
+      () => {
+        console.log('success');
+        if (!skipCheck) {
+          checkCodeChallanges(); // Langsung panggil tanpa syarat
+        }
+      },
+      (err) => setOutput((prev) => prev + err.toString())
     );
   };
+  
 
   const [hasRun, setHasRun] = useState(false);
 
   const checkCodeChallanges = () => {
-    if (!hasRun) return;
-
     const validCode = [
-        "setposition(100,-100)",
-        "setposition(100,0)",
-        "setposition(0,100)",
-        "setposition(-100,0)",
-        "setposition(-100,-100)",
+      "setposition(100,-100)",
+      "setposition(100,0)",
+      "setposition(0,100)",
+      "setposition(-100,0)",
+      "setposition(-100,-100)",
     ];
-    
-    const userCodeLines = pythonCodeChallanges.trim().split("\n");
-
+  
+    // Bersihkan dan buang baris kosong
+    const userCodeLines = pythonCodeRef.current
+      .trim()
+      .split("\n")
+      .map(line => line.trim())
+      .filter(line => line !== ""); // ← Skip baris kosong
+  
     for (let i = 0; i < userCodeLines.length; i++) {
-      if (userCodeLines[i] !== validCode[i]) {
-          swal("Jawaban Salah", "Urutan perintah harus sesuai!", "error")
-              .then(() => initializeTurtle()); // Jalankan ulang setelah swal ditutup
-          return;
+      const line = userCodeLines[i];
+  
+      if (!line.startsWith("setposition")) {
+        swal("Salah", "Anda harus menggunakan setposition", "error").then(() => {
+          pythonCodeRef.current = '';
+          resetCodeChallanges();
+        });
+        return;
       }
-  }
-
-    if (userCodeLines.length === validCode.length) {
-        swal("Jawaban Benar!", "Kamu berhasil!", "success");
+  
+      if (line !== validCode[i]) {
+        swal("Salah", "Posisi x y yang anda masukan tidak tepat", "error").then(() => {
+          pythonCodeRef.current = '';
+          resetCodeChallanges();
+        });
+        return;
+      }
     }
-};
+  
+    // Jika semua langkah yang dimasukkan benar, tapi tidak perlu cek panjang sama persis
+    if (userCodeLines.length + currentStep === validCode.length) {
+      swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+    }
+  };
+  
+  
+  
 
 const initializeTurtle = () => {
   const imports = "from turtle import *\nshape('turtle')\n";
@@ -223,17 +246,20 @@ const initializeTurtle = () => {
     runit('', true);
 };
 
-  const resetCodeChallanges = () => {
-    setPythonCodeChallanges('');
-    setOutput('');
-    runitchallanges('', true);
-  };
+const resetCodeChallanges = () => {
+  setPythonCodeChallanges('');
+  pythonCodeRef.current = '';
+  setCurrentStep(0);
+  setOutput('');
+  setHasRun(false);
+  runitchallanges('', true, true); // <- kirim skipCheck = true
+};
 
 
   useEffect(() => {
     runit();
     runit1(); // Jalankan kode saat halaman dimuat
-    runitchallanges(); // Jalankan kode saat halaman dimuat
+    initializeTurtle(); // Jalankan kode saat halaman dimuat
   }, []);
 
   return (
@@ -575,7 +601,10 @@ setposition(100, 100)`}
                   height="290px"
                   theme="light"
                   extensions={[python()]}
-                  onChange={(value) => setPythonCodeChallanges(value)}
+                  onChange={(value) => {
+                    setPythonCodeChallanges(value);
+                    pythonCodeRef.current = value;
+                  }}                  
                   style={{
                     border: "2px solid #2DAA9E",
                     borderRadius: "8px",
@@ -583,7 +612,7 @@ setposition(100, 100)`}
                   }}
                 />
                 <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
-                  <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
+                  <Button variant="success" onClick={() => { runitchallanges() }}>Run Code</Button>
                   <Button variant="secondary" onClick={resetCodeChallanges}>
                     <BsArrowClockwise /> Reset
                   </Button>

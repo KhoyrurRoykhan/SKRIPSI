@@ -252,13 +252,15 @@ for i in range(100):
   
     // Check if the angle is valid
     if (validAngles.includes(Math.abs(correctAngle)) && isCorrect) {
-      swal("Jawaban Benar!", "Cacing berpindah ke posisi lain.", "success").then(() => {
+      swal("Benar!", "Cacing berpindah ke posisi lain.", "success").then(() => {
         resetTurtlePosition(); // Reset turtle position after the alert is confirmed
         moveBroccoli();
+        setPythonCodeChallanges('');
       });
     } else {
-      swal("Jawaban Salah", "Coba lagi!", "error").then(() => {
+      swal("Salah", "Coba lagi!", "error").then(() => {
         resetTurtlePosition(); // Reset turtle position after the alert is confirmed
+        setPythonCodeChallanges('');
       });
     }
   };

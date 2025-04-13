@@ -57,7 +57,9 @@ const Tutorialpage = () => {
   const handleContentChange = (component, buttonId) => {
     setContent(component);
     setActiveButton(buttonId);
+    window.scrollTo(0, 0); // scroll ke atas halaman setiap kali konten berubah
   };
+  
 
   return (
     <>
@@ -81,16 +83,6 @@ const Tutorialpage = () => {
                     >
                       Pengenalan
                     </button>
-                    {/* <button
-                      className={`btn text-start mb-2 ${
-                        activeButton === "intro-2"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
-                      }`}
-                      onClick={() => handleContentChange(<Canvaspage/>, "intro-2")}
-                    >
-                      Canvas
-                    </button> */}
                   </div>
                 </Accordion.Body>
               </Accordion.Item>

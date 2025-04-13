@@ -176,7 +176,7 @@ for i in range(100):
   };
 
 
-  const runitchallanges = (code, forceReset = false) => {
+  const runitchallanges = (code, forceReset = false, isInitial = false) => {
     setOutput('');
     const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(0,-100)\npendown()\nspeed(2)\n";
     const prog = forceReset ? imports : imports + pythonCodeChallanges;
@@ -185,46 +185,64 @@ for i in range(100):
     window.Sk.configure({ output: outf, read: builtinRead });
     (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
   
-    window.Sk.misceval.asyncToPromise(() => 
-        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
     ).then(
-        () => {
-          console.log('success');
-          setHasRun(true);
+      () => {
+        console.log('success');
+        setHasRun(true);
+        if (!isInitial) {
           checkCodeChallanges();
-        },
-        (err) => setOutput((prev) => prev + err.toString())
+        }
+      },
+      (err) => setOutput((prev) => prev + err.toString())
     );
   };
 
   const [hasRun, setHasRun] = useState(false);
 
+  const extractCircleValue = (line) => {
+    const match = line.match(/circle\((\d+)\)/);
+    return match ? parseInt(match[1], 10) : null;
+  };
+  
+
   const checkCodeChallanges = () => {
     if (!hasRun) return;
-
-    const validCodes = [
-        ["circle(180)", "setposition(0,-130)", "circle(130)", "setposition(0,-80)", "circle(80,180)"],
-        ["circle(180)", "left(90)", "forward(50)", "right(90)", "circle(130)", "left(90)", "forward(50)", "right(90)", "circle(80,180)"]
-    ];
-
-    const userCodeLines = pythonCodeChallanges.trim().split("\n");
-
-    // Cek apakah kode pengguna merupakan bagian awal dari salah satu jawaban yang valid
-    const isPartialMatch = validCodes.some(validCode =>
-        validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
-    );
-
-    // Cek apakah kode pengguna sudah lengkap dan benar
-    const isExactMatch = validCodes.some(validCode =>
-        validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
-    );
-
-    if (isExactMatch) {
-        swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else if (!isPartialMatch) {
-        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+  
+    const userCode = pythonCodeChallanges.trim();
+    const userLines = userCode.split("\n");
+  
+    let usedCircle = false;
+    for (let line of userLines) {
+      if (line.includes("circle")) {
+        usedCircle = true;
+        const radius = extractCircleValue(line);
+  
+        if (radius === null) {
+          swal("Error", "Format circle tidak dikenali.", "error").then(resetCodeChallanges);
+          return;
+        }
+  
+        if (radius < 100) {
+          swal("Jari-jari terlalu kecil", "Jari jari kurang besar untuk mengitari sungai tersebut", "warning")
+            .then(resetCodeChallanges);
+          return;
+        } else if (radius > 100) {
+          swal("Jari-jari terlalu besar", "Jari jari terlalu besar untuk mengitari sungai tersebut", "warning")
+            .then(resetCodeChallanges);
+          return;
+        } else if (radius === 100) {
+          swal("Mantap!", "Kamu berhasil membuat bidawang mengitari sungai dengan sempurna!", "success");
+          return;
+        }
+      }
     }
-};
+  
+    if (!usedCircle) {
+      swal("Perintah Salah", "Anda harus menggunakan circle", "error").then(resetCodeChallanges);
+    }
+  };
 
 
   const resetCode = () => {
@@ -236,7 +254,7 @@ for i in range(100):
   const resetCodeChallanges = () => {
     setPythonCodeChallanges('');
     setOutput('');
-    runitchallanges('', true);
+    runitchallanges('', true, true); // <-- true artinya isInitial, jadi gak manggil validasi
   };
 
 

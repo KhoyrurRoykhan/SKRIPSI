@@ -175,7 +175,7 @@ for i in range(100):
   
     const runitchallanges = (code, forceReset = false) => {
       setOutputChallanges('');
-      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-150,-150)\npendown()\nspeed(2)\n";
+      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-150,0)\npendown()\nspeed(1)\n";
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
     
       window.Sk.pre = "outputChallanges";

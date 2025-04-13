@@ -198,94 +198,98 @@ for i in range(100):
 
   const validCode = ["forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)"];
 
-  const checkCodeChallanges = (userCode) => {
-    const trimmedCode = userCode.trim();
-    if (!trimmedCode) return;
-  
-    const userCodeLines = trimmedCode.split("\n").map(line => line.trim());
-    const linesToCheck = userCodeLines.slice(currentStep);
-  
-    const forwardRegex = /^forward\((\d+)\)$/;
-    const leftRegex = /^left\((\d+)\)$/;
-  
-    let step = currentStep;
-  
-    for (let i = 0; i < linesToCheck.length; i++) {
-      const currentLine = linesToCheck[i];
-  
-      if (step >= validCode.length) break;
-  
-      // STEP 0, 2, 4 → forward(200)
-      if ([0, 2, 4].includes(step)) {
-        const match = currentLine.match(forwardRegex);
-        if (match) {
-          const value = parseInt(match[1]);
-          if (value < 200) {
-            return swal("Jawaban Salah", "Pergerakan bidawang kurang jauh", "error").then(() => {
-              initializeTurtle();
-              setCurrentStep(0);
-              setPythonCodeChallanges('');
-              setHasRun(false);
-            });
-          } else if (value > 200) {
-            return swal("Jawaban Salah", "Bidawang keluar jalur", "error").then(() => {
-              initializeTurtle();
-              setCurrentStep(0);
-              setPythonCodeChallanges('');
-              setHasRun(false);
-            });
-          }
-        } else {
-          return swal("Jawaban Salah", "Perintah yang anda masukkan salah", "error").then(() => {
+const checkCodeChallanges = (userCode) => {
+  const trimmedCode = userCode.trim();
+  if (!trimmedCode) return;
+
+  const userCodeLines = trimmedCode
+    .split("\n")
+    .map(line => line.trim())
+    .filter(line => line !== ""); // <--- Skip baris kosong
+
+  const linesToCheck = userCodeLines.slice(currentStep);
+
+  const forwardRegex = /^forward\((\d+)\)$/;
+  const leftRegex = /^left\((\d+)\)$/;
+
+  let step = currentStep;
+
+  for (let i = 0; i < linesToCheck.length; i++) {
+    const currentLine = linesToCheck[i];
+
+    if (step >= validCode.length) break;
+
+    // STEP 0, 2, 4 → forward(200)
+    if ([0, 2, 4].includes(step)) {
+      const match = currentLine.match(forwardRegex);
+      if (match) {
+        const value = parseInt(match[1]);
+        if (value < 200) {
+          return swal("Salah", "Pergerakan bidawang kurang jauh", "error").then(() => {
+            initializeTurtle();
+            setCurrentStep(0);
+            setPythonCodeChallanges('');
+            setHasRun(false);
+          });
+        } else if (value > 200) {
+          return swal("Salah", "Bidawang keluar jalur", "error").then(() => {
             initializeTurtle();
             setCurrentStep(0);
             setPythonCodeChallanges('');
             setHasRun(false);
           });
         }
+      } else {
+        return swal("Salah", "Perintah yang anda masukkan salah", "error").then(() => {
+          initializeTurtle();
+          setCurrentStep(0);
+          setPythonCodeChallanges('');
+          setHasRun(false);
+        });
       }
-  
-      // STEP 1, 3 → left(90)
-      else if ([1, 3].includes(step)) {
-        const match = currentLine.match(leftRegex);
-        if (match) {
-          const value = parseInt(match[1]);
-          if (value < 90) {
-            return swal("Jawaban Salah", "Sudut kurang besar", "error").then(() => {
-              initializeTurtle();
-              setCurrentStep(0);
-              setPythonCodeChallanges('');
-              setHasRun(false);
-            });
-          } else if (value > 90) {
-            return swal("Jawaban Salah", "Sudut terlalu besar", "error").then(() => {
-              initializeTurtle();
-              setCurrentStep(0);
-              setPythonCodeChallanges('');
-              setHasRun(false);
-            });
-          }
-        } else {
-          return swal("Jawaban Salah", "Perintah yang anda masukkan salah", "error").then(() => {
+    }
+
+    // STEP 1, 3 → left(90)
+    else if ([1, 3].includes(step)) {
+      const match = currentLine.match(leftRegex);
+      if (match) {
+        const value = parseInt(match[1]);
+        if (value < 90) {
+          return swal("Salah", "Sudut kurang besar", "error").then(() => {
+            initializeTurtle();
+            setCurrentStep(0);
+            setPythonCodeChallanges('');
+            setHasRun(false);
+          });
+        } else if (value > 90) {
+          return swal("Salah", "Sudut terlalu besar", "error").then(() => {
             initializeTurtle();
             setCurrentStep(0);
             setPythonCodeChallanges('');
             setHasRun(false);
           });
         }
+      } else {
+        return swal("Salah", "Perintah yang anda masukkan salah", "error").then(() => {
+          initializeTurtle();
+          setCurrentStep(0);
+          setPythonCodeChallanges('');
+          setHasRun(false);
+        });
       }
-  
-      step++;
     }
-  
-    const newStep = currentStep + linesToCheck.length;
-    setCurrentStep(newStep);
-    console.log("Step setelah cek:", newStep);
-  
-    if (newStep >= validCode.length) {
-      swal("Jawaban Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
-    }
-  };
+
+    step++;
+  }
+
+  setCurrentStep(step);
+  console.log("Step setelah cek:", step);
+
+  if (step >= validCode.length) {
+    swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+  }
+};
+
 
   const initializeTurtle = () => {
     const imports = "from turtle import *\nshape('turtle')\n";

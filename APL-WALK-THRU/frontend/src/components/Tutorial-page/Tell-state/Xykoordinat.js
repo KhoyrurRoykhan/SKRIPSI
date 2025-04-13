@@ -186,7 +186,7 @@ for i in range(100):
     };
   
   
-    const runitchallanges = (code, forceReset = false) => {
+    const runitchallanges = (code, forceReset = false, skipValidation = false) => {
       setOutputChallanges('');
       const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
@@ -195,15 +195,15 @@ for i in range(100):
       window.Sk.configure({ output: outfchallanges, read: builtinReadChallanges });
       (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
     
-      window.Sk.misceval.asyncToPromise(() => 
-          window.Sk.importMainWithBody('<stdin>', false, prog, true)
+      window.Sk.misceval.asyncToPromise(() =>
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
       ).then(
-          () => {
-            console.log('success');
-            setHasRun(true);
-            checkCodeChallanges();
-          },
-          (err) => setOutput((prev) => prev + err.toString())
+        () => {
+          console.log('success');
+          setHasRun(true);
+          if (!skipValidation) checkCodeChallanges(); // 👈 Hanya validasi kalau tidak sedang reset
+        },
+        (err) => setOutput((prev) => prev + err.toString())
       );
     };
   
@@ -211,33 +211,86 @@ for i in range(100):
   
     const checkCodeChallanges = () => {
       if (!hasRun) return;
-  
-      const validCodes = [
-          ["right(180)", "forward(100)", "left(90)", "forward(100)", "left(90)", "forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)", "print(xcor())", "print(ycor())"],
-          ["left(180)", "forward(100)", "left(90)", "forward(100)", "left(90)", "forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)", "print(ycor())", "print(xcor())"],
-          ["left(180)", "forward(100)", "left(90)", "forward(100)", "left(90)", "forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)", "print(xcor())", "print(ycor())"],
-          ["right(180)", "forward(100)", "left(90)", "forward(100)", "left(90)", "forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)", "print(ycor())", "print(xcor())"]
+    
+      const expectedSteps = [
+        { cmd: "left", val: 180 },
+        { cmd: "forward", val: 100 },
+        { cmd: "left", val: 90 },
+        { cmd: "forward", val: 100 },
+        { cmd: "left", val: 90 },
+        { cmd: "forward", val: 200 },
+        { cmd: "left", val: 90 },
+        { cmd: "forward", val: 200 },
+        { cmd: "left", val: 90 },
+        { cmd: "forward", val: 200 },
+        { cmd: "print", val: "xcor()" },
+        { cmd: "print", val: "ycor()" }
       ];
-  
-      const userCodeLines = pythonCodeChallanges.trim().split("\n");
-  
-      // Cek apakah kode pengguna merupakan bagian awal dari salah satu jawaban yang valid
-      const isPartialMatch = validCodes.some(validCode =>
-          validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
-      );
-  
-      // Cek apakah kode pengguna sudah lengkap dan benar
-      const isExactMatch = validCodes.some(validCode =>
-          validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
-      );
-  
-      if (isExactMatch) {
-          console.log("OK");
-          // swal("Jawaban Benar!", "Kamu berhasil!", "success");
-      } else if (!isPartialMatch) {
-          swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+    
+      const showError = (index, message) => {
+        swal("Salah!", `Langkah ke-${index + 1}: ${message}`, "error").then(() => {
+          setHasRun(false);
+          resetCodeChallanges();
+        });
+      };
+    
+      const lines = pythonCodeChallanges
+        .trim()
+        .split("\n")
+        .map(line => line.trim())
+        .filter(line => line !== ""); // buang baris kosong
+    
+      const stepsToCheck = Math.min(lines.length, expectedSteps.length);
+    
+      for (let i = 0; i < stepsToCheck; i++) {
+        const step = expectedSteps[i];
+        const line = lines[i];
+    
+        if (!line) return showError(i, "Perintah tidak ditemukan.");
+    
+        if (step.cmd === "print") {
+          if (!line.startsWith("print(")) {
+            return showError(i, `Anda harus menggunakan print(${step.val}) pada tahap ini.`);
+          }
+          const match = line.match(/print\s*\((.*)\)/);
+          if (!match || match[1].replace(/\s+/g, "") !== step.val) {
+            return showError(i, `Isi print harus print(${step.val}).`);
+          }
+        } else {
+          const match = line.match(/(\w+)\s*\((\d+)\)/);
+          if (!match) return showError(i, "Format perintah tidak dikenali.");
+    
+          const [, cmd, valStr] = match;
+          const val = parseInt(valStr);
+    
+          if (step.cmd === "left") {
+            const isLeftCorrect = cmd === "left" && val === step.val;
+            const isRightEquivalent = cmd === "right" && val === (360 - step.val);
+    
+            if (!isLeftCorrect && !isRightEquivalent) {
+              return showError(i, `Gunakan left(${step.val}) atau right(${360 - step.val}).`);
+            }
+          } else {
+            if (cmd !== step.cmd) {
+              return showError(i, `Anda harus menggunakan perintah ${step.cmd}(${step.val}) pada tahap ini.`);
+            }
+    
+            if (val < step.val) {
+              return showError(i, `Nilai ${cmd} kurang dari yang seharusnya (${step.val}).`);
+            }
+    
+            if (val > step.val) {
+              return showError(i, `Nilai ${cmd} berlebihan dari yang seharusnya (${step.val}).`);
+            }
+          }
+        }
       }
-  };
+    
+      if (lines.length === expectedSteps.length) {
+        swal("Benar!", "Seluruh langkah sudah benar!", "success");
+      }
+    };
+    
   
   
     const resetCode = () => {
@@ -246,11 +299,12 @@ for i in range(100):
       runit('', true);
   };
   
-    const resetCodeChallanges = () => {
-      setPythonCodeChallanges('');
-      setOutput('');
-      runitchallanges('', true);
-    };
+  const resetCodeChallanges = () => {
+    setHasRun(false);
+    setPythonCodeChallanges('');
+    setOutput('');
+    runitchallanges('', true, true);
+  };
   
   
     useEffect(() => {

@@ -103,9 +103,19 @@ for i in range(100):
 
 `);
 
-  const [pythonCodeChallanges, setPythonCodeChallanges] = useState(``);
+const [pythonCodeChallanges, setPythonCodeChallanges] = useState('');
+const [output, setOutput] = useState('');
+const [step, setStep] = useState(0);
+const [hasRun, setHasRun] = useState(false);
+const [processingAlert, setProcessingAlert] = useState(false);
 
-  const [output, setOutput] = useState('');
+const headingAnswers = [0, 90, 180, 270];
+const broccoliPositions = [
+  { left: '345px', top: '175px' }, // setheading(0)
+  { left: '175px', top: '5px' },   // setheading(90)
+  { left: '5px', top: '175px' },   // setheading(180)
+  { left: '175px', top: '345px' }, // setheading(270)
+];
 
   const outf = (text) => {
     setOutput((prev) => prev + text);
@@ -154,46 +164,53 @@ for i in range(100):
 
 
   const runitchallanges = (code, forceReset = false) => {
+    if (processingAlert) return;
     setOutput('');
     const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
     const prog = forceReset ? imports : imports + pythonCodeChallanges;
-  
+
     window.Sk.pre = "output4";
     window.Sk.configure({ output: outf, read: builtinRead });
     (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
-  
+
     window.Sk.misceval.asyncToPromise(() => 
-        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
     ).then(
-        () => {
-          console.log('success');
-          setHasRun(true);
-          checkCodeChallanges();
-        },
-        (err) => setOutput((prev) => prev + err.toString())
+      () => {
+        setHasRun(true);
+        if (!forceReset) checkCodeChallanges();
+      },
+      (err) => setOutput((prev) => prev + err.toString())
     );
   };
 
-  const [hasRun, setHasRun] = useState(false);
+  const checkCodeChallanges = async () => {
+    if (!hasRun || processingAlert) return;
 
-  const checkCodeChallanges = () => {
-    if (!hasRun) return;
+    const userCode = pythonCodeChallanges
+      .replace(/\s/g, '')
+      .replace(/setheading/gi, 'setheading');
+    const expectedAngle = headingAnswers[step];
 
-    const validCode = ["setheading(270)", "forward(200)"]; // Urutan yang benar
-    const userCodeLines = pythonCodeChallanges.trim().split("\n");
+    const isCorrect = userCode.includes(`setheading(${expectedAngle})`);
 
-    // Cek apakah kode pengguna merupakan bagian dari jawaban yang valid
-    const isPartialMatch = validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index]);
-
-    // Cek apakah kode pengguna sudah lengkap dan benar
-    const isExactMatch = userCodeLines.length === validCode.length && isPartialMatch;
-
-    if (isExactMatch) {
-        swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else if (!isPartialMatch) {
-        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+    setProcessingAlert(true);
+    if (isCorrect) {
+      await swal("Jawaban Benar!", "Kamu berhasil!", "success").then(() => {
+        if (step < headingAnswers.length - 1) {
+          setStep((prev) => prev + 1);
+        } else {
+          swal("Selamat!", "Kamu berhasil menyelesaikan semua tantangan!", "success");
+        }
+        resetCodeChallanges();
+      });
+    } else if (userCode !== '') {
+      await swal("Jawaban Salah", "Gunakan setheading() untuk mengatur arahnya.", "error").then(() => {
+        resetCodeChallanges();
+      });
     }
-};
+    setProcessingAlert(false);
+  };
 
 
   const resetCode = () => {
@@ -205,7 +222,8 @@ for i in range(100):
   const resetCodeChallanges = () => {
     setPythonCodeChallanges('');
     setOutput('');
-    runitchallanges('', true);
+    setHasRun(false);
+    setTimeout(() => runitchallanges('', true), 100);
   };
 
 
@@ -551,111 +569,39 @@ forward(100)  # Bergerak maju ke kiri`}
       </Accordion>
 
       <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
-        {/* Tantangan Accordion */}
-        <Accordion.Item eventKey="1">
+      <Accordion.Item eventKey="1">
         <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
-          <Accordion.Body>
-          <p>
-            Selesaikan tantangan dibawah ini!
-            Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
-            </p>
-            <Button className=" mb-2" variant="info" onClick={showHint}>
-              Petunjuk
-            </Button>
+        <Accordion.Body>
+          <p>Selesaikan tantangan dengan mengarahkan bidawang ke arah cacing menggunakan <code>setheading()</code>.</p>
+          <Button className="mb-2" variant="info" onClick={() => swal("Petunjuk Tantangan", "Gunakan setheading(derajat) sesuai arah cacing yang muncul.\n\n0: Kanan, 90: Atas, 180: Kiri, 270: Bawah", "info")}>Petunjuk</Button>
 
-            <div className="skulpt-container" style={{
-                  border: "3px solid #ccc",
-                  borderRadius: "10px",
-                  padding: "15px",
-                  // display: "flex",
-                  // flexWrap: "wrap",
-                  gap: "20px",
-                  justifyContent: "center",
-                  backgroundColor: "#f9f9f9",
-                }}>
-              <div className="editor-section">
-                <CodeMirror
-                  value={pythonCodeChallanges}
-                  placeholder={'//Ketikan kode disini!'}
-                  height="290px"
-                  theme="light"
-                  extensions={[python()]}
-                  onChange={(value) => setPythonCodeChallanges(value)}
-                  style={{
-                    border: "2px solid #2DAA9E",
-                    borderRadius: "8px",
-                    padding: "5px",
-                  }}
-                />
-                <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
-                  <Button variant="success" onClick={() => { runitchallanges(); checkCode(); }}>Run Code</Button>
-                  <Button variant="secondary" onClick={resetCodeChallanges}>
-                    <BsArrowClockwise /> Reset
-                  </Button>
-                  </div>
-                <pre className="output"style={{
-                    height: "60px",
-                    marginTop: '5px',
-                    border: "2px solid #ccc",
-                    borderRadius: "5px",
-                    padding: "5px",
-                    backgroundColor: "#fff",
-                  }}>
-                    {output}
-                  </pre>
+          <div className="skulpt-container" style={{ border: "3px solid #ccc", borderRadius: "10px", padding: "15px", backgroundColor: "#f9f9f9" }}>
+            <div className="editor-section">
+              <CodeMirror
+                value={pythonCodeChallanges}
+                placeholder={'// Ketikan kode disini!'}
+                height="290px"
+                theme="light"
+                extensions={[python()]}
+                onChange={(value) => setPythonCodeChallanges(value)}
+                style={{ border: "2px solid #2DAA9E", borderRadius: "8px", padding: "5px" }}
+              />
+              <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
+                <Button variant="success" onClick={() => runitchallanges()}>Run Code</Button>
+                <Button variant="secondary" onClick={resetCodeChallanges}><BsArrowClockwise/> Reset</Button>
               </div>
-              <div className="canvas-section" 
-              style={{
-                position: "relative",
-                width: "400px",
-                height: "405px",
-                borderRadius: "10px",
-                border: "3px solid #2DAA9E",
-                // overflow: "hidden"
-              }}>
-                <div id="mycanvas-challanges" style={{ 
-                  width: 400, 
-                  height: 400, 
-                  position: "relative", 
-                }}></div>
-                {/* <img
-                      src={broccoli}
-                      alt="Target Broccoli"
-                      style={{
-                        position: "absolute",
-                        left: "275px",
-                        top: "75px",
-                        width: "50px", // Sesuaikan ukuran jika perlu
-                        height: "50px",
-                      }}
-                  /> */}
-                  <img
-                      src={map}
-                      alt="Map"
-                      style={{
-                        position: "absolute",
-                        left: "0px",
-                        top: "0px",
-                        width: "400px", // Sesuaikan ukuran jika perlu
-                        height: "400px",
-                      }}
-                  />
-                  <img
-                      src={grid}
-                      alt="Map"
-                      style={{
-                        position: "absolute",
-                        left: "2px",
-                        top: "0px",
-                        width: "400px", // Sesuaikan ukuran jika perlu
-                        height: "400px",
-                      }}
-                  />
-              </div>
+              <pre className="output" style={{ height: "60px", border: "2px solid #ccc", borderRadius: "5px", padding: "5px", backgroundColor: "#fff" }}>{output}</pre>
             </div>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
+            <div className="canvas-section" style={{ position: "relative", width: "400px", height: "405px", borderRadius: "10px", border: "3px solid #2DAA9E" }}>
+              <div id="mycanvas-challanges" style={{ width: 400, height: 400, position: "relative" }}></div>
+              <img src={map} alt="Map" style={{ position: "absolute", left: "0px", top: "0px", width: "400px", height: "400px" }} />
+              <img src={grid} alt="Grid" style={{ position: "absolute", left: "0px", top: "0px", width: "400px", height: "400px" }} />
+              <img src={broccoli} alt="Target Broccoli" style={{ position: "absolute", ...broccoliPositions[step], width: "50px", height: "50px" }} />
+            </div>
+          </div>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
       </div>
     </div>
   )

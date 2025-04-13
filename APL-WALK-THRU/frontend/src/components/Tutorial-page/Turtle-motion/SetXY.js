@@ -181,46 +181,113 @@ for i in range(100):
     window.Sk.configure({ output: outf, read: builtinRead });
     (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
   
-    window.Sk.misceval.asyncToPromise(() => 
-        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
     ).then(
-        () => {
-          console.log('success');
-          setHasRun(true);
-          checkCodeChallanges();
-        },
-        (err) => setOutput((prev) => prev + err.toString())
+      () => {
+        setHasRun(true);
+        checkCodeChallanges();
+      },
+      (err) => setOutput((prev) => prev + err.toString())
     );
   };
+  
 
   const [hasRun, setHasRun] = useState(false);
 
   const checkCodeChallanges = () => {
     if (!hasRun) return;
-
+  
     const validCodes = [
-        ["setx(100)", "sety(100)"],
-        ["sety(100)", "setx(100)"]
+      ["setx(100)", "sety(100)"],
+      ["sety(100)", "setx(100)"]
     ];
-    
-    const userCodeLines = pythonCodeChallanges.trim().split("\n");
-
-    // Cek apakah kode pengguna merupakan bagian dari salah satu jawaban yang valid
-    const isPartialMatch = validCodes.some(validCode => 
-        validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
-    );
-
-    // Cek apakah kode pengguna sudah lengkap dan benar
-    const isExactMatch = validCodes.some(validCode => 
-        validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
-    );
-
-    if (isExactMatch) {
-        swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else if (!isPartialMatch) {
-        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+  
+    const userCodeLines = pythonCodeChallanges.trim().split("\n").map(line => line.trim()).filter(line => line !== "");
+    if (userCodeLines.length === 0) return;
+  
+    const step1 = userCodeLines[0];
+  
+    // Validasi step 1
+    if (!step1.startsWith("setx(") && !step1.startsWith("sety(")) {
+      return swal("Salah", "Anda harus menggunakan setx atau sety di langkah pertama", "error").then(() => {
+        setPythonCodeChallanges('');
+        initializeTurtle();
+      });
     }
-};
+  
+    if (!step1.includes("(100)")) {
+      return swal("Salah", "Koordinat yang Anda masukkan salah pada langkah pertama", "error").then(() => {
+        setPythonCodeChallanges('');
+        initializeTurtle();
+      });
+    }
+  
+    // Kalau user sudah menulis step ke-2
+    if (userCodeLines.length > 1) {
+      const step2 = userCodeLines[1];
+      const isFirstSetx = step1.startsWith("setx");
+      const isSecondSetx = step2.startsWith("setx");
+      const isSecondSety = step2.startsWith("sety");
+  
+      if (!(isSecondSetx || isSecondSety)) {
+        return swal("Salah", "Gunakan setx atau sety di langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
+        });
+      }
+  
+      if (isFirstSetx && isSecondSetx) {
+        return swal("Salah", "Gunakan sety pada langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
+        });
+      }
+  
+      if (!isFirstSetx && isSecondSety) {
+        return swal("Salah", "Gunakan setx pada langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
+        });
+      }
+  
+      if (!step2.includes("(100)")) {
+        return swal("Salah", "Koordinat yang Anda masukkan salah pada langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
+        });
+      }
+    }
+  
+    // Cek apakah semua langkah sudah benar
+    const isCorrect = validCodes.some(valid =>
+      valid.length === userCodeLines.length &&
+      valid.every((line, idx) => line === userCodeLines[idx])
+    );
+  
+    if (isCorrect) {
+      swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+    }
+  };
+  
+  
+
+  const initializeTurtle = () => {
+    const initCode = `from turtle import *
+reset()
+shape("turtle")
+speed(2)`;
+  
+    window.Sk.pre = "output4";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
+  
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody("<stdin>", false, initCode, true)
+    ).then(() => {
+      console.log("Turtle initialized to default state.");
+    });
+  };
 
 
   const resetCode = () => {
@@ -229,18 +296,18 @@ for i in range(100):
     runit('', true);
 };
 
-  const resetCodeChallanges = () => {
-    setPythonCodeChallanges('');
-    setOutput('');
-    runitchallanges('', true);
-  };
+const resetCodeChallanges = () => {
+  setPythonCodeChallanges('');
+  setOutput('');
+  initializeTurtle(); // Reset posisi turtle
+};
 
 
   useEffect(() => {
     runit(); // Jalankan kode saat halaman dimuat
     runit1(); // Jalankan kode saat halaman dimuat
     runit2(); // Jalankan kode saat halaman dimuat
-    runitchallanges(); // Jalankan kode saat halaman dimuat
+    initializeTurtle(); // Jalankan kode saat halaman dimuat
   }, []);
 
   return (

@@ -173,54 +173,135 @@ for i in range(100):
   
     const runitchallanges = (code, forceReset = false) => {
       setOutputChallanges('');
-      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\npenup()\nsetposition(-150,-150)\npendown()\n";
+      setHasRun(false);
+      const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-150,-150)\npendown()\nspeed(2)\n";
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
     
       window.Sk.pre = "outputChallanges";
       window.Sk.configure({ output: outfchallanges, read: builtinReadChallanges });
       (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
     
-      window.Sk.misceval.asyncToPromise(() => 
-          window.Sk.importMainWithBody('<stdin>', false, prog, true)
-      ).then(
-          () => {
-            console.log('success');
-            setHasRun(true);
-            checkCodeChallanges();
-          },
-          (err) => setOutput((prev) => prev + err.toString())
-      );
+      window.Sk.misceval.asyncToPromise(() =>
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+      ).then(() => {
+        console.log('success');
+        setHasRun(true);
+        if (!forceReset) {
+          checkCodeChallanges();
+        }
+      }, (err) => setOutput((prev) => prev + err.toString()));
     };
   
     const [hasRun, setHasRun] = useState(false);
   
     const checkCodeChallanges = () => {
-    if (!hasRun) return;
-
-    const validCodes = [
-        ["left(45)","print(disctance(150,150))","forward(424)"],
-        ["print(distance(150,150))","left(45)","forward(424)"]
-    ];
-
-    const userCodeLines = pythonCodeChallanges.trim().split("\n");
-
-    // Cek apakah input pengguna merupakan bagian awal dari salah satu jawaban yang valid
-    const isPartialMatch = validCodes.some(validCode =>
-        validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
-    );
-
-    // Cek apakah input pengguna sudah benar secara keseluruhan
-    const isExactMatch = validCodes.some(validCode =>
-        validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
-    );
-
-    if (isExactMatch) {
-        console.log("OK");
+      if (!hasRun) return;
+    
+      const validCodes = [
+        ["left(45)", "print(distance(150,150))", "forward(424)"],
+        ["right(315)", "print(distance(150,150))", "forward(424)"],
+        ["left(45)", "print(distance(150,150))", "forward(424.2640687119285)"],
+        ["right(315)", "print(distance(150,150))", "forward(424.2640687119285)"],
+        ["print(distance(150,150))", "left(45)", "forward(424)"],
+        ["print(distance(150,150))", "right(315)", "forward(424)"],
+        ["print(distance(150,150))", "left(45)", "forward(424.2640687119285)"],
+        ["print(distance(150,150))", "right(315)", "forward(424.2640687119285)"],
+      ];
+    
+      const showError = (index, expected, actual, note = '') => {
+        swal(
+          "Salah!",
+          `Baris ke-${index + 1} salah.\nSeharusnya: ${expected}\nKamu menulis: ${actual}${note ? `\nCatatan: ${note}` : ''}`,
+          "error"
+        ).then(() => {
+          setHasRun(false);
+          resetCodeChallanges();
+        });
+      };
+    
+      const userCodeLines = pythonCodeChallanges.trim().split("\n").map(line => line.trim());
+    
+      // Cek apakah semua kode cocok secara penuh
+      const isExactMatch = validCodes.some(valid =>
+        valid.length === userCodeLines.length &&
+        valid.every((code, index) => code.replace(/\s+/g, '') === (userCodeLines[index] || "").replace(/\s+/g, ''))
+      );
+    
+      if (isExactMatch) {
         swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else if (!isPartialMatch) {
-        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
-    }
-};
+        return;
+      }
+    
+      // Cek apakah ada jalur yang cocok sejauh ini
+      let partialMatchFound = false;
+    
+      for (const valid of validCodes) {
+        let matchSoFar = true;
+    
+        for (let i = 0; i < userCodeLines.length; i++) {
+          const expected = valid[i];
+          const actual = userCodeLines[i];
+    
+          if (!expected || !actual) {
+            matchSoFar = false;
+            break;
+          }
+    
+          const normExpected = expected.replace(/\s+/g, '');
+          const normActual = actual.replace(/\s+/g, '');
+    
+          if (normExpected !== normActual) {
+            matchSoFar = false;
+            break;
+          }
+        }
+    
+        if (matchSoFar) {
+          partialMatchFound = true;
+          break;
+        }
+      }
+    
+      if (partialMatchFound) {
+        // Jangan kasih alert, user masih di jalur benar
+        return;
+      }
+    
+      // Kalau semua jalur gagal cocok sejauh ini, tampilkan pesan salah
+      // Cari tahu salahnya di mana untuk feedback
+      for (const valid of validCodes) {
+        const stepsToCheck = Math.min(userCodeLines.length, valid.length);
+    
+        for (let i = 0; i < stepsToCheck; i++) {
+          const expected = valid[i];
+          const actual = userCodeLines[i];
+          const normExpected = expected.replace(/\s+/g, '');
+          const normActual = actual.replace(/\s+/g, '');
+    
+          if (normExpected !== normActual) {
+            if (normExpected.includes("distance") && normActual.includes("disctance")) {
+              return showError(i, expected, actual, "Periksa penulisan fungsi `distance`, bukan `disctance`.");
+            }
+            if (normExpected.startsWith("forward(") && normActual.startsWith("forward(")) {
+              return showError(i, expected, actual, "Cek kembali jarak yang kamu masukkan.");
+            }
+            if ((normExpected.startsWith("left(") || normExpected.startsWith("right(")) &&
+                !(normActual.startsWith("left(") || normActual.startsWith("right("))) {
+              return showError(i, expected, actual, "Kamu belum mengarahkan turtle ke arah harta karun.");
+            }
+            if (normExpected.startsWith("print(") && !normActual.startsWith("print(")) {
+              return showError(i, expected, actual, "Kamu perlu mencetak jarak dengan `print(distance(...))`.");
+            }
+    
+            return showError(i, expected, actual);
+          }
+        }
+      }
+    
+      // Kalau sampai sini, berarti semua jalur gagal dan tidak diketahui pasti salahnya apa
+      swal("Jawaban Salah", "Urutan atau isi kode tidak sesuai. Coba lagi!", "error");
+    };
+    
   
     const resetCode = () => {
       setPythonCode('');

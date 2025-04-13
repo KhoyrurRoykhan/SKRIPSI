@@ -229,24 +229,37 @@ for i in range(1):
   };
 
 
+  const [isResetting, setIsResetting] = useState(false);
+
   const runitchallanges = (code, forceReset = false) => {
     setOutputChallanges('');
+    if (forceReset) setIsResetting(true);
+  
     const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
-    const prog = forceReset ? imports : imports + pythonCodeChallanges;
+    const prog = forceReset ? imports : imports + (code || pythonCodeChallanges);
   
     window.Sk.pre = "outputChallanges";
     window.Sk.configure({ output: outfchallanges, read: builtinReadChallanges });
     (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
   
-    window.Sk.misceval.asyncToPromise(() => 
-        window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
     ).then(
-        () => {
-          console.log('success');
-          setHasRun(true);
+      () => {
+        setHasRun(true);
+  
+        // ❌ Jangan validasi jika sedang reset
+        if (!forceReset && !isResetting) {
           checkCodeChallanges();
-        },
-        (err) => setOutput((prev) => prev + err.toString())
+        }
+  
+        // ✅ Matikan flag reset setelah jalan
+        if (forceReset) setIsResetting(false);
+      },
+      (err) => {
+        setOutput((prev) => prev + err.toString());
+        if (forceReset) setIsResetting(false);
+      }
     );
   };
 
@@ -254,31 +267,98 @@ for i in range(1):
 
   const checkCodeChallanges = () => {
     if (!hasRun) return;
-
-    const validCodes = [
-        ["left(90)", "forward(100)", "left(90)", "forward(100)", "print(position())", "forward(50)", "left(90)", "forward(200)", "print(position())"],
-        ["right(270)", "forward(100)", "left(90)", "forward(100)", "print(position())", "forward(50)", "left(90)", "forward(200)", "print(position())"]
+  
+    const correctSteps = [
+      { cmd: "left", val: 90 },
+      { cmd: "forward", val: 100 },
+      { cmd: "left", val: 90 },
+      { cmd: "forward", val: 100 },
+      { cmd: "print", val: "position()" },
+      { cmd: "forward", val: 50 },
+      { cmd: "left", val: 90 },
+      { cmd: "forward", val: 200 },
+      { cmd: "print", val: "position()" }
     ];
-
-    const userCodeLines = pythonCodeChallanges.trim().split("\n");
-
-    // Cek apakah input pengguna merupakan bagian awal dari salah satu jawaban yang valid
-    const isPartialMatch = validCodes.some(validCode =>
-        validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
-    );
-
-    // Cek apakah input pengguna sudah benar secara keseluruhan
-    const isExactMatch = validCodes.some(validCode =>
-        validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
-    );
-
-    if (isExactMatch) {
-        console.log("OK");
-        // swal("Jawaban Benar!", "Kamu berhasil!", "success");
-    } else if (!isPartialMatch) {
-        swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+  
+    // Bersihkan baris dan buang baris kosong
+    const userLines = pythonCodeChallanges
+      .trim()
+      .split("\n")
+      .map(line => line.trim())
+      .filter(line => line !== ""); // ← ini yang penting
+  
+    const showStepError = (stepIndex, message) => {
+      swal("Salah!", `Langkah ke-${stepIndex + 1}: ${message}`, "error").then(() => resetCodeChallanges());
+    };
+  
+    const isMatchingCommand = (line, expected) => {
+      const match = line.match(/(\w+)\s*\((\d+)\)/);
+      if (!match) return { valid: false, message: "Format perintah tidak dikenali." };
+  
+      const [_, cmd, valStr] = match;
+      const val = parseInt(valStr);
+  
+      const equivalent = {
+        left: {
+          90: { cmd: "right", val: 270 },
+          180: { cmd: "right", val: 180 },
+          270: { cmd: "right", val: 90 }
+        },
+        right: {
+          90: { cmd: "left", val: 270 },
+          180: { cmd: "left", val: 180 },
+          270: { cmd: "left", val: 90 }
+        }
+      };
+  
+      const isExactMatch = cmd === expected.cmd && val === expected.val;
+      const isEquivalentMatch =
+        equivalent[expected.cmd]?.[expected.val]?.cmd === cmd &&
+        equivalent[expected.cmd]?.[expected.val]?.val === val;
+  
+      if (!isExactMatch && !isEquivalentMatch) {
+        return { valid: false, message: `Gunakan ${expected.cmd}(${expected.val}) atau ekuivalennya.` };
+      }
+  
+      return { valid: true };
+    };
+  
+    const isMatchingPrint = (line, expectedVal) => {
+      if (!line.startsWith("print")) {
+        return { valid: false, message: `Gunakan perintah print(${expectedVal}).` };
+      }
+  
+      const inside = line.match(/print\s*\((.*)\)/);
+      if (!inside || inside[1].replace(/\s+/g, '') !== expectedVal) {
+        return { valid: false, message: `Isi print harus print(${expectedVal}).` };
+      }
+  
+      return { valid: true };
+    };
+  
+    for (let i = 0; i < userLines.length; i++) {
+      const line = userLines[i];
+      const expectedStep = correctSteps[i];
+  
+      if (!expectedStep) {
+        return showStepError(i, "Langkah ini tidak diperlukan.");
+      }
+  
+      const result = expectedStep.cmd === "print"
+        ? isMatchingPrint(line, expectedStep.val)
+        : isMatchingCommand(line, expectedStep);
+  
+      if (!result.valid) {
+        return showStepError(i, result.message);
+      }
     }
-};
+  
+    // Jangan terlalu ketat, biarkan multi-step
+    if (userLines.length === correctSteps.length) {
+      swal("Benar!", "Seluruh langkah sudah benar!", "success");
+    }
+  };
+  
 
 
   const resetCode = () => {
@@ -286,6 +366,10 @@ for i in range(1):
     setOutput('');
     runit('', true);
 };
+
+  const handleRunClick = () => {
+    runitchallanges();
+  };
 
   const resetCodeChallanges = () => {
     setPythonCodeChallanges('');
