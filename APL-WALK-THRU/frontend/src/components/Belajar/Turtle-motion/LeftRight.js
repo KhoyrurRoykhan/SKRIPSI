@@ -168,7 +168,7 @@ for i in range(100):
 
   const runit = (code, forceReset = false) => {
     setOutput('');
-    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(1)\n";
     const prog = forceReset ? imports : imports + pythonCode;
 
     window.Sk.pre = "output";
@@ -340,7 +340,9 @@ const resetCodeChallanges = () => {
   return (
     <Container fluid className="sidenavigasi mt-5">
       <Row>
-        <Col xs={2} className="bg-light border-end vh-100 p-0">
+        <Col xs={2} className="bg-light border-end vh-100 p-0 " 
+        style={{ overflowY: "hidden" }} // atau "auto", atau "scroll"
+        >
         <Accordion defaultActiveKey={activeAccordionKey}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Pengenalan</Accordion.Header>
@@ -516,6 +518,20 @@ const resetCodeChallanges = () => {
               </Accordion.Body>
             </Accordion.Item>
 
+            <Accordion.Item eventKey="6">
+              <Accordion.Header>Perulangan</Accordion.Header>
+              <Accordion.Body>
+                <div className="d-flex flex-column">
+                  <button
+                    className={getButtonClass("/belajar/perulangan/forloop")}
+                    onClick={() => navigate("/belajar/perulangan/forloop")}
+                  >
+                    For Loops
+                  </button>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+
           </Accordion>
         </Col>
 
@@ -583,7 +599,7 @@ const resetCodeChallanges = () => {
               <Col md={6}>
                 <CodeMirror
                   value={`# Putar Bidawang ke kiri sejauh 120 derajat 
-    left(120)`}
+left(120)`}
                   height="400px"
                   theme="light"
                   extensions={[python()]}
@@ -609,7 +625,7 @@ const resetCodeChallanges = () => {
               <Col md={6}>
                 <CodeMirror
                   value={`# Putar Bidawang ke kanan sejauh 90 derajat 
-    right(90)`}
+right(90)`}
                   height="400px"
                   theme="light"
                   extensions={[python()]}
@@ -768,7 +784,7 @@ const resetCodeChallanges = () => {
                       borderLeft: "5px solid #2DAA9E",
                       borderRight: "5px solid #2DAA9E",
                       fontSize: "18px",
-                      fontWeight: "bold",
+                      // fontWeight: "bold",
                       borderRadius: "5px"
                     }}
                   >

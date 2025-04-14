@@ -37,7 +37,7 @@ const Navigasibar = () => {
         <Navbar.Toggle />
         <Navbar.Collapse id="basic-navbar-nav" style={{ marginLeft: '20px'}}>
           <Nav className="me-auto">
-            <Nav.Link style={{color: 'white'}} className='ml-5' href="/belajarturtle"><FaBookReader /> Belajar Turtle</Nav.Link>
+            <Nav.Link style={{color: 'white'}} className='ml-5' href="/belajar/pendahuluan"><FaBookReader /> Belajar Turtle</Nav.Link>
             <Nav.Link style={{color: 'white'}} className='ml-5' href="/challanges"><FaGamepad /> Tantangan</Nav.Link>
             <Nav.Link style={{color: 'white'}} className='ml-5' href="/susursungai"><FaScrewdriver /> Susur Sungai</Nav.Link>
           </Nav>

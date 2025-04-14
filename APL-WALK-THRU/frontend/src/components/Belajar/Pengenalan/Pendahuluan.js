@@ -158,7 +158,7 @@ for i in range(100):
 
   const runit = (code, forceReset = false) => {
     setOutput('');
-    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(1)\n";
     const prog = forceReset ? imports : imports + pythonCode;
 
     window.Sk.pre = "output";
@@ -207,7 +207,9 @@ const runit2 = (code, forceReset = false) => {
   return (
     <Container fluid className="sidenavigasi mt-5">
       <Row>
-        <Col  xs={2} className="bg-light border-end vh-100 p-0">
+      <Col xs={2} className="bg-light border-end vh-100 p-0"
+        style={{ overflowY: "hidden" }} // atau "auto", atau "scroll"
+        >
         <Accordion defaultActiveKey="0">
             <Accordion.Item eventKey="0">
               <Accordion.Header>Pengenalan</Accordion.Header>
@@ -378,6 +380,20 @@ const runit2 = (code, forceReset = false) => {
                     onClick={() => navigate("/belajar/moredrawingcontrol/write")}
                   >
                     Write
+                  </button>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+
+            <Accordion.Item eventKey="6">
+              <Accordion.Header>Perulangan</Accordion.Header>
+              <Accordion.Body>
+                <div className="d-flex flex-column">
+                  <button
+                    className="btn text-start mb-2 btn-outline-success"
+                    onClick={() => navigate("/belajar/perulangan/forloop")}
+                  >
+                    For Loops
                   </button>
                 </div>
               </Accordion.Body>
@@ -726,7 +742,7 @@ const runit2 = (code, forceReset = false) => {
                       borderLeft: "5px solid #2DAA9E",
                       borderRight: "5px solid #2DAA9E",
                       fontSize: "18px",
-                      fontWeight: "bold",
+                      // fontWeight: "bold",
                       borderRadius: "5px"
                     }}
                   >
@@ -739,7 +755,7 @@ const runit2 = (code, forceReset = false) => {
                           variant={selectedAnswer === answer ? "success" : "outline-success"}
                           onClick={() => handleAnswerChange("question1", answer)}
                           className="w-100 p-3"
-                          style={{ fontSize: "18px", fontWeight: "bold", backgroundColor: selectedAnswer === answer ? "#2DAA9E" : "", borderColor: "#2DAA9E" }}
+                          style={{ fontSize: "18px", backgroundColor: selectedAnswer === answer ? "#2DAA9E" : "", borderColor: "#2DAA9E" }}
                         >
                           {answer}
                         </Button>

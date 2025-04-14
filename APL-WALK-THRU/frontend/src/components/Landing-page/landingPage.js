@@ -83,7 +83,7 @@ const LandingPage = () => {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan elit nec est bibendum semper. Pellentesque eleifend aliquet tincidunt. Ut tincidunt et sem vitae porttitor.
               </Card.Text>
               {/* <Button variant="primary" href="/belajarturtle">Explore all</Button> */}
-              <a href="/belajarturtle" class="button-3d-eksplore">Mulai Belajar</a>
+              <a href="/belajar/pendahuluan" class="button-3d-eksplore">Mulai Belajar</a>
             </Card.Body>
           </Card>
         </Col>

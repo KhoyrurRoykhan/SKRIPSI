@@ -22,11 +22,11 @@ import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
 
 const correctCommands = {
-  '1a': 'forward(100)',
-  '1b': 'right(90)',
-  '1c': 'forward(100)',
-  '1d': 'left(45)',
-  '1e': 'forward(50)'
+  '1a': 'circle(50)',
+  '1b': 'right(90)\nforward(50)\nleft(90)',
+  '1c': 'circle(100)',
+  '1d': 'right(180)',
+  '1e': 'circle(50,180)'
 };
 
 const Circle = () => {
@@ -78,22 +78,50 @@ const Circle = () => {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [activeKey, setActiveKey] = useState('1a');
 
+  const normalizeLine = (line) => {
+    return line
+      .toLowerCase()               // bikin semua huruf kecil biar gak sensi kapital
+      .replace(/['"]/g, '"')       // samain semua kutip jadi "
+      .replace(/\s+/g, ' ')        // spasi berlebih jadi satu spasi
+      .replace(/\s*\(\s*/g, '(')   // hapus spasi sekitar kurung buka
+      .replace(/\s*\)\s*/g, ')')   // hapus spasi sekitar kurung tutup
+      .replace(/\s*,\s*/g, ',')    // hapus spasi sekitar koma
+      .replace(/\s*:\s*/g, ':')    // hapus spasi sekitar titik dua
+      .trim();
+  };
+  
   const checkCode = () => {
-    const lines = pythonCode.split('\n').map(line => line.trim());
+    const cleanedCode = pythonCode
+      .split('\n')
+      .map(line => normalizeLine(line))
+      .filter(line => line.length > 0);
+  
     let newCompletedSteps = [];
-    let keys = Object.keys(correctCommands);
-    
-    for (let i = 0; i < keys.length; i++) {
-      if (lines[i] === correctCommands[keys[i]]) {
-        newCompletedSteps.push(keys[i]);
+  
+    for (const key of Object.keys(correctCommands)) {
+      const expected = correctCommands[key]
+        .split('\n')
+        .map(line => normalizeLine(line));
+  
+      const codeSlice = cleanedCode.slice(0, expected.length);
+  
+      const isMatch = expected.every((expectedLine, idx) => {
+        const userLine = codeSlice[idx] || '';
+        return userLine.includes(expectedLine);
+      });
+  
+      if (isMatch) {
+        newCompletedSteps.push(key);
+        cleanedCode.splice(0, expected.length);
       } else {
         break;
       }
     }
-    
+  
     setCompletedSteps(newCompletedSteps);
-    if (newCompletedSteps.length < keys.length) {
-      setActiveKey(keys[newCompletedSteps.length]);
+  
+    if (newCompletedSteps.length < Object.keys(correctCommands).length) {
+      setActiveKey(Object.keys(correctCommands)[newCompletedSteps.length]);
     } else {
       setActiveKey(null);
     }
@@ -164,7 +192,7 @@ for i in range(100):
 
   const runit = (code, forceReset = false) => {
     setOutput('');
-    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(1)\n";
     const prog = forceReset ? imports : imports + pythonCode;
 
     window.Sk.pre = "output";
@@ -306,7 +334,9 @@ for i in range(100):
   return (
     <Container fluid className="sidenavigasi mt-5">
       <Row>
-        <Col xs={2} className="bg-light border-end vh-100 p-0">
+        <Col xs={2} className="bg-light border-end vh-100 p-0"
+        style={{ overflowY: "hidden" }} // atau "auto", atau "scroll"
+        >
         <Accordion defaultActiveKey={activeAccordionKey}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Pengenalan</Accordion.Header>
@@ -482,6 +512,20 @@ for i in range(100):
               </Accordion.Body>
             </Accordion.Item>
 
+            <Accordion.Item eventKey="6">
+              <Accordion.Header>Perulangan</Accordion.Header>
+              <Accordion.Body>
+                <div className="d-flex flex-column">
+                  <button
+                    className={getButtonClass("/belajar/perulangan/forloop")}
+                    onClick={() => navigate("/belajar/perulangan/forloop")}
+                  >
+                    For Loops
+                  </button>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+
           </Accordion>
         </Col>
 
@@ -552,7 +596,7 @@ for i in range(100):
               <Col md={6}>
                 <CodeMirror
                   value={`# Menggambar lingkaran dengan jari-jari 50
-    circle(50)`}
+circle(50)`}
                   height="400px"
                   theme="light"
                   extensions={[python()]}
@@ -577,7 +621,7 @@ for i in range(100):
               <Col md={6}>
                 <CodeMirror
                   value={`# Menggambar busur dengan jari 50 dan 180 derajat
-    circle(50, 180)`}
+circle(50, 180)`}
                   height="400px"
                   theme="light"
                   extensions={[python()]}
@@ -671,7 +715,7 @@ for i in range(100):
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Gambar Busur dengan jari-jari 50 dan putaran 180 derajat:</p>
-                      <pre><code>cirle(50,180)</code></pre>
+                      <pre><code>circle(50,180)</code></pre>
                     </AccordionBody>
                   </AccordionItem>
                 </Accordion>
@@ -758,7 +802,7 @@ for i in range(100):
                       borderLeft: "5px solid #2DAA9E",
                       borderRight: "5px solid #2DAA9E",
                       fontSize: "18px",
-                      fontWeight: "bold",
+                      // fontWeight: "bold",
                       borderRadius: "5px"
                     }}
                     >

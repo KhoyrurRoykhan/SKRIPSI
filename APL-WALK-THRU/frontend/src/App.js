@@ -41,6 +41,23 @@ import SetHome from "./components/Belajar/Turtle-motion/SetHome";
 import Circle from "./components/Belajar/Turtle-motion/Circle";
 import Dot from "./components/Belajar/Turtle-motion/Dot";
 
+import Position from "./components/Belajar/Tell-state/Position";
+import Xykoordinat from "./components/Belajar/Tell-state/Xykoordinat";
+import Heading from "./components/Belajar/Tell-state/Heading";
+import Distance from "./components/Belajar/Tell-state/Distance";
+
+import Pendownpenup from "./components/Belajar/Pen-control/Pendownpenup";
+import Pensize from "./components/Belajar/Pen-control/Pensize";
+import Isdown from "./components/Belajar/Pen-control/Isdown";
+
+import Color from "./components/Belajar/Color-control/PenColor";
+import FillColor from "./components/Belajar/Color-control/FillColor";
+
+import Reset from "./components/Belajar/More-drawing-control/Reset";
+import Clear from "./components/Belajar/More-drawing-control/Clear";
+import Write from "./components/Belajar/More-drawing-control/Write";
+
+import ForLoop from "./components/Belajar/Perulangan/ForLoop";
 
 function App() {
   return (
@@ -97,7 +114,23 @@ function App() {
       <Route path="/belajar/turtlemotion/circle" element={<><Navigasibar/><Circle/></>}/>
       <Route path="/belajar/turtlemotion/dot" element={<><Navigasibar/><Dot/></>}/>
 
+      <Route path="/belajar/tellstate/position" element={<><Navigasibar/><Position/></>}/>
+      <Route path="/belajar/tellstate/xcorycor" element={<><Navigasibar/><Xykoordinat/></>}/>
+      <Route path="/belajar/tellstate/heading" element={<><Navigasibar/><Heading/></>}/>
+      <Route path="/belajar/tellstate/distance" element={<><Navigasibar/><Distance/></>}/>
 
+      <Route path="/belajar/pencontrol/penuppendown" element={<><Navigasibar/><Pendownpenup/></>}/>
+      <Route path="/belajar/pencontrol/pensize" element={<><Navigasibar/><Pensize/></>}/>
+      <Route path="/belajar/pencontrol/isdown" element={<><Navigasibar/><Isdown/></>}/>
+
+      <Route path="/belajar/colorcontrol/pencolor" element={<><Navigasibar/><Color/></>}/>
+      <Route path="/belajar/colorcontrol/fillcolor" element={<><Navigasibar/><FillColor/></>}/>
+
+      <Route path="/belajar/moredrawingcontrol/reset" element={<><Navigasibar/><Reset/></>}/>
+      <Route path="/belajar/moredrawingcontrol/clear" element={<><Navigasibar/><Clear/></>}/>
+      <Route path="/belajar/moredrawingcontrol/write" element={<><Navigasibar/><Write/></>}/>
+
+      <Route path="/belajar/perulangan/forloop" element={<><Navigasibar/><ForLoop/></>}/>
 
     </Routes>
     </BrowserRouter>

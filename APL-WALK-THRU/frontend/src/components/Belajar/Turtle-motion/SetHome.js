@@ -23,7 +23,7 @@ import "../assets/tutor-copy.css";
 
 const correctCommands = {
   '1a': 'forward(100)\nright(45)\nforward(200)',
-  '1b': 'home',
+  '1b': 'home()',
 };
 
 const SetHome = () => {
@@ -76,25 +76,36 @@ const SetHome = () => {
   const [activeKey, setActiveKey] = useState('1a');
 
   const checkCode = () => {
-    const lines = pythonCode.split('\n').map(line => line.trim());
+    const cleanedCode = pythonCode
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+  
     let newCompletedSteps = [];
-    let keys = Object.keys(correctCommands);
-    
-    for (let i = 0; i < keys.length; i++) {
-      if (lines[i] === correctCommands[keys[i]]) {
-        newCompletedSteps.push(keys[i]);
+  
+    for (const key of Object.keys(correctCommands)) {
+      const expected = correctCommands[key].split('\n').map(l => l.trim());
+      const codeSlice = cleanedCode.slice(0, expected.length);
+  
+      const isMatch = expected.every((cmd, idx) => cmd === codeSlice[idx]);
+  
+      if (isMatch) {
+        newCompletedSteps.push(key);
+        cleanedCode.splice(0, expected.length); // hapus baris yang sudah dicek
       } else {
         break;
       }
     }
-    
+  
     setCompletedSteps(newCompletedSteps);
-    if (newCompletedSteps.length < keys.length) {
-      setActiveKey(keys[newCompletedSteps.length]);
+  
+    if (newCompletedSteps.length < Object.keys(correctCommands).length) {
+      setActiveKey(Object.keys(correctCommands)[newCompletedSteps.length]);
     } else {
       setActiveKey(null);
     }
   };
+  
 
   //kuis
   //kuis
@@ -261,7 +272,9 @@ for i in range(100):
   return (
     <Container fluid className="sidenavigasi mt-5">
       <Row>
-        <Col xs={2} className="bg-light border-end vh-100 p-0">
+        <Col xs={2} className="bg-light border-end vh-100 p-0"
+        style={{ overflowY: "hidden" }} // atau "auto", atau "scroll"
+        >
         <Accordion defaultActiveKey={activeAccordionKey}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Pengenalan</Accordion.Header>
@@ -437,6 +450,20 @@ for i in range(100):
               </Accordion.Body>
             </Accordion.Item>
 
+            <Accordion.Item eventKey="6">
+              <Accordion.Header>Perulangan</Accordion.Header>
+              <Accordion.Body>
+                <div className="d-flex flex-column">
+                  <button
+                    className={getButtonClass("/belajar/perulangan/forloop")}
+                    onClick={() => navigate("/belajar/perulangan/forloop")}
+                  >
+                    For Loops
+                  </button>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+
           </Accordion>
         </Col>
 
@@ -498,12 +525,12 @@ for i in range(100):
               <Col md={6}>
                 <CodeMirror
                   value={`# Pindahkan turtle ke beberapa posisi
-    forward(100)
-    left(90)
-    forward(150)
+forward(100)
+left(90)
+forward(150)
                 
-    # Kembali ke posisi awal
-    home()`}
+# Kembali ke posisi awal
+home()`}
                   height="400px"
                   theme="light"
                   extensions={[python()]}
@@ -654,7 +681,7 @@ for i in range(100):
                       borderLeft: "5px solid #2DAA9E",
                       borderRight: "5px solid #2DAA9E",
                       fontSize: "18px",
-                      fontWeight: "bold",
+                      // fontWeight: "bold",
                       borderRadius: "5px"
                     }}
                     >

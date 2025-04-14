@@ -170,7 +170,7 @@ const broccoliPositions = [
 
   const runit = (code, forceReset = false) => {
     setOutput('');
-    const imports = "from turtle import *\nreset()\nshape('turtle')\n";
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(1)\n";
     const prog = forceReset ? imports : imports + pythonCode;
 
     window.Sk.pre = "output";
@@ -276,7 +276,9 @@ const broccoliPositions = [
   return (
     <Container fluid className="sidenavigasi mt-5">
       <Row>
-        <Col xs={2} className="bg-light border-end vh-100 p-0">
+        <Col xs={2} className="bg-light border-end vh-100 p-0"
+        style={{ overflowY: "hidden" }} // atau "auto", atau "scroll"
+        >
         <Accordion defaultActiveKey={activeAccordionKey}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>Pengenalan</Accordion.Header>
@@ -452,6 +454,20 @@ const broccoliPositions = [
               </Accordion.Body>
             </Accordion.Item>
 
+            <Accordion.Item eventKey="6">
+              <Accordion.Header>Perulangan</Accordion.Header>
+              <Accordion.Body>
+                <div className="d-flex flex-column">
+                  <button
+                    className={getButtonClass("/belajar/perulangan/forloop")}
+                    onClick={() => navigate("/belajar/perulangan/forloop")}
+                  >
+                    For Loops
+                  </button>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+
           </Accordion>
         </Col>
 
@@ -521,12 +537,12 @@ const broccoliPositions = [
               <Col md={6}>
                 <CodeMirror
                   value={`# Atur arah turtle menghadap utara (90 derajat)
-    setheading(90)
-    forward(100)  # Bergerak maju ke atas
+setheading(90)
+forward(100)  # Bergerak maju ke atas
                   
-    # Atur arah turtle menghadap barat (180 derajat)
-    setheading(180)
-    forward(100)  # Bergerak maju ke kiri`}
+# Atur arah turtle menghadap barat (180 derajat)
+setheading(180)
+forward(100)  # Bergerak maju ke kiri`}
                   height="400px"
                   theme="light"
                   extensions={[python()]}
@@ -696,7 +712,7 @@ const broccoliPositions = [
                       borderLeft: "5px solid #2DAA9E",
                       borderRight: "5px solid #2DAA9E",
                       fontSize: "18px",
-                      fontWeight: "bold",
+                      // fontWeight: "bold",
                       borderRadius: "5px"
                     }}>
                       1. Jika Anda menggunakan perintah <code>setheading(90)</code>, ke arah mana Bidawang akan menghadap?
