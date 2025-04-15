@@ -1,324 +1,330 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import CodeMirror from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { Accordion, Container, Row, Col, Button, Form, Alert, Card, Image, AccordionItem, AccordionHeader, AccordionBody } from 'react-bootstrap';
+import '../assets/tutor.css';
+import '../asset_skulpt/SkulptTurtleRunner.css';
+import { BsArrowClockwise, BsCheckCircle } from 'react-icons/bs'; // Import ikon Bootstrap
+import left120 from './assets/1left120.gif';
+import right90 from './assets/1right90.gif';
+import gabunganleftright from './assets/1gabunganleftright.gif';
+import peringatan from './assets/peringatan.gif';
+
+// Challange
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
-import broccoli from './assets/cacingtarget.png';
-import { useNavigate } from "react-router-dom";
+import broccoli from './assets/kepiting.png';
+import map from './assets/1-left-right-c.png';
+import tilemap from './assets/1-left-right-tilemap.png';
+
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import "../assets/tutor-copy.css";
+
+const positions = [
+    { left: '294px', top: '174px', angle: 0 },
+    { left: '281px', top: '107px', angle: 30 },
+    { left: '241px', top: '67px', angle: 60 },
+    { left: '175px', top: '50px', angle: 90 },
+    { left: '282px', top: '245px', angle: -30 },
+    { left: '238px', top: '285px', angle: -60 },
+    { left: '173px', top: '298px', angle: -90 }
+  ];
 
 const TantanganSatu = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const [turtleCommands, setTurtleCommands] = useState('');
-  const canvasRef = useRef(null);
-  const papuyuImageRef = useRef(null);
-  const broccoliImageRef = useRef(null);
+    // hint challanges
+    const showHint = () => {
+      swal({
+        title: "Petunjuk Tantangan",
+        content: {
+          element: "div",
+          attributes: {
+            innerHTML: `
+              <p>Tugas kamu adalah menebak arah kepiting dan mengarahkan Bidawang ke arah yang tepat menggunakan <b>satu perintah saja</b>, yaitu <b>left()</b> atau <b>right()</b>.</p>
+              <p>Jika jawabanmu benar, kepiting akan <b>berpindah ke posisi lain</b>. Tantangan akan selesai setelah kamu berhasil menebak <b>semua arah kepiting</b> dengan benar.</p>
+            `
+          }
+        },
+        icon: "info"
+      });
+    };
+    
+    
 
-  const handleCommandChange = (event) => {
-    setTurtleCommands(event.target.value);
+  // Challenge state
+  const [pythonCodeChallanges, setPythonCodeChallanges] = useState('');
+  const [output, setOutput] = useState('');
+  const [usedIndexes, setUsedIndexes] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(
+    Math.floor(Math.random() * positions.length)
+  );
+
+  const outf = (text) => {
+    setOutput((prev) => prev + text);
   };
 
-  const showHint = () => {
-    swal("Deskripsi Misi", 
-      "Bantu papuyu menemukan jalannya menuju cacing lezat di posisi 100,100!\n\n" +
-      "Tujuan: Kura-kura memulai perjalanan dari posisi 0,0 dan harus menavigasi untuk mencapai posisi 100,100, tempat cacing besar lezat untuk dimakan.\n\n" +
-      "Instruksi:\n" +
-      "1) Papuyu harus bergerak maju dan mundur sejauh x satuan setiap kali untuk mencapai posisi 100,100.\n" +
-      "2) Ia dapat berbelok ke kanan atau ke kiri sebesar x derajat setiap kali untuk mengubah arah.\n" +
-      "3) Setelah ia mencapai cacing, ia bisa menikmati makanannya!", 
-      "info"
+  const builtinRead = (x) => {
+    if (window.Sk.builtinFiles === undefined || window.Sk.builtinFiles['files'][x] === undefined) {
+      throw `File not found: '${x}'`;
+    }
+    return window.Sk.builtinFiles['files'][x];
+  };
+
+  const initializeTurtle = () => {
+    const imports = "from turtle import *\nshape('turtle')\nspeed(2)\n";
+    const initialPosition = "penup()\nsetpos(0, 0)\ndown()\n"; // Set initial position
+    const prog = imports + initialPosition;
+
+    window.Sk.pre = "output";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
+
+    window.Sk.misceval.asyncToPromise(() => 
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+      () => {},
+      (err) => setOutput((prev) => prev + err.toString())
     );
   };
 
-  const drawGrid = (ctx) => {
-    ctx.strokeStyle = 'lightgray'; // Color of the grid lines
-    ctx.lineWidth = 0.5; // Thickness of the grid lines
-    ctx.fillStyle = 'black'; // Color for the grid numbers
-    ctx.font = '10px Arial'; // Font for the grid numbers
+  const resetTurtlePosition = () => {
+    const resetProg = "from turtle import *\npenup()\nhome()\nshape('turtle')\npendown()\n"; // Reset position to (0, 0)
+    window.Sk.misceval.asyncToPromise(() => 
+      window.Sk.importMainWithBody('<stdin>', false, resetProg, true)
+    ).then(
+      () => {},
+      (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
 
-    // Draw vertical lines and labels
-    for (let x = 0; x <= ctx.canvas.width; x += 50) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, ctx.canvas.height);
-      ctx.stroke();
-      // Draw x-axis labels
-      ctx.fillText(x - ctx.canvas.width / 2, x, ctx.canvas.height / 2 + 10); // Offset for better visibility
-    }
+  const runitchallanges = () => {
+    setOutput('');
+    const imports = "from turtle import *\nshape('turtle')\nspeed(2)\n";
+    const prog = imports + pythonCodeChallanges;
 
-    // Draw horizontal lines and labels
-    for (let y = 0; y <= ctx.canvas.height; y += 50) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(ctx.canvas.width, y);
-      ctx.stroke();
-      // Draw y-axis labels
-      ctx.fillText((ctx.canvas.height / 2 - y).toString(), ctx.canvas.width / 2 + 5, y + 3); // Offset for better visibility
+    window.Sk.pre = "output4";
+    window.Sk.configure({ output: outf, read: builtinRead });
+    (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
+
+    window.Sk.misceval.asyncToPromise(() => 
+      window.Sk.importMainWithBody('<stdin>', false, prog, true)
+    ).then(
+      () => checkCodeChallanges(),
+      (err) => setOutput((prev) => prev + err.toString())
+    );
+  };
+
+  const checkCodeChallanges = () => {
+    const validAngles = [0, 15, 30, 45, 60, 75, 90];
+    const correctAngle = positions[currentIndex].angle;
+  
+    // Determine the expected command based on the angle
+    let isCorrect = false;
+  
+    if (correctAngle === 0) {
+      // For 0 degrees, check for both left(0) and right(0)
+      isCorrect = pythonCodeChallanges.includes(`left(0)`) || pythonCodeChallanges.includes(`right(0)`);
+    } else if (correctAngle > 0) {
+      // For positive angles, check for left()
+      isCorrect = pythonCodeChallanges.includes(`left(${correctAngle})`);
+    } else {
+      // For negative angles, check for right()
+      isCorrect = pythonCodeChallanges.includes(`right(${Math.abs(correctAngle)})`);
     }
+  
+    // Check if the angle is valid
+    if (validAngles.includes(Math.abs(correctAngle)) && isCorrect) {
+      swal("Benar!", "Cacing berpindah ke posisi lain.", "success").then(() => {
+        resetTurtlePosition(); // Reset turtle position after the alert is confirmed
+        moveBroccoli();
+        setPythonCodeChallanges('');
+      });
+    } else {
+      swal("Salah", "Coba lagi!", "error").then(() => {
+        resetTurtlePosition(); // Reset turtle position after the alert is confirmed
+        setPythonCodeChallanges('');
+      });
+    }
+  };
+
+  const moveBroccoli = () => {
+    let availableIndexes = positions.map((_, i) => i).filter(i => !usedIndexes.includes(i));
+    if (availableIndexes.length === 0) {
+      swal("Tantangan Selesai!", "Kamu telah menyelesaikan semua posisi!", "success");
+      setUsedIndexes([]);
+      availableIndexes = positions.map((_, i) => i);
+    }
+    const nextIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+    setUsedIndexes([...usedIndexes, nextIndex]);
+    setCurrentIndex(nextIndex);
   };
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const papuyuImage = papuyuImageRef.current;
-    const broccoliImage = broccoliImageRef.current;
+    initializeTurtle(); // Initialize turtle for challenges
+  }, []);
 
-    // Initialize canvas
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw grid
-    drawGrid(ctx);
-
-    // Draw center lines
-    ctx.strokeStyle = 'lightgray';
-    ctx.beginPath();
-    ctx.moveTo(canvas.width / 2, 0);
-    ctx.lineTo(canvas.width / 2, canvas.height);
-    ctx.moveTo(0, canvas.height / 2);
-    ctx.lineTo(canvas.width, canvas.height / 2);
-    ctx.stroke();
-
-    // Display papuyu and broccoli at initial positions
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-
-    // Target (Broccoli)
-    const broccoliTarget = { x: 100, y: 100 };
-
-    // Papuyu
-    const imageWidth = 500; 
-    const aspectRatio = papuyuImage.width / papuyuImage.height;
-    const imageHeight = imageWidth / aspectRatio;
-
-    // Broccoli
-    const broccoliImageWidth = 100;
-    const broccoliAspectRatio = broccoliImage.width / broccoliImage.height;
-    const broccoliImageHeight = broccoliImageWidth / broccoliAspectRatio;
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    // Draw Broccoli at target position
-    ctx.drawImage(
-      broccoliImage,
-      centerX + broccoliTarget.x - broccoliImageWidth / 2,
-      centerY - broccoliTarget.y - broccoliImageHeight /  2,
-      broccoliImageWidth,
-      broccoliImageHeight
-    );
-
-    // Draw Papuyu at center
-    ctx.drawImage(
-      papuyuImage,
-      centerX - imageWidth / 2,
-      centerY - imageHeight / 2,
-      imageWidth,
-      imageHeight
-    );
-
-    // Show hint alert when the component mounts
-    showHint();
-
-  }, [papuyuImageRef, broccoliImageRef]);
-
-  const executeCommands = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const papuyuImage = papuyuImageRef.current;
-    const broccoliImage = broccoliImageRef.current;
-  
-    // Clear and redraw canvas
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-    // Draw grid
-    drawGrid(ctx);
-  
-    ctx.strokeStyle = 'lightgray';
-    ctx.beginPath();
-    ctx.moveTo(canvas.width / 2, 0);
-    ctx.lineTo(canvas.width / 2, canvas.height);
-    ctx.moveTo(0, canvas.height / 2);
-    ctx.lineTo(canvas.width, canvas.height / 2);
-    ctx.stroke();
-  
-    // Target position (Broccoli)
-    const broccoliTarget = { x: 100, y: 100 };
-  
-    // Draw Broccoli
-    const broccoliImageWidth = 100;
-    const broccoliAspectRatio = broccoliImage.width / broccoliImage.height;
-    const broccoliImageHeight = broccoliImageWidth / broccoliAspectRatio;
-  
-    ctx.drawImage(
-      broccoliImage,
-      canvas.width / 2 + broccoliTarget.x - broccoliImageWidth / 2,
-      canvas.height / 2 - broccoliTarget.y - broccoliImageHeight / 2,
-      broccoliImageWidth,
-      broccoliImageHeight
-    );
-  
-    // Initial position of Papuyu
-    let currentX = canvas.width / 2;
-    let currentY = canvas.height / 2;
-    let currentAngle = 90;
-  
-    // Movement path
-    const path = [{ x: currentX, y: currentY }];
-  
-    // Execute commands
-    const commands = turtleCommands.split('\n');
-    commands.forEach((command) => {
-      const parts = command.trim().split(' '); // Correctly declare parts here
-      const instruction = parts[0].toLowerCase();
-      const value = parseFloat(parts[1]);
-  
-      switch (instruction) {
-        case 'forward':
-        case 'fd':
-          currentX += value * Math.cos((currentAngle - 90) * Math.PI / 180);
-          currentY += value * Math.sin((currentAngle - 90) * Math.PI / 180);
-          path.push({ x: currentX, y: currentY });
-          break;
-  
-        case 'backward':
-        case 'bk':
-          currentX -= value * Math.cos((currentAngle - 90) * Math.PI / 180);
-          currentY -= value * Math.sin((currentAngle - 90) * Math.PI / 180);
-          path.push({ x: currentX, y: currentY });
-          break;
-  
-        case 'right':
-        case 'rt':
-          currentAngle += value;
-          break;
-  
-        case 'left':
-        case 'lt':
-          currentAngle -= value;
-          break;
-  
-        case 'goto':
-          if (parts.length === 3) {
-            currentX = canvas.width / 2 + parseFloat(parts[1]);
-            currentY = canvas.height / 2 - parseFloat(parts[2]);
-            path.push({ x: currentX, y: currentY });
-          }
-          break;
-  
-        case 'setheading':
-        case 'seth':
-          currentAngle = value;
-          break;
-  
-        default:
-          console.warn('Invalid command:', command);
-      }
-    });
-  
-    // Draw movement path
-    ctx.beginPath();
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 2;
-    ctx.moveTo(path[0].x, path[0].y);
-    path.slice(1).forEach((point) => {
-      ctx.lineTo(point.x, point.y);
-    });
-    ctx.stroke();
-  
-    // Redraw Papuyu at final position
-    const imageWidth = 500;
-    const aspectRatio = papuyuImage.width / papuyuImage.height;
-    const imageHeight = imageWidth / aspectRatio;
-  
-    ctx.save();
-    ctx.translate(currentX, currentY);
-    ctx.rotate((currentAngle - 90) * Math.PI / 180);
-  
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(
-      papuyuImage,
-      -imageWidth / 2,
-      -imageHeight / 2,
-      imageWidth,
-      imageHeight
-    );
-    ctx.restore();
-  
-    // Debug final position of Papuyu
-    console.log(`Papuyu Final Position: (${currentX.toFixed(2)}, ${currentY.toFixed(2)})`);
-    console.log(`Broccoli Position: (${canvas.width / 2 + broccoliTarget.x}, ${canvas.height / 2 - broccoliTarget.y})`);
-  
-    // Tolerance for position checking
-    const tolerance = 2;
-  
-    // Check final position after execution
-    setTimeout(() => {
-      if (
-        Math.abs(currentX - (canvas.width / 2 + broccoliTarget.x)) <= tolerance &&
-        Math.abs(currentY - (canvas.height / 2 - broccoliTarget.y)) <= tolerance
-      ) {
-        swal("Horee!", "Ikan Papuyu telah memakan Cacing!", "success"); // Using SweetAlert
-      }
-    }, 0); // Very small delay for synchronization
-  };
-  
   return (
-    <Container style={{ marginTop: 100 }}>
-      <Row>
-        <Col md={6} className="d-flex justify-content-end">
-          <Form style={{ width: '100%' }}>
-            <Form.Group controlId="turtleCommands">
-              <Form.Label>Input Turtle Commands</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={19}
-                value={turtleCommands}
-                onChange={handleCommandChange}
-                placeholder={`Enter commands like:
-  fd 100
-  rt 90
-  `}
-              />
-            </Form.Group>
-            <Button className='mt-2' variant="success" onClick={executeCommands}>
-              Execute
-            </Button>
-            <Button className='mt-2 ms-2' variant="info" onClick={showHint}>
-              Show Hint
-            </Button>
-            <Button className="mt-2 ms-2" variant="primary" href='/belajarturtle' 
-            onClick={() => navigate('/belajarturtle', { state: { activeContent: "menu1.1" } })}>
-              Kembali ke Materi
-            </Button>
-          </Form>
+    <Container fluid className="sidenavigasi mt-5">
+        <Row>
+        {/* Kolom Kiri - Prev */}
+        <Col md={2} className="d-flex justify-content-center align-items-center">
+        {/* <Button
+            variant="light"
+            onClick={() => navigate('/materi')}
+            style={{
+            background: 'linear-gradient(to right, #6c757d, #495057)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '30px',
+            padding: '10px 20px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            fontWeight: 'bold'
+            }}
+        >
+            ◀️ Prev
+        </Button> */}
         </Col>
-        <Col md={6} className="d-flex justify-content-start">
-          <div style={{ position: 'relative' }}>
-            <canvas
-              ref={canvasRef}
-              width={500}
-              height={500}
-              style={{ border: '1px solid black', display: 'block' }}
-            />
-            <img
-              ref={papuyuImageRef}
-              src={papuyu}
-              alt="Papuyu"
-              style={{ display: 'none' }}
-            />
-            <img
-              ref={broccoliImageRef}
-              src={broccoli}
-              alt="Broccoli"
-              style={{ display: 'none' }}
-            />
-          </div>
+
+        {/* Kolom Tengah - Konten Tantangan */}
+        <Col md={8}>
+            <div style={{marginTop:"20px"}}>
+        
+            <h4
+              style={{
+                color: '#2DAA9E',
+                fontSize: '26px',
+                fontWeight: 'bold',
+                borderLeft: '5px solid #2DAA9E',
+                paddingLeft: '10px',
+                marginBottom: '15px',
+              }}
+            >
+              1. Mengubah Arah ke Kiri dan ke Kanan
+            </h4>
+            
+                <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+                    Selesaikan tantangan dengan perintah <code>left()</code> dan <code>right()</code>. Klik petunjuk untuk bantuan.
+                  </p>
+
+                  <div className="d-flex gap-2 mb-2">
+                    <Button variant="info" onClick={showHint} style={{ color: 'white', fontWeight: 'bold' }}>
+                        Petunjuk
+                    </Button>
+
+                    <Button
+                    variant="warning"
+                    onClick={() => navigate('/belajar/turtlemotion/leftright')}
+                    style={{ color: 'white', fontWeight: 'bold' }}
+                    >
+                    Kembali ke Materi
+                    </Button>
+
+                    </div>
+
+
+                  <div className="skulpt-container" style={{
+                      border: "3px solid #ccc",
+                      borderRadius: "10px",
+                      padding: "15px",
+                      // display: "flex",
+                      // flexWrap: "wrap",
+                      gap: "20px",
+                      justifyContent: "center",
+                      backgroundColor: "#f9f9f9",
+                    }}>
+                    <div className="editor-section">
+                      <CodeMirror
+                        value={pythonCodeChallanges}
+                        height="290px"
+                        theme="light"
+                        extensions={[python()]}
+                        onChange={(value) => setPythonCodeChallanges(value)}
+                        style={{
+                          border: "2px solid #2DAA9E",
+                          borderRadius: "8px",
+                          padding: "5px",
+                        }}
+                      />
+                      <div style={{ marginTop: '5px', display: 'flex', gap: '10px' }}>
+                        <Button variant="success" onClick={runitchallanges}>Run Code</Button>
+                      </div>
+                      <pre className="output"style={{
+                        height: "60px",
+                        marginTop: '5px',
+                        border: "2px solid #ccc",
+                        borderRadius: "5px",
+                        padding: "5px",
+                        backgroundColor: "#fff",
+                      }}>
+                        {output}
+                      </pre>
+                    </div>
+                    <div className="canvas-section" 
+                      style={{
+                        position: "relative",
+                        width: "400px",
+                        height: "405px",
+                        borderRadius: "10px",
+                        border: "3px solid #2DAA9E",
+                        // overflow: "hidden"
+                      }}
+                    >
+                      <div id="mycanvas-challanges" style={{ width: 400, height: 400, position: "relative" }}></div>
+                      <img
+                        src={broccoli}
+                        alt="broccoli"
+                        style={{
+                          position: "absolute",
+                          borderRadius: "10px",
+                          left: positions[currentIndex].left,
+                          top: positions[currentIndex].top,
+                          zIndex: 100,
+                          width: "50px",
+                          height: "50px",
+                          objectFit: "cover"
+                        }}
+                      />
+                      <img
+                        src={tilemap}
+                        alt="Map"
+                        style={{ position: "absolute", left: "0px", top: "0px", width: "400px", height: "400px" }}
+                      />
+                      <img
+                        src={map}
+                        alt="Map"
+                        style={{ position: "absolute", left: "0px", top: "0px", width: "400px", height: "400px" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+        </Col>
+
+        {/* Kolom Kanan - Next */}
+        <Col md={2} className="d-flex justify-content-center align-items-center">
+        <Button
+            variant="light"
+            onClick={() => navigate('/challanges/2')}
+            style={{
+            background: 'linear-gradient(to right, #17a2b8, #138496)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '30px',
+            padding: '10px 20px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            fontWeight: 'bold',
+            
+            }}
+        >
+            Next ▶️
+        </Button>
         </Col>
       </Row>
+        
     </Container>
-  );
-};
+  )
+}
 
-export default TantanganSatu;
+export default TantanganSatu

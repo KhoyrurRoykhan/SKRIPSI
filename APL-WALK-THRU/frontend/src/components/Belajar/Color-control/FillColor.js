@@ -212,7 +212,7 @@ for i in range(100):
     };
   
   
-    const runitchallanges = (code, forceReset = false) => {
+    const runitchallanges = (code, forceReset = false, skipValidation = false) => {
       setOutputChallanges('');
       const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-150,0)\npendown()\nspeed(1)\n";
       const prog = forceReset ? imports : imports + pythonCodeChallanges;
@@ -221,45 +221,113 @@ for i in range(100):
       window.Sk.configure({ output: outfchallanges, read: builtinReadChallanges });
       (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
     
-      window.Sk.misceval.asyncToPromise(() => 
-          window.Sk.importMainWithBody('<stdin>', false, prog, true)
+      window.Sk.misceval.asyncToPromise(() =>
+        window.Sk.importMainWithBody('<stdin>', false, prog, true)
       ).then(
-          () => {
-            console.log('success');
-            setHasRun(true);
-            checkCodeChallanges();
-          },
-          (err) => setOutput((prev) => prev + err.toString())
+        () => {
+          console.log('success');
+          setHasRun(true);
+          if (!skipValidation) {
+            checkCodeChallanges(); // validasi hanya jika skipValidation === false
+          }
+        },
+        (err) => setOutputChallanges((prev) => prev + err.toString())
       );
     };
   
     const [hasRun, setHasRun] = useState(false);
   
-    const checkCodeChallanges = () => {
-      if (!hasRun) return;
+    const alertShownRef = useRef(false); // Tambahkan ini di bagian atas komponen
   
-      const validCodes = [
-          ['fillcolor("grey")', "begin_fill()", "forward(300)", "left(90)", "forward(300)", "left(90)", "forward(300)", "left(90)", "forward(300)", "end_fill()"]
-      ];
+  const checkCodeChallanges = () => {
+    if (!pythonCodeChallanges.trim()) return;
   
-      const userCodeLines = pythonCodeChallanges.trim().split("\n");
+    const validCodeSteps = [
+      "penup()",
+      "setposition(-150,50)",
+      "pendown()",
+    
+      "fillcolor(\"green\")",
+      "begin_fill()",
+      "forward(100)",
+      "left(90)",
+      "forward(100)",
+      "left(90)",
+      "forward(100)",
+      "left(90)",
+      "forward(100)",
+      "end_fill()",
+    
+      "penup()",
+      "setposition(50,50)",
+      "pendown()",
+    
+      "fillcolor(\"red\")",
+      "begin_fill()",
+      "setposition(150,50)",
+      "setposition(100,150)",
+      "setposition(50,50)",
+      "end_fill()",
+    
+      "penup()",
+      "setposition(-50,-100)",
+      "pendown()",
+    
+      "fillcolor(\"yellow\")",
+      "begin_fill()",
+      "setposition(-100,-150)",
+      "setposition(-150,-100)",
+      "setposition(-100,-50)",
+      "setposition(-50,-100)",
+      "end_fill()",
+    
+      "penup()",
+      "setposition(50,-100)",
+      "pendown()",
+    
+      "fillcolor(\"blue\")",
+      "begin_fill()",
+      "circle(50)",
+      "end_fill()"
+    ];
+    
   
-      // Cek apakah kode pengguna merupakan bagian awal dari salah satu jawaban yang valid
-      const isPartialMatch = validCodes.some(validCode =>
-          validCode.slice(0, userCodeLines.length).every((code, index) => code === userCodeLines[index])
-      );
+    const normalizeLine = (line) => {
+      return line
+        .replace(/\s+/g, '')            // hapus semua spasi/tab
+        .replace(/,\s*/g, ',');         // pastikan koma tidak diikuti spasi
+    };
   
-      // Cek apakah kode pengguna sudah lengkap dan benar
-      const isExactMatch = validCodes.some(validCode =>
-          validCode.length === userCodeLines.length && validCode.every((code, index) => code === userCodeLines[index])
-      );
+    const userCodeLines = pythonCodeChallanges
+      .split("\n")
+      .map(line => line.trim())
+      .filter(line => line !== "")      // hilangkan baris kosong
+      .map(normalizeLine);
   
-      if (isExactMatch) {
-          console.log("OK");
-          swal("Jawaban Benar!", "Kamu berhasil!", "success");
-      } else if (!isPartialMatch) {
-          swal("Jawaban Salah", "Coba lagi dengan perintah yang benar.", "error");
+    for (let i = 0; i < userCodeLines.length; i++) {
+      if (normalizeLine(validCodeSteps[i]) !== userCodeLines[i]) {
+        if (!alertShownRef.current) {
+          alertShownRef.current = true;
+          swal("Ups, ada yang salah!", `Langkah ke-${i + 1} salah.`, "error")
+            .then(() => {
+              runitchallanges('', true, true); // skip validasi
+              alertShownRef.current = false;
+            });
+        }
+        setHasRun(false);
+        return;
       }
+    }
+  
+    if (userCodeLines.length === validCodeSteps.length) {
+      if (!alertShownRef.current) {
+        alertShownRef.current = true;
+        swal("Mantap!", "Semua langkah benar, kamu berhasil!", "success").then(() => {
+          alertShownRef.current = false;
+        });
+      }
+      setHasRun(false);
+    }
   };
   
     const resetCode = () => {
@@ -268,18 +336,18 @@ for i in range(100):
       runit('', true);
   };
   
-    const resetCodeChallanges = () => {
-      setPythonCodeChallanges('');
-      setOutput('');
-      runitchallanges('', true);
-    };
+  const resetCodeChallanges = () => {
+    setPythonCodeChallanges('');
+    setOutput('');
+    runitchallanges('', true, true);
+  };
   
   
     useEffect(() => {
       runit();
       runit1(); // Jalankan kode saat halaman dimuat
     //   runit2(); // Jalankan kode saat halaman dimuat
-      runitchallanges(); // Jalankan kode saat halaman dimuat
+    runitchallanges('', true, true); // skip validasi di load awal
     }, []);
 
   return (

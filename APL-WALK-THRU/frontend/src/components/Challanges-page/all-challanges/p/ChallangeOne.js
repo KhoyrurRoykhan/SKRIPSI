@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import swal from 'sweetalert'; // Import SweetAlert
-import papuyu from './assets/papuyu-1.png';
-import broccoli from './assets/cacingtarget.png';
+import papuyu from '../assets/papuyu-1.png';
+import broccoli from '../assets/cacingtarget.png';
 
 const ChallangeOne = () => {
   const [turtleCommands, setTurtleCommands] = useState('');

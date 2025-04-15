@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { FaBomb, FaBook, FaBookReader, FaGamepad, FaLeanpub, FaRedRiver, FaScrewdriver, FaTrophy, FaWalking, FaWater } from 'react-icons/fa'; // Import icons
+import { FaBomb, FaBook, FaBookReader, FaCentercode, FaCode, FaCodeBranch, FaCodepen, FaConnectdevelop, FaFileCode, FaFreeCodeCamp, FaGamepad, FaLaptopCode, FaLeanpub, FaRedRiver, FaScrewdriver, FaTrophy, FaWalking, FaWater } from 'react-icons/fa'; // Import icons
 import './assets/navbar.css';
 
 const Navigasibar = () => {
@@ -39,7 +39,7 @@ const Navigasibar = () => {
           <Nav className="me-auto">
             <Nav.Link style={{color: 'white'}} className='ml-5' href="/belajar/pendahuluan"><FaBookReader /> Belajar Turtle</Nav.Link>
             <Nav.Link style={{color: 'white'}} className='ml-5' href="/challanges"><FaGamepad /> Tantangan</Nav.Link>
-            <Nav.Link style={{color: 'white'}} className='ml-5' href="/susursungai"><FaScrewdriver /> Susur Sungai</Nav.Link>
+            <Nav.Link style={{color: 'white'}} className='ml-5' href="/texteditor"><FaCode /> Text Editor</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end" style={{color: 'white'}}>

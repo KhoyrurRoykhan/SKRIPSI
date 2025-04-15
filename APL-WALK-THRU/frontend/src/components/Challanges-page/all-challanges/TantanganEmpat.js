@@ -8,13 +8,13 @@ import '../asset_skulpt/SkulptTurtleRunner.css';
 import forward100 from './assets/2turtle-forward.gif';
 import backward100 from './assets/2turtle-backward.gif';
 // import combinedForwardBackward from './assets/combinedForwardBackward.gif';
-import peringatan from './assets/peringatan.gif';
+
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
-import map from './assets/2-forward-backward-b.png';
-import tilemap from './assets/2-forward-backward-tilemap.png';
+import map from './assets/4-setx-sety-tilemap.png';
+import grid from './assets/3-setposition-b.png';
 
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -22,10 +22,10 @@ import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
 
 
-const TantanganDua = () => {
+const TantanganEmpat = () => {
     const navigate = useNavigate();
 
-    // hint challanges
+    //hh
     const showHint = () => {
       swal({
         title: "Petunjuk Tantangan",
@@ -33,9 +33,8 @@ const TantanganDua = () => {
           element: "div",
           attributes: {
             innerHTML: `
-              <p>Tugas kamu adalah menggerakkan Bidawang menuju ujung sungai tanpa menabrak dinding sungai.</p>
-              <p>Gunakan perintah <b>forward()</b> untuk maju, dan kombinasikan dengan <b>left()</b> atau <b>right()</b> untuk berbelok mengikuti alur sungai.</p>
-              <p>Untuk membantumu mengetahui panjang sungai dan sudut belokan yang tepat, perhatikan <i>garis bantu</i> yang ada pada canvas.</p>
+              <p>Bidawang saat ini berada di tengah layar (titik <b>(0, 0)</b>), sedangkan cacing berada di titik <b>(100, 100)</b>.</p>
+              <p>Tugas kamu adalah <b>memindahkan Bidawang</b> menuju ke posisi cacing dengan menggunakan <b>setx()</b> dan <b>sety()</b>.</p>
             `
           }
         },
@@ -43,10 +42,9 @@ const TantanganDua = () => {
       });
     };
     
-    
 
   const [pythonCodeChallanges, setPythonCodeChallanges] = useState(``);
-  const [currentStep, setCurrentStep] = useState(0); // Track the current step
+
   const [output, setOutput] = useState('');
 
   const outf = (text) => {
@@ -60,10 +58,10 @@ const TantanganDua = () => {
     return window.Sk.builtinFiles['files'][x];
   };
 
-  const runitchallanges = (code = '', forceReset = false) => {
+  const runitchallanges = (code, forceReset = false) => {
     setOutput('');
-    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(0)\npenup()\nsetposition(-100,-100)\npendown()\nspeed(2)\n";
-    const prog = forceReset ? imports : imports + code;
+    const imports = "from turtle import *\nreset()\nshape('turtle')\nspeed(2)\n";
+    const prog = forceReset ? imports : imports + pythonCodeChallanges;
   
     window.Sk.pre = "output4";
     window.Sk.configure({ output: outf, read: builtinRead });
@@ -73,142 +71,120 @@ const TantanganDua = () => {
       window.Sk.importMainWithBody('<stdin>', false, prog, true)
     ).then(
       () => {
-        if (!forceReset && code.trim().length > 0) {
-          setHasRun(true);
-          checkCodeChallanges(code); // Panggil dengan kode aktual
-        }
+        setHasRun(true);
+        checkCodeChallanges();
       },
       (err) => setOutput((prev) => prev + err.toString())
     );
   };
+  
 
   const [hasRun, setHasRun] = useState(false);
 
-  const validCode = ["forward(200)", "left(90)", "forward(200)", "left(90)", "forward(200)"];
-
-const checkCodeChallanges = (userCode) => {
-  const trimmedCode = userCode.trim();
-  if (!trimmedCode) return;
-
-  const userCodeLines = trimmedCode
-    .split("\n")
-    .map(line => line.trim())
-    .filter(line => line !== ""); // <--- Skip baris kosong
-
-  const linesToCheck = userCodeLines.slice(currentStep);
-
-  const forwardRegex = /^forward\((\d+)\)$/;
-  const leftRegex = /^left\((\d+)\)$/;
-
-  let step = currentStep;
-
-  for (let i = 0; i < linesToCheck.length; i++) {
-    const currentLine = linesToCheck[i];
-
-    if (step >= validCode.length) break;
-
-    // STEP 0, 2, 4 → forward(200)
-    if ([0, 2, 4].includes(step)) {
-      const match = currentLine.match(forwardRegex);
-      if (match) {
-        const value = parseInt(match[1]);
-        if (value < 200) {
-          return swal("Salah", "Pergerakan bidawang kurang jauh", "error").then(() => {
-            initializeTurtle();
-            setCurrentStep(0);
-            setPythonCodeChallanges('');
-            setHasRun(false);
-          });
-        } else if (value > 200) {
-          return swal("Salah", "Bidawang keluar jalur", "error").then(() => {
-            initializeTurtle();
-            setCurrentStep(0);
-            setPythonCodeChallanges('');
-            setHasRun(false);
-          });
-        }
-      } else {
-        return swal("Salah", "Perintah yang anda masukkan salah", "error").then(() => {
-          initializeTurtle();
-          setCurrentStep(0);
+  const checkCodeChallanges = () => {
+    if (!hasRun) return;
+  
+    const validCodes = [
+      ["setx(100)", "sety(100)"],
+      ["sety(100)", "setx(100)"]
+    ];
+  
+    const userCodeLines = pythonCodeChallanges.trim().split("\n").map(line => line.trim()).filter(line => line !== "");
+    if (userCodeLines.length === 0) return;
+  
+    const step1 = userCodeLines[0];
+  
+    // Validasi step 1
+    if (!step1.startsWith("setx(") && !step1.startsWith("sety(")) {
+      return swal("Salah", "Anda harus menggunakan setx atau sety di langkah pertama", "error").then(() => {
+        setPythonCodeChallanges('');
+        initializeTurtle();
+      });
+    }
+  
+    if (!step1.includes("(100)")) {
+      return swal("Salah", "Koordinat yang Anda masukkan salah pada langkah pertama", "error").then(() => {
+        setPythonCodeChallanges('');
+        initializeTurtle();
+      });
+    }
+  
+    // Kalau user sudah menulis step ke-2
+    if (userCodeLines.length > 1) {
+      const step2 = userCodeLines[1];
+      const isFirstSetx = step1.startsWith("setx");
+      const isSecondSetx = step2.startsWith("setx");
+      const isSecondSety = step2.startsWith("sety");
+  
+      if (!(isSecondSetx || isSecondSety)) {
+        return swal("Salah", "Gunakan setx atau sety di langkah kedua", "error").then(() => {
           setPythonCodeChallanges('');
-          setHasRun(false);
+          initializeTurtle();
+        });
+      }
+  
+      if (isFirstSetx && isSecondSetx) {
+        return swal("Salah", "Gunakan sety pada langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
+        });
+      }
+  
+      if (!isFirstSetx && isSecondSety) {
+        return swal("Salah", "Gunakan setx pada langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
+        });
+      }
+  
+      if (!step2.includes("(100)")) {
+        return swal("Salah", "Koordinat yang Anda masukkan salah pada langkah kedua", "error").then(() => {
+          setPythonCodeChallanges('');
+          initializeTurtle();
         });
       }
     }
-
-    // STEP 1, 3 → left(90)
-    else if ([1, 3].includes(step)) {
-      const match = currentLine.match(leftRegex);
-      if (match) {
-        const value = parseInt(match[1]);
-        if (value < 90) {
-          return swal("Salah", "Sudut kurang besar", "error").then(() => {
-            initializeTurtle();
-            setCurrentStep(0);
-            setPythonCodeChallanges('');
-            setHasRun(false);
-          });
-        } else if (value > 90) {
-          return swal("Salah", "Sudut terlalu besar", "error").then(() => {
-            initializeTurtle();
-            setCurrentStep(0);
-            setPythonCodeChallanges('');
-            setHasRun(false);
-          });
-        }
-      } else {
-        return swal("Salah", "Perintah yang anda masukkan salah", "error").then(() => {
-          initializeTurtle();
-          setCurrentStep(0);
-          setPythonCodeChallanges('');
-          setHasRun(false);
-        });
-      }
+  
+    // Cek apakah semua langkah sudah benar
+    const isCorrect = validCodes.some(valid =>
+      valid.length === userCodeLines.length &&
+      valid.every((line, idx) => line === userCodeLines[idx])
+    );
+  
+    if (isCorrect) {
+      swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
     }
-
-    step++;
-  }
-
-  setCurrentStep(step);
-  console.log("Step setelah cek:", step);
-
-  if (step >= validCode.length) {
-    swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
-  }
-};
-
+  };
+  
+  
 
   const initializeTurtle = () => {
-    const imports = "from turtle import *\nshape('turtle')\n";
-    const initialPosition = "reset()\nspeed(0)\npenup()\nsetpos(-100, -100)\npendown()\nspeed(2)\n"; // Set initial position
-    const prog = imports + initialPosition;
-
-    window.Sk.pre = "output";
+    const initCode = `from turtle import *
+reset()
+shape("turtle")
+speed(2)`;
+  
+    window.Sk.pre = "output4";
     window.Sk.configure({ output: outf, read: builtinRead });
     (window.Sk.TurtleGraphics || (window.Sk.TurtleGraphics = {})).target = 'mycanvas-challanges';
-
-    window.Sk.misceval.asyncToPromise(() => 
-      window.Sk.importMainWithBody('<stdin>', false, prog, true)
-    ).then(
-      () => {},
-      (err) => setOutput((prev) => prev + err.toString())
-    );
+  
+    window.Sk.misceval.asyncToPromise(() =>
+      window.Sk.importMainWithBody("<stdin>", false, initCode, true)
+    ).then(() => {
+      console.log("Turtle initialized to default state.");
+    });
   };
-
 
 
 const resetCodeChallanges = () => {
   setPythonCodeChallanges('');
-  setCurrentStep(0);
   setOutput('');
-  setHasRun(false); // <- Penting agar tidak menjalankan evaluasi otomatis
-  runitchallanges('', true);
+  initializeTurtle(); // Reset posisi turtle
 };
 
 
   useEffect(() => {
-    runitchallanges(); // Jalankan kode saat halaman dimuat
+    initializeTurtle(); // Jalankan kode saat halaman dimuat
   }, []);
 
   return (
@@ -218,7 +194,7 @@ const resetCodeChallanges = () => {
         <Col md={2} className="d-flex justify-content-center align-items-center">
         <Button
             variant="light"
-            onClick={() => navigate('/challanges/1')}
+            onClick={() => navigate('/challanges/3')}
             style={{
             background: 'linear-gradient(to right, #6c757d, #495057)',
             color: 'white',
@@ -247,14 +223,12 @@ const resetCodeChallanges = () => {
                 marginBottom: '15px',
               }}
             >
-              2. Bergerak dan Berbelok
+              4. Berpindah Posisi Sesuai Koordinat X dan Y
             </h4>
             
-            <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+            <p>
                 Selesaikan tantangan dibawah ini!
-                Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
-                </p>
-
+                Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.</p>
                 <div className="d-flex gap-2 mb-2">
                     <Button variant="info" onClick={showHint} style={{ color: 'white', fontWeight: 'bold' }}>
                         Petunjuk
@@ -262,7 +236,7 @@ const resetCodeChallanges = () => {
 
                     <Button
                     variant="warning"
-                    onClick={() => navigate('/belajar/turtlemotion/forwardbackward')}
+                    onClick={() => navigate('/belajar/turtlemotion/setxy')}
                     style={{ color: 'white', fontWeight: 'bold' }}
                     >
                     Kembali ke Materi
@@ -283,6 +257,7 @@ const resetCodeChallanges = () => {
                   <div className="editor-section">
                     <CodeMirror
                       value={pythonCodeChallanges}
+                      placeholder={'//Ketikan kode disini!'}
                       height="290px"
                       theme="light"
                       extensions={[python()]}
@@ -293,8 +268,8 @@ const resetCodeChallanges = () => {
                         padding: "5px",
                       }}
                     />
-                    <div style={{ marginTop: '5px', display: 'flex', gap: '10px' }}>
-                    <Button variant="success" onClick={() => runitchallanges(pythonCodeChallanges)}>Run Code</Button>
+                    <div style={{ marginTop: '5px', marginBottom: '5px', display: 'flex', gap: '10px' }}>
+                      <Button variant="success" onClick={() => { runitchallanges();}}>Run Code</Button>
                       <Button variant="secondary" onClick={resetCodeChallanges}>
                         <BsArrowClockwise /> Reset
                       </Button>
@@ -307,8 +282,8 @@ const resetCodeChallanges = () => {
                         padding: "5px",
                         backgroundColor: "#fff",
                       }}>
-                      {output}
-                    </pre>
+                        {output}
+                      </pre>
                   </div>
                   <div className="canvas-section" 
                   style={{
@@ -324,58 +299,39 @@ const resetCodeChallanges = () => {
                       height: 400, 
                       position: "relative", 
                     }}></div>
-                    {/* Conditional rendering of warning images based on currentStep */}
-                    {currentStep === 1 && (
-                      <img
-                        src={peringatan}
-                        alt="warning"
-                        style={{
-                          position: "absolute",
-                          left: "330px",
-                          top: "280px",
-                          width: "40px",
-                          height: "40px",
-                          zIndex: 10,
-                        }}
-                      />
-                    )}
-                    {currentStep === 3 && (
-                      <img
-                        src={peringatan}
-                        alt="warning"
-                        style={{
-                          position: "absolute",
-                          left: "280px",
-                          top: "35px",
-                          width: "40px",
-                          height: "40px",
-                          zIndex: 10,
-                        }}
-                      />
-                    )}
                     
-
-                    <img
-                      src={tilemap}
-                      alt="Map"
-                      style={{
-                        position: "absolute",
-                        left: "0px",
-                        top: "0px",
-                        width: "400px",
-                        height: "400px",
-                      }}
+                      <img
+                          src={map}
+                          alt="Map"
+                          style={{
+                            position: "absolute",
+                            left: "0px",
+                            top: "0px",
+                            width: "400px", // Sesuaikan ukuran jika perlu
+                            height: "400px",
+                          }}
                       />
                       <img
-                      src={map}
-                      alt="Map"
-                      style={{
-                        position: "absolute",
-                        left: "0px",
-                        top: "0px",
-                        width: "400px",
-                        height: "400px",
-                      }}
+                          src={grid}
+                          alt="Map"
+                          style={{
+                            position: "absolute",
+                            left: "0px",
+                            top: "0px",
+                            width: "400px", // Sesuaikan ukuran jika perlu
+                            height: "400px",
+                          }}
+                      />
+                      <img
+                          src={broccoli}
+                          alt="Target Broccoli"
+                          style={{
+                            position: "absolute",
+                            left: "275px",
+                            top: "75px",
+                            width: "50px", // Sesuaikan ukuran jika perlu
+                            height: "50px",
+                          }}
                       />
                   </div>
                 </div>
@@ -386,7 +342,7 @@ const resetCodeChallanges = () => {
         <Col md={2} className="d-flex justify-content-center align-items-center">
         <Button
             variant="light"
-            onClick={() => navigate('/challanges/3')}
+            onClick={() => navigate('/challanges/5')}
             style={{
             background: 'linear-gradient(to right, #17a2b8, #138496)',
             color: 'white',
@@ -407,4 +363,4 @@ const resetCodeChallanges = () => {
   )
 }
 
-export default TantanganDua
+export default TantanganEmpat
