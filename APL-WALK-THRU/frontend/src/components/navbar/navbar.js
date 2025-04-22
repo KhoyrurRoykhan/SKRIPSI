@@ -10,7 +10,7 @@ import './assets/navbar.css';
 
 const Navigasibar = () => {
 
-  const [name, setName] = useState('');
+  const [nama, setName] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,13 +22,23 @@ const Navigasibar = () => {
     try {
       const response = await axios.get('http://localhost:5000/token');
       const decoded = jwtDecode(response.data.accessToken);
-      setName(decoded.name);
+      setName(decoded.nama);
     } catch (error) {
       if (error.response) {
         navigate('/login');
       }
     }
   };
+
+  const logout = async () => {
+    try {
+      await axios.delete('http://localhost:5000/logout');
+      navigate('/login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   return (
     <Navbar className="bg-success fixed-top">
@@ -44,8 +54,15 @@ const Navigasibar = () => {
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end" style={{color: 'white'}}>
           <Navbar.Text style={{color: 'white'}}>
-            Signed in as: <a href="#login">{name}</a>
+            Signed in as: <a href="#login">{nama}</a>
           </Navbar.Text>
+          {/* <button 
+            className="btn btn-outline-light ms-3"
+            onClick={logout}
+          >
+            Logout
+          </button> */}
+
         </Navbar.Collapse>
       </Container>
     </Navbar>

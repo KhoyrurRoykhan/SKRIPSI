@@ -14,6 +14,7 @@ import swal from 'sweetalert'; // Import SweetAlert
 import papuyu from './assets/papuyu-1.png';
 import map from './assets/1-fill.png';
 import grid from './assets/grid.png';
+import Swal from "sweetalert2";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -53,6 +54,53 @@ const FillColor = () => {
     }
   };
 
+  //kunci halaman
+  const [progresBelajar, setProgresBelajar] = useState(0);
+  
+  useEffect(() => {
+    const checkAkses = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/token');
+        const decoded = jwtDecode(response.data.accessToken);
+
+        const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+          headers: {
+            Authorization: `Bearer ${response.data.accessToken}`
+          }
+        });
+
+        const progresBelajar = progres.data.progres_belajar;
+        console.log(progresBelajar)
+        setProgresBelajar(progres.data.progres_belajar);
+
+        // Cek apakah progres cukup untuk akses halaman ini
+        if (progresBelajar < 1) {
+          // Redirect ke halaman materi sebelumnya
+          navigate('/belajar/pendahuluan');
+        }
+
+      } catch (error) {
+        console.log(error);
+        navigate('/login'); // atau ke halaman login siswa
+      }
+    };
+
+    checkAkses();
+  }, [navigate]);
+
+  const handleNavigate = (path, syarat) => {
+    if (syarat) {
+      navigate(path);
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Oops!',
+        text: 'Selesaikan materi sebelumnya terlebih dahulu ya 😊',
+        confirmButtonColor: '#3085d6',
+      });
+    }
+  };  
+
   // Tentukan accordion aktif berdasarkan URL
   const activeAccordionKey = location.pathname.includes("/belajar/colorcontrol") || location.pathname.includes("/belajar/colorcontrol/fillcolor")
     ? "4"
@@ -65,12 +113,28 @@ const FillColor = () => {
 
   // hint challanges
   const showHint = () => {
-    swal(
-      "Petunjuk Tantangan",
-      "1. Ubah warna lantai menjadi abu-abu (grey)\n" +
-      "2. Lebar ruangan adalah 300 x 300.\n",
-      "info"
-    );
+    swal({
+      title: "Petunjuk Tantangan",
+      content: {
+        element: "div",
+        attributes: {
+          innerHTML: `
+            <p>Gambar beberapa bidang geometri sesuai dengan titik awal dan perintah yang sudah ditentukan.</p>
+  
+            <p><b>Perhatikan petunjuk berikut:</b></p>
+            <ul>
+              <li><b>Gambar 1:</b> Titik awal di <b>(-150, 50)</b>. Gunakan <b>forward()</b> dan <b>left() / right()</b> untuk menggambar. Warnai dengan warna <span style="color: green;"><b>green</b></span>.</li>
+              <li><b>Gambar 2:</b> Titik awal di <b>(50, 50)</b>. Gunakan <b>setposition()</b> untuk menggambar. Warnai dengan warna <span style="color: red;"><b>red</b></span>.</li>
+              <li><b>Gambar 3:</b> Titik awal di <b>(-50, -100)</b>. Gunakan <b>setposition()</b> untuk menggambar. Warnai dengan warna <span style="color: gold;"><b>yellow</b></span>.</li>
+              <li><b>Gambar 4:</b> Titik awal di <b>(50, -100)</b>. Gunakan <b>circle()</b> untuk menggambar. Warnai dengan warna <span style="color: blue;"><b>blue</b></span>.</li>
+            </ul>
+  
+            <p>Saat berpindah dari satu gambar ke gambar berikutnya, <b>jangan meninggalkan jejak</b>.</p>
+          `
+        }
+      },
+      icon: "info"
+    });
   };
 
     //accordion task
@@ -376,53 +440,77 @@ for i in range(100):
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/leftright")}
-                    onClick={() => navigate("/belajar/turtlemotion/leftright")}
+                    className={`${getButtonClass("/belajar/turtlemotion/leftright")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/leftright", progresBelajar >= 1)}
+                    style={{ pointerEvents: progresBelajar < 1 ? "auto" : "auto", opacity: progresBelajar < 1 ? 0.5 : 1 }}
                   >
-                    Left & Right
+                    <span>Left & Right</span>
+                    {progresBelajar < 1 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/forwardbackward")}
-                    onClick={() => navigate("/belajar/turtlemotion/forwardbackward")}
+                    className={`${getButtonClass("/belajar/turtlemotion/forwardbackward")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/forwardbackward", progresBelajar >= 2)}
+                    style={{ pointerEvents: progresBelajar < 2 ? "auto" : "auto", opacity: progresBelajar < 2 ? 0.5 : 1 }}
                   >
                     Forward & Backward
+                    {progresBelajar < 2 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/setposition")}
-                    onClick={() => navigate("/belajar/turtlemotion/setposition")}
+                    className={`${getButtonClass("/belajar/turtlemotion/setposition")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/setposition", progresBelajar >= 3)}
+                    style={{ pointerEvents: progresBelajar < 3 ? "auto" : "auto", opacity: progresBelajar < 3 ? 0.5 : 1 }}
                   >
                     Set Position
+                    {progresBelajar < 3 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/setxy")}
-                    onClick={() => navigate("/belajar/turtlemotion/setxy")}
+                    className={`${getButtonClass("/belajar/turtlemotion/setxy")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/setxy", progresBelajar >= 4)}
+                    style={{ pointerEvents: progresBelajar < 4 ? "auto" : "auto", opacity: progresBelajar < 4 ? 0.5 : 1 }}
                   >
                     Setx & sety
+                    {progresBelajar < 4 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/setheading")}
-                    onClick={() => navigate("/belajar/turtlemotion/setheading")}
+                    className={`${getButtonClass("/belajar/turtlemotion/setheading")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/setheading", progresBelajar >= 5)}
+                    style={{ pointerEvents: progresBelajar < 5 ? "auto" : "auto", opacity: progresBelajar < 5 ? 0.5 : 1 }}
                   >
                     Setheading
+                    {progresBelajar < 5 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/home")}
-                    onClick={() => navigate("/belajar/turtlemotion/home")}
+                    className={`${getButtonClass("/belajar/turtlemotion/home")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/home", progresBelajar >= 6)}
+                    style={{ pointerEvents: progresBelajar < 6 ? "auto" : "auto", opacity: progresBelajar < 6 ? 0.5 : 1 }}
                   >
                     Home
+                    {progresBelajar < 6 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/circle")}
-                    onClick={() => navigate("/belajar/turtlemotion/circle")}
+                    className={`${getButtonClass("/belajar/turtlemotion/circle")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/circle", progresBelajar >= 7)}
+                    style={{ pointerEvents: progresBelajar < 7 ? "auto" : "auto", opacity: progresBelajar < 7 ? 0.5 : 1 }}
                   >
                     Circle
+                    {progresBelajar < 7 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/turtlemotion/dot")}
-                    onClick={() => navigate("/belajar/turtlemotion/dot")}
+                    className={`${getButtonClass("/belajar/turtlemotion/dot")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/dot", progresBelajar >= 8)}
+                    style={{ pointerEvents: progresBelajar < 8 ? "auto" : "auto", opacity: progresBelajar < 8 ? 0.5 : 1 }}
                   >
                     Dot
+                    {progresBelajar < 8 && <span className="ms-2">🔒</span>}
                   </button>
+
                 </div>
               </Accordion.Body>
             </Accordion.Item>
@@ -432,28 +520,39 @@ for i in range(100):
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={getButtonClass("/belajar/tellstate/position")}
-                    onClick={() => navigate("/belajar/tellstate/position")}
+                    className={`${getButtonClass("/belajar/tellstate/position")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/position", progresBelajar >= 9)}
+                    style={{ pointerEvents: progresBelajar < 9 ? "auto" : "auto", opacity: progresBelajar < 9 ? 0.5 : 1 }}
                   >
                     Position
+                    {progresBelajar < 9 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/tellstate/xcorycor")}
-                    onClick={() => navigate("/belajar/tellstate/xcorycor")}
+                    className={`${getButtonClass("/belajar/tellstate/xcorycor")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/xcorycor", progresBelajar >= 10)}
+                    style={{ pointerEvents: progresBelajar < 10 ? "auto" : "auto", opacity: progresBelajar < 10 ? 0.5 : 1 }}
                   >
                     Xcor & Ycor
+                    {progresBelajar < 10 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/tellstate/heading")}
-                    onClick={() => navigate("/belajar/tellstate/heading")}
+                    className={`${getButtonClass("/belajar/tellstate/heading")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/heading", progresBelajar >= 11)}
+                    style={{ pointerEvents: progresBelajar < 11 ? "auto" : "auto", opacity: progresBelajar < 11 ? 0.5 : 1 }}
                   >
                     Heading
+                    {progresBelajar < 11 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/tellstate/distance")}
-                    onClick={() => navigate("/belajar/tellstate/distance")}
+                    className={`${getButtonClass("/belajar/tellstate/distance")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/distance", progresBelajar >= 12)}
+                    style={{ pointerEvents: progresBelajar < 12 ? "auto" : "auto", opacity: progresBelajar < 12 ? 0.5 : 1 }}
                   >
                     Distance
+                    {progresBelajar < 12 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
@@ -464,22 +563,30 @@ for i in range(100):
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={getButtonClass("/belajar/pencontrol/penuppendown")}
-                    onClick={() => navigate("/belajar/pencontrol/penuppendown")}
+                    className={`${getButtonClass("/belajar/pencontrol/penuppendown")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencontrol/penuppendown", progresBelajar >= 13)}
+                    style={{ pointerEvents: progresBelajar < 13 ? "auto" : "auto", opacity: progresBelajar < 13 ? 0.5 : 1 }}
                   >
                     Pendown & Penup
+                    {progresBelajar < 13 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/pencontrol/pensize")}
-                    onClick={() => navigate("/belajar/pencontrol/pensize")}
+                    className={`${getButtonClass("/belajar/pencontrol/pensize")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencontrol/pensize", progresBelajar >= 14)}
+                    style={{ pointerEvents: progresBelajar < 14 ? "auto" : "auto", opacity: progresBelajar < 14 ? 0.5 : 1 }}
                   >
                     Pensize
+                    {progresBelajar < 14 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/pencontrol/isdown")}
-                    onClick={() => navigate("/belajar/pencontrol/isdown")}
+                    className={`${getButtonClass("/belajar/pencontrol/isdown")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencontrol/isdown", progresBelajar >= 15)}
+                    style={{ pointerEvents: progresBelajar < 15 ? "auto" : "auto", opacity: progresBelajar < 15 ? 0.5 : 1 }}
                   >
                     Isdown
+                    {progresBelajar < 15 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
@@ -490,16 +597,21 @@ for i in range(100):
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={getButtonClass("/belajar/colorcontrol/pencolor")}
-                    onClick={() => navigate("/belajar/colorcontrol/pencolor")}
+                    className={`${getButtonClass("/belajar/colorcontrol/pencolor")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/colorcontrol/pencolor", progresBelajar >= 16)}
+                    style={{ pointerEvents: progresBelajar < 16 ? "auto" : "auto", opacity: progresBelajar < 16 ? 0.5 : 1 }}
                   >
                     Pencolor
+                    {progresBelajar < 16 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/colorcontrol/fillcolor")}
-                    onClick={() => navigate("/belajar/colorcontrol/fillcolor")}
+                    className={`${getButtonClass("/belajar/colorcontrol/fillcolor")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/colorcontrol/fillcolor", progresBelajar >= 17)}
+                    style={{ pointerEvents: progresBelajar < 17 ? "auto" : "auto", opacity: progresBelajar < 17 ? 0.5 : 1 }}
                   >
                     Pengisian Warna (Fillcolor, Begin_fill, dan End_fill)
+                    {progresBelajar < 17 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
@@ -510,22 +622,30 @@ for i in range(100):
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={getButtonClass("/belajar/moredrawingcontrol/reset")}
-                    onClick={() => navigate("/belajar/moredrawingcontrol/reset")}
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/reset")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/reset", progresBelajar >= 18)}
+                    style={{ pointerEvents: progresBelajar < 18 ? "auto" : "auto", opacity: progresBelajar < 18 ? 0.5 : 1 }}
                   >
                     Reset
+                    {progresBelajar < 18 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/moredrawingcontrol/clear")}
-                    onClick={() => navigate("/belajar/moredrawingcontrol/clear")}
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/clear")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/clear", progresBelajar >= 19)}
+                    style={{ pointerEvents: progresBelajar < 19 ? "auto" : "auto", opacity: progresBelajar < 19 ? 0.5 : 1 }}
                   >
                     Clear
+                    {progresBelajar < 19 && <span className="ms-2">🔒</span>}
                   </button>
+
                   <button
-                    className={getButtonClass("/belajar/moredrawingcontrol/write")}
-                    onClick={() => navigate("/belajar/moredrawingcontrol/write")}
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/write")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/write", progresBelajar >= 20)}
+                    style={{ pointerEvents: progresBelajar < 20 ? "auto" : "auto", opacity: progresBelajar < 20 ? 0.5 : 1 }}
                   >
                     Write
+                    {progresBelajar < 20 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
@@ -536,10 +656,12 @@ for i in range(100):
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={getButtonClass("/belajar/perulangan/forloop")}
-                    onClick={() => navigate("/belajar/perulangan/forloop")}
+                    className={`${getButtonClass("/belajar/perulangan/forloop")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/perulangan/forloop", progresBelajar >= 21)}
+                    style={{ pointerEvents: progresBelajar < 21 ? "auto" : "auto", opacity: progresBelajar < 21 ? 0.5 : 1 }}
                   >
                     For Loops
+                    {progresBelajar < 21 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
@@ -896,9 +1018,9 @@ end_fill() `}
             Selesaikan tantangan dibawah ini!
             Klik tombol petunjuk untuk menampilkan petujuk pengerjaan.
             </p>
-            <Button className=" mb-2" variant="info" onClick={showHint}>
-              Petunjuk
-            </Button>
+            <Button className='mb-2' variant="info" onClick={showHint} style={{ color: 'white', fontWeight: 'bold' }}>
+                        Petunjuk
+                    </Button>
 
             <div className="skulpt-container" style={{
                   border: "3px solid #ccc",

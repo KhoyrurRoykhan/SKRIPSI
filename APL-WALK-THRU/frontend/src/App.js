@@ -78,6 +78,15 @@ import TantanganDuabelas from "./components/Challanges-page/all-challanges/Tanta
 //Text editor
 import TextEditorPage from "./components/Text-editor/TextEditorPage";
 
+//Guru
+import Dashboard from "./Guru/dashboard/Dashboard";
+import NavbarGuru from "./Guru/navbar/NavbarGuru";
+import DataSiswa from "./Guru/dashboard/DataSiswa";
+import ProgresBelajar from "./Guru/dashboard/ProgresBelajar";
+import ProgresTantangan from "./Guru/dashboard/ProgresTantangan";
+import DataNilai from "./Guru/dashboard/DataNilai";
+import LoginGuru from "./Guru/Login-guru/LoginGuru";
+
 function App() {
   return (
     <BrowserRouter>
@@ -167,6 +176,15 @@ function App() {
 
       {/* Text Editor */}
       <Route path="/texteditor" element={<><Navigasibar/><TextEditorPage/></>}/>
+
+      {/* Guru */}
+      <Route path="/login-guru" element={<><NavbarGuru/><LoginGuru/></>}/>
+
+      <Route path="/guru/dashboard" element={<><NavbarGuru/><Dashboard/></>}/>
+      <Route path="/guru/datasiswa" element={<><NavbarGuru/><DataSiswa/></>}/>
+      <Route path="/guru/progres-belajar" element={<><NavbarGuru/><ProgresBelajar/></>}/>
+      <Route path="/guru/progres-tantangan" element={<><NavbarGuru/><ProgresTantangan/></>}/>
+      <Route path="/guru/data-nilai" element={<><NavbarGuru/><DataNilai/></>}/>
 
 
 

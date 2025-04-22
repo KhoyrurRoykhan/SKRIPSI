@@ -31,14 +31,56 @@ const TantanganDelapan = () => {
     const [inputA, setInputA] = useState("");
     const [inputB, setInputB] = useState("");
 
-    // hint challanges
+    // hint
     const showHint = () => {
-        swal(
-          "Petunjuk Tantangan",
-          "Tugas kalian adalah memeriksa koordinat X dan Y objek cacing kemudian masukan hasilnya pada kolom jawaban yg sudah di sediakan",
-          "info"
-        );
-      };
+      swal({
+        title: "Petunjuk Tantangan",
+        content: {
+          element: "div",
+          attributes: {
+            innerHTML: `
+              <p>Bidawang saat ini berada di tengah layar (titik <b>(0, 0)</b>).</p>
+              <p>Tugas kamu adalah <b>menebak posisi X dan Y</b> Udang.</p>
+              <p>Gerakkan Bidawang menuju posisi objek, lalu gunakan perintah <b>print(xcor())</b> dan <b>print(ycor())</b> untuk mengetahui titik koordinatnya.</p>
+              <p>Gunakan kombinasi perintah <b>left()</b>, <b>right()</b>, dan <b>forward()</b> untuk berpindah dari satu titik ke titik lainnya.</p>
+            `
+          }
+        },
+        icon: "info"
+      });
+    };
+
+    const [progresTantangan, setProgresTantangan] = useState(0);
+
+  useEffect(() => {
+    const checkAksesTantangan = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/token');
+        const decoded = jwtDecode(response.data.accessToken);
+
+        const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
+          headers: {
+            Authorization: `Bearer ${response.data.accessToken}`
+          }
+        });
+
+        const progresTantangan = progres.data.progres_tantangan;
+        console.log(progresTantangan);
+        setProgresTantangan(progresTantangan);
+
+        // Misal: hanya bisa akses jika progres_tantangan >= 3
+        if (progresTantangan < 7) {
+          navigate('/challanges'); // ganti ke halaman tantangan sebelumnya
+        }
+
+      } catch (error) {
+        console.log(error);
+        navigate('/login'); // fallback ke login
+      }
+    };
+
+    checkAksesTantangan();
+  }, [navigate]); 
   
       const checkAnswer = () => {
         const correctAnswersA = ["-100.0", "-100", "-100 "];

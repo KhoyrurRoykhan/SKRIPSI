@@ -43,21 +43,53 @@ const TantanganLima = () => {
         icon: "info"
       });
     };
+
+    const [progresTantangan, setProgresTantangan] = useState(0);
+
+  useEffect(() => {
+    const checkAksesTantangan = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/token');
+        const decoded = jwtDecode(response.data.accessToken);
+
+        const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
+          headers: {
+            Authorization: `Bearer ${response.data.accessToken}`
+          }
+        });
+
+        const progresTantangan = progres.data.progres_tantangan;
+        console.log(progresTantangan);
+        setProgresTantangan(progresTantangan);
+
+        // Misal: hanya bisa akses jika progres_tantangan >= 3
+        if (progresTantangan < 4) {
+          navigate('/challanges'); // ganti ke halaman tantangan sebelumnya
+        }
+
+      } catch (error) {
+        console.log(error);
+        navigate('/login'); // fallback ke login
+      }
+    };
+
+    checkAksesTantangan();
+  }, [navigate]); 
     
 
   const [pythonCodeChallanges, setPythonCodeChallanges] = useState('');
-const [output, setOutput] = useState('');
-const [step, setStep] = useState(0);
-const [hasRun, setHasRun] = useState(false);
-const [processingAlert, setProcessingAlert] = useState(false);
+  const [output, setOutput] = useState('');
+  const [step, setStep] = useState(0);
+  const [hasRun, setHasRun] = useState(false);
+  const [processingAlert, setProcessingAlert] = useState(false);
 
-const headingAnswers = [0, 90, 180, 270];
-const broccoliPositions = [
-  { left: '345px', top: '175px' }, // setheading(0)
-  { left: '175px', top: '5px' },   // setheading(90)
-  { left: '5px', top: '175px' },   // setheading(180)
-  { left: '175px', top: '345px' }, // setheading(270)
-];
+  const headingAnswers = [0, 90, 180, 270];
+  const broccoliPositions = [
+    { left: '345px', top: '175px' }, // setheading(0)
+    { left: '175px', top: '5px' },   // setheading(90)
+    { left: '5px', top: '175px' },   // setheading(180)
+    { left: '175px', top: '345px' }, // setheading(270)
+  ];
 
   const outf = (text) => {
     setOutput((prev) => prev + text);

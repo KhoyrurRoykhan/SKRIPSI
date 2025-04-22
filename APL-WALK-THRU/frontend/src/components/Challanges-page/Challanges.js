@@ -1,4 +1,7 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { jwtDecode}  from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import map1 from './assets/thumbnail-1.png';
 import map2 from './assets/thumbnail-2.png';
@@ -29,38 +32,85 @@ const challenges = [
 ];
 
 const Challenges = () => {
+  const [progresTantangan, setProgresTantangan] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAksesTantangan = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/token');
+        const decoded = jwtDecode(response.data.accessToken);
+
+        const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
+          headers: {
+            Authorization: `Bearer ${response.data.accessToken}`
+          }
+        });
+
+        const progresTantangan = progres.data.progres_tantangan;
+        setProgresTantangan(progresTantangan);
+      } catch (error) {
+        console.log(error);
+        navigate('/login');
+      }
+    };
+
+    checkAksesTantangan();
+  }, [navigate]);
+
   return (
     <Container style={{ marginTop: 100 }}>
       <h2 className='mb-3'>Challanges</h2>
       <Row>
-        {challenges.map((challenge) => (
-          <Col key={challenge.id} md={6} lg={4} className="mb-3">
-            <Card className="h-100 shadow-sm">
-              <Card.Body className="d-flex align-items-center">
-                <img
-                  src={challenge.image}
-                  alt={challenge.name}
-                  className="me-3"
-                  style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }}
-                />
-                <div>
-                  <Card.Title className="mb-1" style={{ fontSize: '1.1rem' }}>
-                    <a href={challenge.link} className="text-primary text-decoration-none" style={{color:'#2DAA9E'}}>
-                      {challenge.id}. {challenge.name}
-                    </a>
-                  </Card.Title>
-                  {challenge.id === 1 ? (
-                    <Badge bg="success" className="mt-1">Selesai</Badge>
-                  ) : (
-                    <Card.Text className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
-                      Kamu belum menyelesaikan tantangan ini
-                    </Card.Text>
-                  )}
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+        {challenges.map((challenge) => {
+          const isUnlocked = challenge.id <= progresTantangan + 1;
+          const isFinished = challenge.id <= progresTantangan;
+
+          return (
+            <Col key={challenge.id} md={6} lg={4} className="mb-3">
+              <Card className={`h-100 shadow-sm ${!isUnlocked ? 'opacity-50' : ''}`}>
+                <Card.Body className="d-flex align-items-center">
+                  <img
+                    src={challenge.image}
+                    alt={challenge.name}
+                    className="me-3"
+                    style={{
+                      width: 80,
+                      height: 80,
+                      objectFit: 'cover',
+                      borderRadius: 8
+                    }}
+                  />
+                  <div>
+                    {isUnlocked ? (
+                      <Card.Title className="mb-1" style={{ fontSize: '1.1rem' }}>
+                        <a href={challenge.link} className="text-decoration-none" style={{ color: '#2DAA9E' }}>
+                          {challenge.id}. {challenge.name}
+                        </a>
+                      </Card.Title>
+                    ) : (
+                      <Card.Title className="mb-1 text-muted" style={{ fontSize: '1.1rem' }}>
+                        {challenge.id}. {challenge.name}
+                      </Card.Title>
+                    )}
+
+                    {isFinished ? (
+                      <Badge bg="success" className="mt-1">Selesai</Badge>
+                    ) : !isUnlocked ? (
+                      <Card.Text className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+                        Belum tersedia
+                      </Card.Text>
+                    ) : (
+                      <Card.Text className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+                        Belum selesai
+                      </Card.Text>
+                    )}
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })}
       </Row>
     </Container>
   );

@@ -41,6 +41,38 @@ const TantanganEmpat = () => {
         icon: "info"
       });
     };
+
+    const [progresTantangan, setProgresTantangan] = useState(0);
+
+  useEffect(() => {
+    const checkAksesTantangan = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/token');
+        const decoded = jwtDecode(response.data.accessToken);
+
+        const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
+          headers: {
+            Authorization: `Bearer ${response.data.accessToken}`
+          }
+        });
+
+        const progresTantangan = progres.data.progres_tantangan;
+        console.log(progresTantangan);
+        setProgresTantangan(progresTantangan);
+
+        // Misal: hanya bisa akses jika progres_tantangan >= 3
+        if (progresTantangan < 3) {
+          navigate('/challanges'); // ganti ke halaman tantangan sebelumnya
+        }
+
+      } catch (error) {
+        console.log(error);
+        navigate('/login'); // fallback ke login
+      }
+    };
+
+    checkAksesTantangan();
+  }, [navigate]); 
     
 
   const [pythonCodeChallanges, setPythonCodeChallanges] = useState(``);
