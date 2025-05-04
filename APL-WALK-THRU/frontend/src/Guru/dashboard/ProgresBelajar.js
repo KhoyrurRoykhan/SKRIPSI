@@ -113,7 +113,7 @@ const ProgresBelajar = () => {
               </tr>
             ) : (
               filteredSiswa.map((siswa, index) => {
-                const totalHalaman = 22;
+                const totalHalaman = 27;
                 const progres = Math.round((siswa.progres_belajar / totalHalaman) * 100);
 
                 return (

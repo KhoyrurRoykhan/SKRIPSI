@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsers, Register, Login, Logout, getProgresBelajarSiswa, getProgresTantanganSiswa } from "../controllers/UserController.js";
+import { getUsers, Register, Login, Logout, getProgresBelajarSiswa, getProgresTantanganSiswa, updateProgresBelajarSiswa } from "../controllers/UserController.js";
 import { getGuru, RegisterGuru, LoginGuru, LogoutGuru, getMeGuru } from "../controllers/GuruController.js";
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { verifyGuruToken } from "../middleware/VerifyTokenGuru.js";
@@ -32,6 +32,7 @@ routes.put('/users/:id', updateUserById);
 routes.delete('/users/:id', deleteUserById);
 
 routes.get('/user/progres-belajar', getProgresBelajarSiswa);
+routes.put('/user/progres-belajar', updateProgresBelajarSiswa);
 routes.get('/user/progres-tantangan', getProgresTantanganSiswa);
 
 

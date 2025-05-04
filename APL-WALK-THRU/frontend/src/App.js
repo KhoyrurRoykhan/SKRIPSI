@@ -86,6 +86,18 @@ import ProgresBelajar from "./Guru/dashboard/ProgresBelajar";
 import ProgresTantangan from "./Guru/dashboard/ProgresTantangan";
 import DataNilai from "./Guru/dashboard/DataNilai";
 import LoginGuru from "./Guru/Login-guru/LoginGuru";
+import KuisPengenalan from "./components/Belajar/Pengenalan/KuisPengenalan";
+import KuisPergerakan from "./components/Belajar/Turtle-motion/KuisPergerakan";
+import KuisMengetahuistatus from "./components/Belajar/Tell-state/KuisMengetahuistatus";
+import KuisPenColorControl from "./components/Belajar/Pen-control/KuisPenColorControl";
+import KuisMoreDrawingControl from "./components/Belajar/More-drawing-control/KuisMoreDrawingControl";
+import Evaluasi from "./components/Belajar/Evaluasi/Evaluasi";
+import KuisPengenalanJawab from "./components/Belajar/Pengenalan/KuisPengenalanJawab";
+import KuisPergerakanJawab from "./components/Belajar/Turtle-motion/KuisPergerakanJawab";
+import KuisMengetahuistatusJawab from "./components/Belajar/Tell-state/KuisMengetahuistatusJawab";
+import KuisPenColorControlJawab from "./components/Belajar/Pen-control/KuisPenColorControlJawab";
+import KuisMoreDrawingControlJawab from "./components/Belajar/More-drawing-control/KuisMoreDrawingControlJawab";
+import EvaluasiJawab from "./components/Belajar/Evaluasi/EvaluasiJawab";
 
 function App() {
   return (
@@ -132,6 +144,8 @@ function App() {
 
       {/* update */}
       <Route path="/belajar/pendahuluan" element={<><Navigasibar/><Pendahuluan/></>}/>
+      <Route path="/belajar/pendahuluan/kuis" element={<><Navigasibar/><KuisPengenalan/></>}/>
+      <Route path="/belajar/pendahuluan/kuis1" element={<><KuisPengenalanJawab/></>}/>
 
       <Route path="/belajar/turtlemotion/leftright" element={<><Navigasibar/><LeftRight/></>}/>
       <Route path="/belajar/turtlemotion/forwardbackward" element={<><Navigasibar/><ForwardBackward/></>}/>
@@ -141,24 +155,34 @@ function App() {
       <Route path="/belajar/turtlemotion/home" element={<><Navigasibar/><SetHome/></>}/>
       <Route path="/belajar/turtlemotion/circle" element={<><Navigasibar/><Circle/></>}/>
       <Route path="/belajar/turtlemotion/dot" element={<><Navigasibar/><Dot/></>}/>
+      <Route path="/belajar/turtlemotion/kuis" element={<><Navigasibar/><KuisPergerakan/></>}/>
+      <Route path="/belajar/turtlemotion/kuis2" element={<><KuisPergerakanJawab/></>}/>
+      
 
       <Route path="/belajar/tellstate/position" element={<><Navigasibar/><Position/></>}/>
       <Route path="/belajar/tellstate/xcorycor" element={<><Navigasibar/><Xykoordinat/></>}/>
       <Route path="/belajar/tellstate/heading" element={<><Navigasibar/><Heading/></>}/>
       <Route path="/belajar/tellstate/distance" element={<><Navigasibar/><Distance/></>}/>
+      <Route path="/belajar/tellstate/kuis" element={<><Navigasibar/><KuisMengetahuistatus/></>}/>
+      <Route path="/belajar/tellstate/kuis3" element={<><KuisMengetahuistatusJawab/></>}/>
 
       <Route path="/belajar/pencontrol/penuppendown" element={<><Navigasibar/><Pendownpenup/></>}/>
       <Route path="/belajar/pencontrol/pensize" element={<><Navigasibar/><Pensize/></>}/>
       <Route path="/belajar/pencontrol/isdown" element={<><Navigasibar/><Isdown/></>}/>
-
       <Route path="/belajar/colorcontrol/pencolor" element={<><Navigasibar/><Color/></>}/>
       <Route path="/belajar/colorcontrol/fillcolor" element={<><Navigasibar/><FillColor/></>}/>
+      <Route path="/belajar/pencolorcontrol/kuis" element={<><Navigasibar/><KuisPenColorControl/></>}/>
+      <Route path="/belajar/pencolorcontrol/kuis4" element={<><KuisPenColorControlJawab/></>}/>
 
       <Route path="/belajar/moredrawingcontrol/reset" element={<><Navigasibar/><Reset/></>}/>
       <Route path="/belajar/moredrawingcontrol/clear" element={<><Navigasibar/><Clear/></>}/>
       <Route path="/belajar/moredrawingcontrol/write" element={<><Navigasibar/><Write/></>}/>
-
       <Route path="/belajar/perulangan/forloop" element={<><Navigasibar/><ForLoop/></>}/>
+      <Route path="/belajar/moredrawingcontrol/kuis" element={<><Navigasibar/><KuisMoreDrawingControl/></>}/>
+      <Route path="/belajar/moredrawingcontrol/kuis5" element={<><KuisMoreDrawingControlJawab/></>}/>
+
+      <Route path="/belajar/evaluasi" element={<><Navigasibar/><Evaluasi/></>}/>
+      <Route path="/belajar/evaluasi/soal" element={<><EvaluasiJawab/></>}/>
 
       {/* Tantangan */}
       <Route path="/challanges/1" element={<><Navigasibar/><TantanganSatu/></>}/>

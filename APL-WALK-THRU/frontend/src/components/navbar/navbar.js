@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { FaBomb, FaBook, FaBookReader, FaCentercode, FaCode, FaCodeBranch, FaCodepen, FaConnectdevelop, FaFileCode, FaFreeCodeCamp, FaGamepad, FaLaptopCode, FaLeanpub, FaRedRiver, FaScrewdriver, FaTrophy, FaWalking, FaWater } from 'react-icons/fa'; // Import icons
+import Dropdown from 'react-bootstrap/Dropdown';
+import { FaGamepad, FaCode, FaBookReader, FaUserCircle } from 'react-icons/fa';
 import './assets/navbar.css';
 
 const Navigasibar = () => {
@@ -30,7 +31,7 @@ const Navigasibar = () => {
     }
   };
 
-  const logout = async () => {
+  const handleLogout = async () => {
     try {
       await axios.delete('http://localhost:5000/logout');
       navigate('/login');
@@ -41,7 +42,7 @@ const Navigasibar = () => {
   
 
   return (
-    <Navbar className="bg-success fixed-top">
+    <Navbar className="bg-success fixed-top" style={{fontFamily: 'Verdana, sans-serif' }}>
       <Container>
       <Nav.Link style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold' }} href="/">BidGeometry</Nav.Link>
         <Navbar.Toggle />
@@ -53,15 +54,16 @@ const Navigasibar = () => {
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end" style={{color: 'white'}}>
-          <Navbar.Text style={{color: 'white'}}>
-            Signed in as: <a href="#login">{nama}</a>
-          </Navbar.Text>
-          {/* <button 
-            className="btn btn-outline-light ms-3"
-            onClick={logout}
-          >
-            Logout
-          </button> */}
+        <Dropdown align="end">
+            <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none' }}>
+              <FaUserCircle size={28} color="white" />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Header>{nama}</Dropdown.Header>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
 
         </Navbar.Collapse>
       </Container>

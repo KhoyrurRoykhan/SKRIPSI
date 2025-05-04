@@ -71,7 +71,7 @@ export const Login = async (req, res) => {
     const email = user.email;
 
     const accessToken = jwt.sign({ userId, nama, email }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '25s'
+      expiresIn: '1d'
     });
     const refreshToken = jwt.sign({ userId, nama, email }, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: '1d'
@@ -132,7 +132,7 @@ export const countSiswaSelesaiBelajar = async (req, res) => {
     const count = await Users.count({
       where: {
         token_kelas,
-        progres_belajar: 22
+        progres_belajar: 28
       }
     });
     res.json({ count });
@@ -262,5 +262,33 @@ export const getProgresTantanganSiswa = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(403).json({ msg: "Token tidak valid" });
+  }
+};
+
+// Controller untuk update progres_belajar siswa berdasarkan token
+export const updateProgresBelajarSiswa = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ msg: "Token tidak ditemukan" });
+
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const userId = decoded.userId;
+
+    const { progres_belajar } = req.body;
+
+    if (progres_belajar == null)
+      return res.status(400).json({ msg: "Nilai progres_belajar tidak boleh kosong" });
+
+    const user = await Users.findByPk(userId);
+    if (!user) return res.status(404).json({ msg: "Siswa tidak ditemukan" });
+
+    user.progres_belajar = progres_belajar;
+    await user.save();
+
+    res.json({ msg: "Progres belajar berhasil diperbarui", progres_belajar: user.progres_belajar });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Terjadi kesalahan pada server" });
   }
 };

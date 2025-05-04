@@ -60,7 +60,7 @@ const Position = () => {
   };
 
   //kunci halaman
-  const [progresBelajar, setProgresBelajar] = useState(0);
+  const [progresBelajar, setProgresBelajar] = useState(27);
   
   useEffect(() => {
     const checkAkses = async () => {
@@ -190,13 +190,57 @@ const Position = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newFeedback = {};
-    Object.keys(correctAnswers).forEach((question) => {
-      newFeedback[question] =
-        selectedAnswers[question] === correctAnswers[question] ? "Benar!" : "Salah!";
-    });
+    let allCorrect = true;
+  
+    // Cek semua jawaban
+    for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+      const selected = selectedAnswers[question];
+      const isCorrect = selected === correctAnswer;
+  
+      newFeedback[question] = isCorrect ? 'Benar!' : 'Salah!';
+      if (!isCorrect) allCorrect = false;
+    }
+  
     setFeedback(newFeedback);
+  
+    // Jika semua benar dan progres saat ini adalah 11
+    if (allCorrect && progresBelajar === 11) {
+      try {
+        await axios.put(
+          'http://localhost:5000/user/progres-belajar',
+          { progres_belajar: progresBelajar + 1 },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        setProgresBelajar(prev => prev + 1);
+        Swal.fire({
+          icon: 'success',
+          title: 'Jawaban Benar!',
+          text: 'Materi selanjutnya sudah terbuka 😊',
+          confirmButtonColor: '#198754'
+        });
+      } catch (error) {
+        console.error("Gagal update progres:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Update Progres',
+          text: 'Terjadi kesalahan saat memperbarui progres kamu.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    } else if (allCorrect) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Sudah Diselesaikan',
+        text: 'Kamu sudah menyelesaikan materi ini sebelumnya.',
+        confirmButtonColor: '#198754'
+      });
+    }
   };
 
   const [pythonCode, setPythonCode] = useState(``);
@@ -482,7 +526,7 @@ for i in range(1):
   }, []);
 
   return (
-    <Container fluid className="sidenavigasi mt-5">
+    <Container fluid className="sidenavigasi mt-5" style={{fontFamily: 'Verdana, sans-serif' }}>
       <Row>
       <Col xs={2} className="bg-light border-end vh-100 p-0"
         style={{ overflowY: "hidden" }} // atau "auto", atau "scroll"
@@ -498,6 +542,15 @@ for i in range(1):
                   >
                     Pengenalan
                   </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/pendahuluan/kuis")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pendahuluan/kuis", progresBelajar >= 1)}
+                    style={{ pointerEvents: progresBelajar < 1 ? "auto" : "auto", opacity: progresBelajar < 1 ? 0.5 : 1 }}
+                  >
+                    <span>📋 Kuis: Pengenalan</span>
+                    {progresBelajar < 1 && <span className="ms-2">🔒</span>}
+                  </button>
                 </div>
               </Accordion.Body>
             </Accordion.Item>
@@ -508,74 +561,83 @@ for i in range(1):
                 <div className="d-flex flex-column">
                   <button
                     className={`${getButtonClass("/belajar/turtlemotion/leftright")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/leftright", progresBelajar >= 1)}
-                    style={{ pointerEvents: progresBelajar < 1 ? "auto" : "auto", opacity: progresBelajar < 1 ? 0.5 : 1 }}
-                  >
-                    <span>Left & Right</span>
-                    {progresBelajar < 1 && <span className="ms-2">🔒</span>}
-                  </button>
-
-                  <button
-                    className={`${getButtonClass("/belajar/turtlemotion/forwardbackward")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/forwardbackward", progresBelajar >= 2)}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/leftright", progresBelajar >= 2)}
                     style={{ pointerEvents: progresBelajar < 2 ? "auto" : "auto", opacity: progresBelajar < 2 ? 0.5 : 1 }}
                   >
-                    Forward & Backward
+                    <span>Left & Right</span>
                     {progresBelajar < 2 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/turtlemotion/setposition")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/setposition", progresBelajar >= 3)}
+                    className={`${getButtonClass("/belajar/turtlemotion/forwardbackward")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/forwardbackward", progresBelajar >= 3)}
                     style={{ pointerEvents: progresBelajar < 3 ? "auto" : "auto", opacity: progresBelajar < 3 ? 0.5 : 1 }}
                   >
-                    Set Position
+                    Forward & Backward
                     {progresBelajar < 3 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/turtlemotion/setxy")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/setxy", progresBelajar >= 4)}
+                    className={`${getButtonClass("/belajar/turtlemotion/setposition")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/setposition", progresBelajar >= 4)}
                     style={{ pointerEvents: progresBelajar < 4 ? "auto" : "auto", opacity: progresBelajar < 4 ? 0.5 : 1 }}
                   >
-                    Setx & sety
+                    Set Position
                     {progresBelajar < 4 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/turtlemotion/setheading")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/setheading", progresBelajar >= 5)}
+                    className={`${getButtonClass("/belajar/turtlemotion/setxy")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/setxy", progresBelajar >= 5)}
                     style={{ pointerEvents: progresBelajar < 5 ? "auto" : "auto", opacity: progresBelajar < 5 ? 0.5 : 1 }}
                   >
-                    Setheading
+                    Setx & sety
                     {progresBelajar < 5 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/turtlemotion/home")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/home", progresBelajar >= 6)}
+                    className={`${getButtonClass("/belajar/turtlemotion/setheading")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/setheading", progresBelajar >= 6)}
                     style={{ pointerEvents: progresBelajar < 6 ? "auto" : "auto", opacity: progresBelajar < 6 ? 0.5 : 1 }}
                   >
-                    Home
+                    Setheading
                     {progresBelajar < 6 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/turtlemotion/circle")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/circle", progresBelajar >= 7)}
+                    className={`${getButtonClass("/belajar/turtlemotion/home")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/home", progresBelajar >= 7)}
                     style={{ pointerEvents: progresBelajar < 7 ? "auto" : "auto", opacity: progresBelajar < 7 ? 0.5 : 1 }}
                   >
-                    Circle
+                    Home
                     {progresBelajar < 7 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/turtlemotion/dot")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/turtlemotion/dot", progresBelajar >= 8)}
+                    className={`${getButtonClass("/belajar/turtlemotion/circle")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/circle", progresBelajar >= 8)}
                     style={{ pointerEvents: progresBelajar < 8 ? "auto" : "auto", opacity: progresBelajar < 8 ? 0.5 : 1 }}
                   >
-                    Dot
+                    Circle
                     {progresBelajar < 8 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/turtlemotion/dot")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/dot", progresBelajar >= 9)}
+                    style={{ pointerEvents: progresBelajar < 9 ? "auto" : "auto", opacity: progresBelajar < 9 ? 0.5 : 1 }}
+                  >
+                    Dot
+                    {progresBelajar < 9 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/turtlemotion/kuis")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/turtlemotion/kuis", progresBelajar >= 10)}
+                    style={{ pointerEvents: progresBelajar < 10 ? "auto" : "auto", opacity: progresBelajar < 10 ? 0.5 : 1 }}
+                  >
+                    📋 Kuis: Pergerakan
+                    {progresBelajar < 10 && <span className="ms-2">🔒</span>}
                   </button>
 
                 </div>
@@ -588,148 +650,178 @@ for i in range(1):
                 <div className="d-flex flex-column">
                   <button
                     className={`${getButtonClass("/belajar/tellstate/position")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/tellstate/position", progresBelajar >= 9)}
-                    style={{ pointerEvents: progresBelajar < 9 ? "auto" : "auto", opacity: progresBelajar < 9 ? 0.5 : 1 }}
-                  >
-                    Position
-                    {progresBelajar < 9 && <span className="ms-2">🔒</span>}
-                  </button>
-
-                  <button
-                    className={`${getButtonClass("/belajar/tellstate/xcorycor")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/tellstate/xcorycor", progresBelajar >= 10)}
-                    style={{ pointerEvents: progresBelajar < 10 ? "auto" : "auto", opacity: progresBelajar < 10 ? 0.5 : 1 }}
-                  >
-                    Xcor & Ycor
-                    {progresBelajar < 10 && <span className="ms-2">🔒</span>}
-                  </button>
-
-                  <button
-                    className={`${getButtonClass("/belajar/tellstate/heading")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/tellstate/heading", progresBelajar >= 11)}
+                    onClick={() => handleNavigate("/belajar/tellstate/position", progresBelajar >= 11)}
                     style={{ pointerEvents: progresBelajar < 11 ? "auto" : "auto", opacity: progresBelajar < 11 ? 0.5 : 1 }}
                   >
-                    Heading
+                    Position
                     {progresBelajar < 11 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/tellstate/distance")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/tellstate/distance", progresBelajar >= 12)}
+                    className={`${getButtonClass("/belajar/tellstate/xcorycor")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/xcorycor", progresBelajar >= 12)}
                     style={{ pointerEvents: progresBelajar < 12 ? "auto" : "auto", opacity: progresBelajar < 12 ? 0.5 : 1 }}
                   >
-                    Distance
+                    Xcor & Ycor
                     {progresBelajar < 12 && <span className="ms-2">🔒</span>}
                   </button>
-                </div>
-              </Accordion.Body>
-            </Accordion.Item>
 
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>Pen Control</Accordion.Header>
-              <Accordion.Body>
-                <div className="d-flex flex-column">
                   <button
-                    className={`${getButtonClass("/belajar/pencontrol/penuppendown")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/pencontrol/penuppendown", progresBelajar >= 13)}
+                    className={`${getButtonClass("/belajar/tellstate/heading")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/heading", progresBelajar >= 13)}
                     style={{ pointerEvents: progresBelajar < 13 ? "auto" : "auto", opacity: progresBelajar < 13 ? 0.5 : 1 }}
                   >
-                    Pendown & Penup
+                    Heading
                     {progresBelajar < 13 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/pencontrol/pensize")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/pencontrol/pensize", progresBelajar >= 14)}
+                    className={`${getButtonClass("/belajar/tellstate/distance")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/distance", progresBelajar >= 14)}
                     style={{ pointerEvents: progresBelajar < 14 ? "auto" : "auto", opacity: progresBelajar < 14 ? 0.5 : 1 }}
                   >
-                    Pensize
+                    Distance
                     {progresBelajar < 14 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/pencontrol/isdown")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/pencontrol/isdown", progresBelajar >= 15)}
+                    className={`${getButtonClass("/belajar/tellstate/kuis")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/tellstate/kuis", progresBelajar >= 15)}
                     style={{ pointerEvents: progresBelajar < 15 ? "auto" : "auto", opacity: progresBelajar < 15 ? 0.5 : 1 }}
                   >
-                    Isdown
+                    📋 Kuis: Mengetahui Status
                     {progresBelajar < 15 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
             </Accordion.Item>
 
-            <Accordion.Item eventKey="4">
-              <Accordion.Header>Color Control</Accordion.Header>
+            <Accordion.Item eventKey="3">
+              <Accordion.Header>Pen & Color Control</Accordion.Header>
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={`${getButtonClass("/belajar/colorcontrol/pencolor")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/colorcontrol/pencolor", progresBelajar >= 16)}
+                    className={`${getButtonClass("/belajar/pencontrol/penuppendown")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencontrol/penuppendown", progresBelajar >= 16)}
                     style={{ pointerEvents: progresBelajar < 16 ? "auto" : "auto", opacity: progresBelajar < 16 ? 0.5 : 1 }}
                   >
-                    Pencolor
+                    Pendown & Penup
                     {progresBelajar < 16 && <span className="ms-2">🔒</span>}
                   </button>
 
                   <button
-                    className={`${getButtonClass("/belajar/colorcontrol/fillcolor")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/colorcontrol/fillcolor", progresBelajar >= 17)}
+                    className={`${getButtonClass("/belajar/pencontrol/pensize")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencontrol/pensize", progresBelajar >= 17)}
                     style={{ pointerEvents: progresBelajar < 17 ? "auto" : "auto", opacity: progresBelajar < 17 ? 0.5 : 1 }}
                   >
-                    Pengisian Warna (Fillcolor, Begin_fill, dan End_fill)
+                    Pensize
                     {progresBelajar < 17 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/pencontrol/isdown")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencontrol/isdown", progresBelajar >= 18)}
+                    style={{ pointerEvents: progresBelajar < 18 ? "auto" : "auto", opacity: progresBelajar < 18 ? 0.5 : 1 }}
+                  >
+                    Isdown
+                    {progresBelajar < 18 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/colorcontrol/pencolor")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/colorcontrol/pencolor", progresBelajar >= 19)}
+                    style={{ pointerEvents: progresBelajar < 19 ? "auto" : "auto", opacity: progresBelajar < 19 ? 0.5 : 1 }}
+                  >
+                    Pencolor
+                    {progresBelajar < 19 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/colorcontrol/fillcolor")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/colorcontrol/fillcolor", progresBelajar >= 20)}
+                    style={{ pointerEvents: progresBelajar < 20 ? "auto" : "auto", opacity: progresBelajar < 20 ? 0.5 : 1 }}
+                  >
+                    Pengisian Warna (Fillcolor, Begin_fill, dan End_fill)
+                    {progresBelajar < 20 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/pencolorcontrol/kuis")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/pencolorcontrol/kuis", progresBelajar >= 21)}
+                    style={{ pointerEvents: progresBelajar < 21 ? "auto" : "auto", opacity: progresBelajar < 21 ? 0.5 : 1 }}
+                  >
+                    📋 Kuis: Kontrol Pena dan Warna
+                    {progresBelajar < 21 && <span className="ms-2">🔒</span>}
+                  </button>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+
+           
+            <Accordion.Item eventKey="4">
+              <Accordion.Header>More Drawing Control</Accordion.Header>
+              <Accordion.Body>
+                <div className="d-flex flex-column">
+                  <button
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/reset")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/reset", progresBelajar >= 22)}
+                    style={{ pointerEvents: progresBelajar < 22 ? "auto" : "auto", opacity: progresBelajar < 22 ? 0.5 : 1 }}
+                  >
+                    Reset
+                    {progresBelajar < 22 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/clear")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/clear", progresBelajar >= 23)}
+                    style={{ pointerEvents: progresBelajar < 23 ? "auto" : "auto", opacity: progresBelajar < 23 ? 0.5 : 1 }}
+                  >
+                    Clear
+                    {progresBelajar < 23 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/write")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/write", progresBelajar >= 24)}
+                    style={{ pointerEvents: progresBelajar < 24 ? "auto" : "auto", opacity: progresBelajar < 24 ? 0.5 : 1 }}
+                  >
+                    Write
+                    {progresBelajar < 24 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/perulangan/forloop")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/perulangan/forloop", progresBelajar >= 25)}
+                    style={{ pointerEvents: progresBelajar < 25 ? "auto" : "auto", opacity: progresBelajar < 25 ? 0.5 : 1 }}
+                  >
+                    For Loops
+                    {progresBelajar < 25 && <span className="ms-2">🔒</span>}
+                  </button>
+
+                  <button
+                    className={`${getButtonClass("/belajar/moredrawingcontrol/kuis")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/kuis", progresBelajar >= 26)}
+                    style={{ pointerEvents: progresBelajar < 26 ? "auto" : "auto", opacity: progresBelajar < 26 ? 0.5 : 1 }}
+                  >
+                    📋 Kuis: Kontrol Gambar Lanjutan
+                    {progresBelajar < 26 && <span className="ms-2">🔒</span>}
                   </button>
                 </div>
               </Accordion.Body>
             </Accordion.Item>
 
             <Accordion.Item eventKey="5">
-              <Accordion.Header>More Drawing Control</Accordion.Header>
+              <Accordion.Header>Evaluasi</Accordion.Header>
               <Accordion.Body>
                 <div className="d-flex flex-column">
                   <button
-                    className={`${getButtonClass("/belajar/moredrawingcontrol/reset")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/reset", progresBelajar >= 18)}
-                    style={{ pointerEvents: progresBelajar < 18 ? "auto" : "auto", opacity: progresBelajar < 18 ? 0.5 : 1 }}
+                    className={`${getButtonClass("/belajar/evaluasi")} d-flex justify-content-between align-items-center w-100`}
+                    onClick={() => handleNavigate("/belajar/evaluasi", progresBelajar >= 27)}
+                    style={{ pointerEvents: progresBelajar < 27 ? "auto" : "auto", opacity: progresBelajar < 27 ? 0.5 : 1 }}
                   >
-                    Reset
-                    {progresBelajar < 18 && <span className="ms-2">🔒</span>}
-                  </button>
-
-                  <button
-                    className={`${getButtonClass("/belajar/moredrawingcontrol/clear")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/clear", progresBelajar >= 19)}
-                    style={{ pointerEvents: progresBelajar < 19 ? "auto" : "auto", opacity: progresBelajar < 19 ? 0.5 : 1 }}
-                  >
-                    Clear
-                    {progresBelajar < 19 && <span className="ms-2">🔒</span>}
-                  </button>
-
-                  <button
-                    className={`${getButtonClass("/belajar/moredrawingcontrol/write")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/moredrawingcontrol/write", progresBelajar >= 20)}
-                    style={{ pointerEvents: progresBelajar < 20 ? "auto" : "auto", opacity: progresBelajar < 20 ? 0.5 : 1 }}
-                  >
-                    Write
-                    {progresBelajar < 20 && <span className="ms-2">🔒</span>}
-                  </button>
-                </div>
-              </Accordion.Body>
-            </Accordion.Item>
-
-            <Accordion.Item eventKey="6">
-              <Accordion.Header>Perulangan</Accordion.Header>
-              <Accordion.Body>
-                <div className="d-flex flex-column">
-                  <button
-                    className={`${getButtonClass("/belajar/perulangan/forloop")} d-flex justify-content-between align-items-center w-100`}
-                    onClick={() => handleNavigate("/belajar/perulangan/forloop", progresBelajar >= 21)}
-                    style={{ pointerEvents: progresBelajar < 21 ? "auto" : "auto", opacity: progresBelajar < 21 ? 0.5 : 1 }}
-                  >
-                    For Loops
-                    {progresBelajar < 21 && <span className="ms-2">🔒</span>}
-                  </button>
+                    Evaluasi
+                    {progresBelajar < 27 && <span className="ms-2">🔒</span>}
+                  </button>                  
                 </div>
               </Accordion.Body>
             </Accordion.Item>
@@ -742,10 +834,10 @@ for i in range(1):
         <div>
           <h2 style={{
               textAlign: 'center',
-              backgroundColor: '#2DAA9E',
+              backgroundColor: '#198754',
               color: 'white',
               padding: '10px 20px',
-              borderRadius: '10px',
+              // borderRadius: '10px',
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               fontWeight: 'bold',
               fontSize: '24px',
@@ -760,10 +852,10 @@ for i in range(1):
 
           <h4
             style={{
-              color: '#2DAA9E',
+              // color: '#2DAA9E',
               fontSize: '22px',
               fontWeight: 'bold',
-              borderLeft: '5px solid #2DAA9E',
+              borderLeft: '5px solid #198754',
               paddingLeft: '10px',
               marginBottom: '10px',
             }}
@@ -861,10 +953,10 @@ print("Posisi setelah bergerak:", position())`}
             }}
           >
             <h4 style={{
-                color: '#2DAA9E',
+                // color: '#2DAA9E',
                 fontSize: '22px',
                 fontWeight: 'bold',
-                borderLeft: '5px solid #2DAA9E',
+                borderLeft: '5px solid #198754',
                 paddingLeft: '10px',
                 marginBottom: '15px',
               }}>
@@ -981,12 +1073,12 @@ print("Posisi setelah bergerak:", position())`}
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
               // maxWidth: '1000px',
               margin: 'auto',
-              borderLeft: '5px solid #2DAA9E',
-              borderRight: '5px solid #2DAA9E',
+              borderLeft: '5px solid #198754',
+              borderRight: '5px solid #198754',
             }}
           >
             <h4 style={{
-                color: '#2DAA9E',
+                // color: '#2DAA9E',
                 fontSize: '24px',
                 fontWeight: 'bold',
                 // borderLeft: '5px solid #2DAA9E',
@@ -1003,120 +1095,11 @@ print("Posisi setelah bergerak:", position())`}
           
 
           <br/>
-
-          <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
-          {/* Kuis Accordion */}
-          <Accordion.Item eventKey="0">
-          <Accordion.Header>
-              <h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Kuis</h4>
-            </Accordion.Header>
-            <Accordion.Body>
-              <Form>
-                <Form.Group controlId="question1">
-                  <Form.Label className="p-3 mb-3"
-                    style={{
-                      display: "block",
-                      backgroundColor: "#f8f9fa",
-                      borderLeft: "5px solid #2DAA9E",
-                      borderRight: "5px solid #2DAA9E",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      borderRadius: "5px"
-                    }}>
-                      1. Apa fungsi dari position()? 
-                    </Form.Label>
-                    <div className="row d-flex">
-                  {[
-                    "Memberitahu arah pergerakan turtle saat ini.",
-                    "Menghapus posisi turtle sebelumnya.",
-                    "Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y).",
-                    "Mengatur posisi turtle ke titik tertentu."
-                  ].map((answer) => (
-                    <div key={answer} className="col-6 mb-2 d-flex">
-                      <Button
-                        variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
-                        onClick={() => handleAnswerChange("question1", answer)}
-                        className="w-100 p-3 flex-grow-1"
-                        style={{
-                          fontSize: "18px",
-                          // fontWeight: "bold",
-                          backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
-                          borderColor: "#2DAA9E",
-                          minHeight: "60px" // Menjaga tinggi tetap konsisten
-                        }}
-                      >
-                        {answer}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                </Form.Group>
-                {feedback.question1 && (
-                  <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
-                    {feedback.question1}
-                  </Alert>
-                )}
-
-                <Form.Group controlId="question2">
-                  <Form.Label className="p-3 mb-3"
-                    style={{
-                      display: "block",
-                      backgroundColor: "#f8f9fa",
-                      borderLeft: "5px solid #2DAA9E",
-                      borderRight: "5px solid #2DAA9E",
-                      fontSize: "18px",
-                      // fontWeight: "bold",
-                      borderRadius: "5px"
-                    }}>
-                      2. Apa hasil dari perintah berikut jika turtle berada di posisi (50, 100)? <pre>print(position()) </pre> 
-                    </Form.Label>
-                    <div className="row d-flex">
-                    {["(50, 100)", 
-                    "0", 
-                    "(0, 0)", 
-                    "[50, 100]"].map(
-                      (answer) => (
-                        <div key={answer} className="col-6 mb-2 d-flex">
-                          <Button
-                            variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
-                            onClick={() => handleAnswerChange("question2", answer)}
-                            className="w-100 p-3 flex-grow-1"
-                            style={{
-                              fontSize: "18px",
-                              // fontWeight: "bold",
-                              backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
-                              borderColor: "#2DAA9E",
-                              minHeight: "60px"
-                            }}
-                          >
-                            {answer}
-                          </Button>
-                        </div>
-                      )
-                    )}
-                  </div>
-
-                  </Form.Group>
-                  {feedback.question2 && (
-                  <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
-                    {feedback.question2}
-                  </Alert>
-                )}
-
-              <div className="text-center">
-                <Button variant="success" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px", backgroundColor: "#2DAA9E", borderColor: "#2DAA9E" }}>
-                  Periksa Jawaban
-                </Button>
-              </div>
-              </Form>
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
-
-        <Accordion className="mb-4" style={{ outline: "3px solid #2DAA9E", borderRadius: "10px" }}>
+          <hr></hr>
+          <Accordion className="mb-4" style={{ outline: "3px solid #198754", borderRadius: "10px" }}>
           {/* Tantangan Accordion */}
           <Accordion.Item eventKey="1">
-          <Accordion.Header><h4 style={{ color: "#2DAA9E", fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
+          <Accordion.Header><h4 style={{fontWeight: "bold" }}>Tantangan</h4></Accordion.Header>
             <Accordion.Body>
             <p>
               Selesaikan tantangan dibawah ini!
@@ -1155,7 +1138,7 @@ print("Posisi setelah bergerak:", position())`}
                     extensions={[python()]}
                     onChange={(value) => setPythonCodeChallanges(value)}
                     style={{
-                      border: "2px solid #2DAA9E",
+                      border: "2px solid #198754",
                       borderRadius: "8px",
                       padding: "5px",
                     }}
@@ -1181,7 +1164,7 @@ print("Posisi setelah bergerak:", position())`}
                   width: "400px",
                   height: "405px",
                   borderRadius: "10px",
-                  border: "3px solid #2DAA9E",
+                  border: "3px solid #198754",
                   // overflow: "hidden"
                 }}>
                   <div id="mycanvas-challanges" style={{ 
@@ -1239,6 +1222,117 @@ print("Posisi setelah bergerak:", position())`}
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
+
+          <Accordion className="mb-4" style={{ outline: "3px solid #198754", borderRadius: "10px" }}>
+          {/* Kuis Accordion */}
+          <Accordion.Item eventKey="0">
+          <Accordion.Header>
+              <h4 style={{fontWeight: "bold" }}>Pertanyaan</h4>
+            </Accordion.Header>
+            <Accordion.Body>
+              <Form>
+                <Form.Group controlId="question1">
+                  <Form.Label className="p-3 mb-3"
+                    style={{
+                      display: "block",
+                      backgroundColor: "#f8f9fa",
+                      // borderLeft: "5px solid #2DAA9E",
+                      // borderRight: "5px solid #2DAA9E",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      borderRadius: "5px"
+                    }}>
+                      1. Apa fungsi dari position()? 
+                    </Form.Label>
+                    <div className="row d-flex">
+                  {[
+                    "Memberitahu arah pergerakan turtle saat ini.",
+                    "Menghapus posisi turtle sebelumnya.",
+                    "Memberitahu posisi turtle saat ini dalam bentuk koordinat (x, y).",
+                    "Mengatur posisi turtle ke titik tertentu."
+                  ].map((answer) => (
+                    <div key={answer} className="mb-2">
+                      <Button
+                        variant={selectedAnswers.question1 === answer ? "success" : "outline-success"}
+                        onClick={() => handleAnswerChange("question1", answer)}
+                        className="w-100 p-2 flex-grow-1"
+                        style={{
+                          fontSize: "16px",
+                          // fontWeight: "bold",
+                          backgroundColor: selectedAnswers.question1 === answer ? "#2DAA9E" : "",
+                          borderColor: "#2DAA9E",
+                          textAlign : 'left'
+                        }}
+                      >
+                        {answer}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                </Form.Group>
+                {feedback.question1 && (
+                  <Alert variant={feedback.question1 === "Benar!" ? "success" : "danger"} className="mt-3">
+                    {feedback.question1}
+                  </Alert>
+                )}
+
+                <Form.Group controlId="question2">
+                  <Form.Label className="p-3 mb-3"
+                    style={{
+                      display: "block",
+                      backgroundColor: "#f8f9fa",
+                      // borderLeft: "5px solid #2DAA9E",
+                      // borderRight: "5px solid #2DAA9E",
+                      fontSize: "18px",
+                      // fontWeight: "bold",
+                      borderRadius: "5px"
+                    }}>
+                      2. Apa hasil dari perintah berikut jika turtle berada di posisi (50, 100)? <pre>print(position()) </pre> 
+                    </Form.Label>
+                    <div className="row d-flex">
+                    {["(50, 100)", 
+                    "0", 
+                    "(0, 0)", 
+                    "[50, 100]"].map(
+                      (answer) => (
+                        <div key={answer} className="mb-2">
+                          <Button
+                            variant={selectedAnswers.question2 === answer ? "success" : "outline-success"}
+                            onClick={() => handleAnswerChange("question2", answer)}
+                            className="w-100 p-2"
+                            style={{
+                              fontSize: "16px",
+                              // fontWeight: "bold",
+                              backgroundColor: selectedAnswers.question2 === answer ? "#2DAA9E" : "",
+                              borderColor: "#2DAA9E",
+                              textAlign: 'left'
+                            }}
+                          >
+                            {answer}
+                          </Button>
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  </Form.Group>
+                  {feedback.question2 && (
+                  <Alert variant={feedback.question2 === "Benar!" ? "success" : "danger"} className="mt-3">
+                    {feedback.question2}
+                  </Alert>
+                )}
+
+              <div className="text-center">
+                <Button variant="primary" onClick={handleSubmit} className="mt-3 p-3" style={{ fontSize: "18px"}}>
+                  Periksa Jawaban
+                </Button>
+              </div>
+              </Form>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+
+        
         </div>
       </div>
       </Col>

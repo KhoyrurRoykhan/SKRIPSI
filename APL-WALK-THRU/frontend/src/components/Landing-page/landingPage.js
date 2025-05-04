@@ -44,11 +44,11 @@ const LandingPage = () => {
   };
 
   return (
-    <Container fluid style={{ padding: '0px', fontFamily: 'Open Sans, sans-serif' }}>
+    <Container fluid style={{ padding: '0px', fontFamily: 'Verdana, sans-serif' }}>
       <Container fluid style={{ marginTop: 0, background: 'linear-gradient(to right, #2DAA9E, #FBF8EF)', minHeight: '100vh'}}>
       <Row className="justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
         <Col md="8"  style={{padding:"200px"}}>
-          <p className="text-center mb-4" style={{ fontSize: '3.5rem', color: 'white' }}><b>Bidawang Geometry</b></p>
+          <p className="text-center mb-4" style={{ fontSize: '3.3rem', color: 'white' }}><b>Bidawang Geometry</b></p>
           <h3 className="text-center mb-2 text-white">Media Pembelajaran Interaktif</h3>
           <h3 className="text-center mb-4 text-white">Library Turtle</h3>
           <p className="text-center mb-4 text-white">
