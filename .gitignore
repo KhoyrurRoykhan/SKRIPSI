@@ -4,3 +4,4 @@ desain-ui
 .parcel-cache
 dist
 build
+.env
