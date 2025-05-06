@@ -1,5 +1,6 @@
 import Users from "../models/UserModel.js";
 import Nilai from "../models/NilaiModel.js";
+import Guru from "../models/GuruModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -290,5 +291,21 @@ export const updateProgresBelajarSiswa = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Terjadi kesalahan pada server" });
+  }
+};
+
+export const getKKM = async (req, res) => {
+  try {
+    const token_kelas = req.token_kelas; // dari JWT
+    const guru = await Guru.findOne({
+      where: { token: token_kelas },
+      attributes: ['kkm']
+    });
+
+    if (!guru) return res.status(404).json({ msg: "KKM tidak ditemukan" });
+    res.json({ kkm: guru.kkm });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Gagal mengambil KKM" });
   }
 };

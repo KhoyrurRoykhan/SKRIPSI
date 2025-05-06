@@ -38,6 +38,11 @@ const Guru = db.define('guru', {
     unique: true,
     defaultValue: generateToken
   },
+  kkm: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 70 // kamu bisa sesuaikan nilai default sesuai kebijakan
+  },
   refresh_token: {
     type: DataTypes.TEXT
   }

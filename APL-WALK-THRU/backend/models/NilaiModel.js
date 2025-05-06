@@ -44,7 +44,7 @@ const Nilai = db.define('nilai_siswa', {
     allowNull: true,
     defaultValue: null
   },
-  kuis_6: {
+  evaluasi: {
     type: DataTypes.INTEGER,
     allowNull: true,
     defaultValue: null

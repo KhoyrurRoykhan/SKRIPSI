@@ -1,6 +1,6 @@
 import express from "express";
-import { getUsers, Register, Login, Logout, getProgresBelajarSiswa, getProgresTantanganSiswa, updateProgresBelajarSiswa } from "../controllers/UserController.js";
-import { getGuru, RegisterGuru, LoginGuru, LogoutGuru, getMeGuru } from "../controllers/GuruController.js";
+import { getUsers, Register, Login, Logout, getProgresBelajarSiswa, getProgresTantanganSiswa, updateProgresBelajarSiswa, getKKM } from "../controllers/UserController.js";
+import { getGuru, RegisterGuru, LoginGuru, LogoutGuru, getMeGuru, updateKKM, getKKMByToken } from "../controllers/GuruController.js";
 import { verifyToken } from "../middleware/VerifyToken.js";
 import { verifyGuruToken } from "../middleware/VerifyTokenGuru.js";
 import { refreshToken } from "../controllers/RefreshToken.js";
@@ -13,7 +13,7 @@ import { countUsersByTokenKelas,
     deleteUserById
     } from "../controllers/UserController.js";
 
-import { getAllNilaiSiswa, getNilaiByTokenKelas, getNilaiByKuis } from "../controllers/NilaiController.js";
+import { getAllNilaiSiswa, getNilaiByTokenKelas, getNilaiByKuis, updateKuis1, updateKuis2, updateKuis3, updateKuis4, updateKuis5, updateEvaluasi } from "../controllers/NilaiController.js";
 
 const routes = express.Router();
 
@@ -34,6 +34,7 @@ routes.delete('/users/:id', deleteUserById);
 routes.get('/user/progres-belajar', getProgresBelajarSiswa);
 routes.put('/user/progres-belajar', updateProgresBelajarSiswa);
 routes.get('/user/progres-tantangan', getProgresTantanganSiswa);
+routes.get('/kkm/kuis', verifyToken, getKKM);
 
 
 // Guru Routes
@@ -43,10 +44,19 @@ routes.post('/login-guru', LoginGuru);
 routes.get('/token-guru', refreshTokenGuru);
 routes.delete('/logout-guru', LogoutGuru);
 routes.get('/me-guru', verifyGuruToken, getMeGuru);
+routes.put('/guru/kkm', verifyGuruToken, updateKKM);
+routes.get('/kkm', getKKMByToken);
 
 routes.get("/nilai", getAllNilaiSiswa);
 routes.get("/nilai/by-token", getNilaiByTokenKelas);
 routes.get("/nilai/by-kuis", getNilaiByKuis);
+routes.put('/nilai/kuis-1', verifyToken, updateKuis1);
+routes.put('/nilai/kuis-2', verifyToken, updateKuis2);
+routes.put('/nilai/kuis-3', verifyToken, updateKuis3);
+routes.put('/nilai/kuis-4', verifyToken, updateKuis4);
+routes.put('/nilai/kuis-5', verifyToken, updateKuis5);
+routes.put('/nilai/evaluasi', verifyToken, updateEvaluasi);
+
 
 
 export default routes;

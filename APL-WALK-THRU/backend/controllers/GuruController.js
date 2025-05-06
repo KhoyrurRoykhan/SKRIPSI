@@ -7,7 +7,7 @@ import { generateTokenKelas } from "./utils/generateToken.js"; // Pakai helper t
 export const getGuru = async (req, res) => {
   try {
     const guru = await Guru.findAll({
-      attributes: ['id', 'nama', 'email', 'instansi', 'token']
+      attributes: ['id', 'nama', 'email', 'instansi', 'token', 'kkm']
     });
     res.json(guru);
   } catch (error) {
@@ -15,15 +15,16 @@ export const getGuru = async (req, res) => {
   }
 };
 
+
 // Registrasi guru baru
 export const RegisterGuru = async (req, res) => {
-  const { nama, email, password, confPassword, instansi } = req.body;
+  const { nama, email, password, confPassword, instansi, kkm } = req.body;
   if (password !== confPassword)
     return res.status(400).json({ msg: "Password dan Confirm Password tidak cocok" });
 
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
-  const token = generateTokenKelas(); // generate token 8 karakter
+  const token = generateTokenKelas();
 
   try {
     await Guru.create({
@@ -31,7 +32,8 @@ export const RegisterGuru = async (req, res) => {
       email,
       password: hashPassword,
       instansi,
-      token
+      token,
+      kkm // kkm opsional, gunakan defaultValue jika tidak dikirim
     });
     res.json({ msg: "Registrasi Guru Berhasil" });
   } catch (error) {
@@ -39,6 +41,7 @@ export const RegisterGuru = async (req, res) => {
     res.status(500).json({ msg: "Terjadi kesalahan saat registrasi guru" });
   }
 };
+
 
 // Login guru
 export const LoginGuru = async (req, res) => {
@@ -57,9 +60,10 @@ export const LoginGuru = async (req, res) => {
     const email = guru.email;
     const instansi = guru.instansi;
     const token = guru.token;
+    const kkm = guru.kkm;
 
     const accessToken = jwt.sign(
-      { userId, nama, email, instansi, token },
+      { userId, nama, email, instansi, token, kkm },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: '25s' }
     );
@@ -116,7 +120,7 @@ export const getMeGuru = async (req, res) => {
       where: {
         id: decoded.userId
       },
-      attributes: ["id", "nama", "email", "instansi", "token"]
+      attributes: ["id", "nama", "email", "instansi", "token", "kkm"]
     });
 
     if (!guru) return res.status(404).json({ msg: "Guru tidak ditemukan" });
@@ -124,5 +128,41 @@ export const getMeGuru = async (req, res) => {
     res.json(guru);
   } catch (error) {
     return res.status(403).json({ msg: "Token tidak valid" });
+  }
+};
+
+// Update nilai KKM
+export const updateKKM = async (req, res) => {
+  const { kkm } = req.body;
+  const guruId = req.guruId;
+
+  try {
+    await Guru.update({ kkm }, {
+      where: { id: guruId }
+    });
+    res.json({ msg: "KKM berhasil diperbarui" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Gagal memperbarui KKM" });
+  }
+};
+
+
+// Ambil KKM berdasarkan token kelas
+export const getKKMByToken = async (req, res) => {
+  const { token_kelas } = req.query;
+
+  try {
+    const guru = await Guru.findOne({
+      where: { token: token_kelas },
+      attributes: ['kkm']
+    });
+
+    if (!guru) return res.status(404).json({ msg: "KKM tidak ditemukan untuk token tersebut" });
+
+    res.json({ kkm: guru.kkm });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Gagal mengambil KKM" });
   }
 };

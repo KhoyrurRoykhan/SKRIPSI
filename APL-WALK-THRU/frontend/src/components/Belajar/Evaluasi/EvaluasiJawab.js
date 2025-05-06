@@ -298,6 +298,25 @@ useEffect(() => {
     }
   };
 
+  const [kkm, setKkm] = useState(80); // default sementara
+
+  useEffect(() => {
+    const fetchKKM = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/kkm/kuis', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setKkm(res.data.kkm);
+      } catch (err) {
+        console.error("Gagal mengambil KKM:", err);
+      }
+    };
+
+    if (token) fetchKKM();
+  }, [token]);
+
   const handleFinish = async () => {
     if (hasFinishedRef.current) return;
     hasFinishedRef.current = true;
@@ -324,8 +343,9 @@ useEffect(() => {
     const nilaiAkhir = (sc / quizData.length) * 100;
 
 // ✅ Update progres jika memenuhi syarat
-if (nilaiAkhir >= 80 && progresBelajar === 27) {
+if (nilaiAkhir >= kkm && progresBelajar === 27) {
   try {
+    // 1. Update progres belajar
     await axios.put(
       'http://localhost:5000/user/progres-belajar',
       { progres_belajar: progresBelajar + 1 },
@@ -336,6 +356,17 @@ if (nilaiAkhir >= 80 && progresBelajar === 27) {
       }
     );
     setProgresBelajar(prev => prev + 1);
+
+    // 2. Update nilai evaluasi
+    await axios.put(
+      'http://localhost:5000/nilai/evaluasi',
+      { nilai: Math.round(nilaiAkhir) }, // Jika kamu ingin integer
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     Swal.fire({
       icon: 'success',
@@ -364,13 +395,13 @@ if (nilaiAkhir >= 80 && progresBelajar === 27) {
     });
   }
 
-} else if (nilaiAkhir >= 80 && progresBelajar > 27) {
+} else if (nilaiAkhir >= kkm && progresBelajar > 27) {
   // ⚠️ Sudah pernah menjawab kuis ini sebelumnya
   Swal.fire({
     icon: 'info',
     title: 'Sudah Pernah Menyelesaikan Kuis Ini',
     html: `
-      <p>Nilaimu: <strong>${sc}</strong> dari ${quizData.length} soal ✅</p>
+      <p>Nilaimu: <strong>${nilaiAkhir}</strong></p>
       <p>Kamu sudah menyelesaikan kuis ini sebelumnya.</p>
       <p>Tidak ada perubahan pada progres belajar kamu.</p>
     `,
@@ -384,7 +415,7 @@ if (nilaiAkhir >= 80 && progresBelajar === 27) {
     icon: 'warning',
     html: `
       <p>Nilaimu: <strong>${nilaiAkhir}</strong></p>
-      <p>Sayangnya kamu belum memenuhi syarat nilai minimal (80).</p>
+      <p>Sayangnya kamu belum memenuhi syarat nilai minimal ${kkm}.</p>
       <p><strong>Silakan baca ulang materi sebelumnya</strong> lalu coba kerjakan ulang kuis ini ya 💪</p>
     `,
     confirmButtonText: 'Mengerti'

@@ -135,7 +135,7 @@ const DataNilai = () => {
               <th>Kuis 3</th>
               <th>Kuis 4</th>
               <th>Kuis 5</th>
-              <th>Kuis 6</th>
+              <th>Evaluasi</th>
             </tr>
           </thead>
           <tbody>
@@ -156,7 +156,7 @@ const DataNilai = () => {
                     <td className='text-center'>{nilaiSiswa.kuis_3 ?? '-'}</td>
                     <td className='text-center'>{nilaiSiswa.kuis_4 ?? '-'}</td>
                     <td className='text-center'>{nilaiSiswa.kuis_5 ?? '-'}</td>
-                    <td className='text-center'>{nilaiSiswa.kuis_6 ?? '-'}</td>
+                    <td className='text-center'>{nilaiSiswa.evaluasi ?? '-'}</td>
                   </tr>
                 );
               })
