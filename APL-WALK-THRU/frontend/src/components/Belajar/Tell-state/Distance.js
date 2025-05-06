@@ -43,7 +43,7 @@ const Distance = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/token");
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -56,14 +56,15 @@ const Distance = () => {
 
   //kunci halaman
   const [progresBelajar, setProgresBelajar] = useState(27);
+  const [progresTantangan, setProgresTantangan] = useState(0);
   
   useEffect(() => {
     const checkAkses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/token');
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
         const decoded = jwtDecode(response.data.accessToken);
 
-        const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+        const progres = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`, {
           headers: {
             Authorization: `Bearer ${response.data.accessToken}`
           }
@@ -100,6 +101,25 @@ const Distance = () => {
       });
     }
   };  
+
+  useEffect(() => {
+    const fetchProgresTantangan = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setProgresTantangan(response.data.progres_tantangan);
+      } catch (error) {
+        console.error("Gagal mengambil progres tantangan:", error);
+      }
+    };
+  
+    if (token) {
+      fetchProgresTantangan();
+    }
+  }, [token]);
 
   // Tentukan accordion aktif berdasarkan URL
   const activeAccordionKey = location.pathname.includes("/belajar/tellstate") || location.pathname.includes("/belajar/tellstate/distance")
@@ -217,7 +237,7 @@ const Distance = () => {
     if (allCorrect && progresBelajar === 14) {
       try {
         await axios.put(
-          'http://localhost:5000/user/progres-belajar',
+          `${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`,
           { progres_belajar: progresBelajar + 1 },
           {
             headers: {
@@ -363,7 +383,7 @@ for i in range(100):
   
     const [hasRun, setHasRun] = useState(false);
   
-    const checkCodeChallanges = () => {
+    const checkCodeChallanges = async () => {
       if (!hasRun) return;
     
       const validCodes = [
@@ -390,18 +410,38 @@ for i in range(100):
     
       const userCodeLines = pythonCodeChallanges.trim().split("\n").map(line => line.trim());
     
-      // Cek apakah semua kode cocok secara penuh
       const isExactMatch = validCodes.some(valid =>
         valid.length === userCodeLines.length &&
         valid.every((code, index) => code.replace(/\s+/g, '') === (userCodeLines[index] || "").replace(/\s+/g, ''))
       );
     
       if (isExactMatch) {
-        swal("Jawaban Benar!", "Kamu berhasil!", "success");
+        await swal("Jawaban Benar!", "Kamu berhasil!", "success");
+    
+        try {
+          if (progresTantangan === 8) {
+            await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+              progres_tantangan: progresTantangan + 1
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            setProgresTantangan(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error("Gagal update progres tantangan halaman 9:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Update Progres Tantangan',
+            text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman sembilan.',
+            confirmButtonColor: '#d33'
+          });
+        }
+    
         return;
       }
     
-      // Cek apakah ada jalur yang cocok sejauh ini
       let partialMatchFound = false;
     
       for (const valid of validCodes) {
@@ -432,12 +472,9 @@ for i in range(100):
       }
     
       if (partialMatchFound) {
-        // Jangan kasih alert, user masih di jalur benar
         return;
       }
     
-      // Kalau semua jalur gagal cocok sejauh ini, tampilkan pesan salah
-      // Cari tahu salahnya di mana untuk feedback
       for (const valid of validCodes) {
         const stepsToCheck = Math.min(userCodeLines.length, valid.length);
     
@@ -467,9 +504,9 @@ for i in range(100):
         }
       }
     
-      // Kalau sampai sini, berarti semua jalur gagal dan tidak diketahui pasti salahnya apa
       swal("Jawaban Salah", "Urutan atau isi kode tidak sesuai. Coba lagi!", "error");
     };
+    
     
   
     const resetCode = () => {

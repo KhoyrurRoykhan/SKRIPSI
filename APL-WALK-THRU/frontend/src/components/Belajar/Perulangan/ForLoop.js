@@ -41,7 +41,7 @@ const ForLoop = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/token");
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -54,14 +54,15 @@ const ForLoop = () => {
 
   //kunci halaman
   const [progresBelajar, setProgresBelajar] = useState(27);
+  const [progresTantangan, setProgresTantangan] = useState(0);
   
   useEffect(() => {
     const checkAkses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/token');
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
         const decoded = jwtDecode(response.data.accessToken);
 
-        const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+        const progres = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`, {
           headers: {
             Authorization: `Bearer ${response.data.accessToken}`
           }
@@ -98,6 +99,25 @@ const ForLoop = () => {
       });
     }
   };  
+
+  useEffect(() => {
+    const fetchProgresTantangan = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setProgresTantangan(response.data.progres_tantangan);
+      } catch (error) {
+        console.error("Gagal mengambil progres tantangan:", error);
+      }
+    };
+  
+    if (token) {
+      fetchProgresTantangan();
+    }
+  }, [token]);
 
   // Tentukan accordion aktif berdasarkan URL
   const activeAccordionKey = location.pathname.includes("/belajar/perulangan") || location.pathname.includes("/belajar/perulangan/forloop")
@@ -188,7 +208,7 @@ const ForLoop = () => {
     if (allCorrect && progresBelajar === 25) {
       try {
         await axios.put(
-          'http://localhost:5000/user/progres-belajar',
+          `${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`,
           { progres_belajar: progresBelajar + 1 },
           {
             headers: {
@@ -410,7 +430,31 @@ for i in range(100):
     }
   
     // Jika semua benar
-    swal("Sukses!", "Instruksi kamu benar! Bidawang siap bergerak!", "success");
+    swal("Berhasil!", "Kamu menyelesaikan tantangan ini!", "success")
+    .then(async () => {
+      try {
+        if (progresTantangan === 11) {
+          await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+            progres_tantangan: progresTantangan + 1
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setProgresTantangan(prev => prev + 1);
+        }
+      } catch (error) {
+        console.error("Gagal update progres tantangan:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Update Progres Tantangan',
+          text: 'Terjadi kesalahan saat memperbarui progres tantangan kamu.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+
+    
   };
   
 

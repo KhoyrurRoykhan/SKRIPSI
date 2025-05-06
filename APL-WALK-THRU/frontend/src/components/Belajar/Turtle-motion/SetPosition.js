@@ -46,7 +46,7 @@ const SetPosition = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/token");
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -59,14 +59,15 @@ const SetPosition = () => {
 
   //kunci halaman
   const [progresBelajar, setProgresBelajar] = useState(27);
+  const [progresTantangan, setProgresTantangan] = useState(0);
   
   useEffect(() => {
     const checkAkses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/token');
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
         const decoded = jwtDecode(response.data.accessToken);
 
-        const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+        const progres = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`, {
           headers: {
             Authorization: `Bearer ${response.data.accessToken}`
           }
@@ -103,6 +104,25 @@ const SetPosition = () => {
       });
     }
   };  
+
+  useEffect(() => {
+    const fetchProgresTantangan = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setProgresTantangan(response.data.progres_tantangan);
+      } catch (error) {
+        console.error("Gagal mengambil progres tantangan:", error);
+      }
+    };
+  
+    if (token) {
+      fetchProgresTantangan();
+    }
+  }, [token]);
 
   // Tentukan accordion aktif berdasarkan URL
   const activeAccordionKey = location.pathname.includes("/belajar/turtlemotion") || location.pathname.includes("/belajar/turtlemotion/setposition")
@@ -190,7 +210,7 @@ const SetPosition = () => {
     if (allCorrect && progresBelajar === 4) {
       try {
         await axios.put(
-          'http://localhost:5000/user/progres-belajar',
+          `${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`,
           { progres_belajar: progresBelajar + 1 },
           {
             headers: {
@@ -323,38 +343,56 @@ for i in range(100):
       "setposition(-100,-100)",
     ];
   
-    // Bersihkan dan buang baris kosong
     const userCodeLines = pythonCodeRef.current
       .trim()
       .split("\n")
       .map(line => line.trim())
-      .filter(line => line !== ""); // ← Skip baris kosong
+      .filter(line => line !== "");
   
     for (let i = 0; i < userCodeLines.length; i++) {
       const line = userCodeLines[i];
   
       if (!line.startsWith("setposition")) {
-        swal("Salah", "Anda harus menggunakan setposition", "error").then(() => {
+        return swal("Salah", "Anda harus menggunakan setposition", "error").then(() => {
           pythonCodeRef.current = '';
           resetCodeChallanges();
         });
-        return;
       }
   
       if (line !== validCode[i]) {
-        swal("Salah", "Posisi x y yang anda masukan tidak tepat", "error").then(() => {
+        return swal("Salah", "Posisi x y yang anda masukan tidak tepat", "error").then(() => {
           pythonCodeRef.current = '';
           resetCodeChallanges();
         });
-        return;
       }
     }
   
-    // Jika semua langkah yang dimasukkan benar, tapi tidak perlu cek panjang sama persis
     if (userCodeLines.length + currentStep === validCode.length) {
-      swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+      swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success").then(async () => {
+        try {
+          if (progresTantangan === 2) {
+            await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+              progres_tantangan: progresTantangan + 1
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            setProgresTantangan(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error("Gagal update progres tantangan halaman 3:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Update Progres Tantangan',
+            text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman ketiga.',
+            confirmButtonColor: '#d33'
+          });
+        }
+      });
     }
   };
+  
   
   
   

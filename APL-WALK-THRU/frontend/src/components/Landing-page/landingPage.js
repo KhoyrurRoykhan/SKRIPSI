@@ -31,7 +31,7 @@ const LandingPage = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/token');
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setName(decoded.name);

@@ -44,7 +44,7 @@ const Xykoordinat = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/token");
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -57,14 +57,15 @@ const Xykoordinat = () => {
 
   //kunci halaman
   const [progresBelajar, setProgresBelajar] = useState(27);
+  const [progresTantangan, setProgresTantangan] = useState(0);
   
   useEffect(() => {
     const checkAkses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/token');
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
         const decoded = jwtDecode(response.data.accessToken);
 
-        const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+        const progres = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`, {
           headers: {
             Authorization: `Bearer ${response.data.accessToken}`
           }
@@ -102,6 +103,25 @@ const Xykoordinat = () => {
     }
   };  
 
+  useEffect(() => {
+    const fetchProgresTantangan = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setProgresTantangan(response.data.progres_tantangan);
+      } catch (error) {
+        console.error("Gagal mengambil progres tantangan:", error);
+      }
+    };
+  
+    if (token) {
+      fetchProgresTantangan();
+    }
+  }, [token]);
+
   // Tentukan accordion aktif berdasarkan URL
   const activeAccordionKey = location.pathname.includes("/belajar/tellstate") || location.pathname.includes("/belajar/tellstate/xcorycor")
     ? "2"
@@ -138,16 +158,39 @@ const Xykoordinat = () => {
       });
     };
 
-    const checkAnswer = () => {
+    const checkAnswer = async () => {
       const correctAnswersA = ["-100.0", "-100", "-100 "];
       const correctAnswersB = ["100.0", "100", "100 "];
-      
+    
       if (correctAnswersA.includes(inputA) && correctAnswersB.includes(inputB)) {
-        swal("Benar!", "Jawaban Anda benar.", "success");
+        await swal("Benar!", "Jawaban Anda benar.", "success");
+    
+        try {
+          if (progresTantangan === 7) {
+            await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+              progres_tantangan: progresTantangan + 1
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            setProgresTantangan(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error("Gagal update progres tantangan halaman 8:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Update Progres Tantangan',
+            text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman kedelapan.',
+            confirmButtonColor: '#d33'
+          });
+        }
+    
       } else {
         swal("Salah!", "Jawaban Anda salah.", "error");
       }
     };
+    
   
     const normalizeLine = (line) => {
       return line
@@ -235,7 +278,7 @@ const Xykoordinat = () => {
     if (allCorrect && progresBelajar === 12) {
       try {
         await axios.put(
-          'http://localhost:5000/user/progres-belajar',
+          `${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`,
           { progres_belajar: progresBelajar + 1 },
           {
             headers: {

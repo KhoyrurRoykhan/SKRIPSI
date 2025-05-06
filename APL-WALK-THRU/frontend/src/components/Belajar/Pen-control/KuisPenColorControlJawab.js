@@ -172,10 +172,10 @@ const KuisPenColorControlJawab = () => {
 useEffect(() => {
   const getTokenAndProgres = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/token');
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
 
-      const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+      const progres = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`, {
         headers: {
           Authorization: `Bearer ${response.data.accessToken}`
         }
@@ -206,7 +206,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchKKM = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/kkm/kuis', {
+        const res = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/kkm/kuis`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -250,7 +250,7 @@ if (nilaiAkhir >= kkm && progresBelajar === 21) {
   try {
     // 1. Update progres belajar
     await axios.put(
-      'http://localhost:5000/user/progres-belajar',
+      `${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`,
       { progres_belajar: progresBelajar + 1 },
       {
         headers: {
@@ -262,7 +262,7 @@ if (nilaiAkhir >= kkm && progresBelajar === 21) {
 
     // 2. Update nilai kuis_4
     await axios.put(
-      'http://localhost:5000/nilai/kuis-4',
+      `${process.env.REACT_APP_API_ENDPOINT}/nilai/kuis-4`,
       { nilai: Math.round(nilaiAkhir) }, // Jika kamu ingin integer
       {
         headers: {

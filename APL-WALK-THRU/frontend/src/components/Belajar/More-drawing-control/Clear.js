@@ -43,7 +43,7 @@ const Clear = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/token");
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setExpire(decoded.exp);
@@ -60,10 +60,10 @@ const Clear = () => {
   useEffect(() => {
     const checkAkses = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/token');
+        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token`);
         const decoded = jwtDecode(response.data.accessToken);
 
-        const progres = await axios.get('http://localhost:5000/user/progres-belajar', {
+        const progres = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`, {
           headers: {
             Authorization: `Bearer ${response.data.accessToken}`
           }
@@ -171,7 +171,7 @@ const Clear = () => {
       if (allCorrect && progresBelajar === 23) {
         try {
           await axios.put(
-            'http://localhost:5000/user/progres-belajar',
+            `${process.env.REACT_APP_API_ENDPOINT}/user/progres-belajar`,
             { progres_belajar: progresBelajar + 1 },
             {
               headers: {
