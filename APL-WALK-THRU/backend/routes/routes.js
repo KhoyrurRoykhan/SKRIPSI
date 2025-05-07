@@ -13,7 +13,7 @@ import { countUsersByTokenKelas,
     deleteUserById
     } from "../controllers/UserController.js";
 
-import { getAllNilaiSiswa, getNilaiByTokenKelas, getNilaiByKuis, updateKuis1, updateKuis2, updateKuis3, updateKuis4, updateKuis5, updateEvaluasi } from "../controllers/NilaiController.js";
+import { getAllNilaiSiswa, getNilaiByTokenKelas, getNilaiByKuis, updateKuis1, updateKuis2, updateKuis3, updateKuis4, updateKuis5, updateEvaluasi, getNilaiByUser } from "../controllers/NilaiController.js";
 
 const routes = express.Router();
 
@@ -57,6 +57,8 @@ routes.put('/nilai/kuis-3', verifyToken, updateKuis3);
 routes.put('/nilai/kuis-4', verifyToken, updateKuis4);
 routes.put('/nilai/kuis-5', verifyToken, updateKuis5);
 routes.put('/nilai/evaluasi', verifyToken, updateEvaluasi);
+routes.get('/nilai/by-user', verifyToken, getNilaiByUser);
+
 
 
 

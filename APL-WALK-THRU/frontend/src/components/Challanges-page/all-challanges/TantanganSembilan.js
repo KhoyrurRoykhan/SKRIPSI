@@ -21,9 +21,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
+import Swal from "sweetalert2";
 
 const TantanganSembilan = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint challanges
     const showHint = () => {
@@ -49,6 +51,7 @@ const TantanganSembilan = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -118,7 +121,7 @@ const TantanganSembilan = () => {
   
     const [hasRun, setHasRun] = useState(false);
   
-    const checkCodeChallanges = () => {
+    const checkCodeChallanges = async () => {
       if (!hasRun) return;
     
       const validCodes = [
@@ -145,18 +148,38 @@ const TantanganSembilan = () => {
     
       const userCodeLines = pythonCodeChallanges.trim().split("\n").map(line => line.trim());
     
-      // Cek apakah semua kode cocok secara penuh
       const isExactMatch = validCodes.some(valid =>
         valid.length === userCodeLines.length &&
         valid.every((code, index) => code.replace(/\s+/g, '') === (userCodeLines[index] || "").replace(/\s+/g, ''))
       );
     
       if (isExactMatch) {
-        swal("Jawaban Benar!", "Kamu berhasil!", "success");
+        await swal("Jawaban Benar!", "Kamu berhasil!", "success");
+    
+        try {
+          if (progresTantangan === 8) {
+            await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+              progres_tantangan: progresTantangan + 1
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            setProgresTantangan(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error("Gagal update progres tantangan halaman 9:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Update Progres Tantangan',
+            text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman sembilan.',
+            confirmButtonColor: '#d33'
+          });
+        }
+    
         return;
       }
     
-      // Cek apakah ada jalur yang cocok sejauh ini
       let partialMatchFound = false;
     
       for (const valid of validCodes) {
@@ -187,12 +210,9 @@ const TantanganSembilan = () => {
       }
     
       if (partialMatchFound) {
-        // Jangan kasih alert, user masih di jalur benar
         return;
       }
     
-      // Kalau semua jalur gagal cocok sejauh ini, tampilkan pesan salah
-      // Cari tahu salahnya di mana untuk feedback
       for (const valid of validCodes) {
         const stepsToCheck = Math.min(userCodeLines.length, valid.length);
     
@@ -222,7 +242,6 @@ const TantanganSembilan = () => {
         }
       }
     
-      // Kalau sampai sini, berarti semua jalur gagal dan tidak diketahui pasti salahnya apa
       swal("Jawaban Salah", "Urutan atau isi kode tidak sesuai. Coba lagi!", "error");
     };
     

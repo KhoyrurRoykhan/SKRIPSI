@@ -19,9 +19,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
+import Swal from "sweetalert2";
 
 const TantanganSebelas = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint challanges
     const showHint = () => {
@@ -55,6 +57,7 @@ const TantanganSebelas = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -125,96 +128,118 @@ const TantanganSebelas = () => {
 
   const alertShownRef = useRef(false); // Tambahkan ini di bagian atas komponen
 
-const checkCodeChallanges = () => {
-  if (!pythonCodeChallanges.trim()) return;
-
-  const validCodeSteps = [
-    "penup()",
-    "setposition(-150,50)",
-    "pendown()",
+  const checkCodeChallanges = () => {
+    if (!pythonCodeChallanges.trim()) return;
   
-    "fillcolor(\"green\")",
-    "begin_fill()",
-    "forward(100)",
-    "left(90)",
-    "forward(100)",
-    "left(90)",
-    "forward(100)",
-    "left(90)",
-    "forward(100)",
-    "end_fill()",
+    const validCodeSteps = [
+      "penup()",
+      "setposition(-150,50)",
+      "pendown()",
+    
+      "fillcolor(\"green\")",
+      "begin_fill()",
+      "forward(100)",
+      "left(90)",
+      "forward(100)",
+      "left(90)",
+      "forward(100)",
+      "left(90)",
+      "forward(100)",
+      "end_fill()",
+    
+      "penup()",
+      "setposition(50,50)",
+      "pendown()",
+    
+      "fillcolor(\"red\")",
+      "begin_fill()",
+      "setposition(150,50)",
+      "setposition(100,150)",
+      "setposition(50,50)",
+      "end_fill()",
+    
+      "penup()",
+      "setposition(-50,-100)",
+      "pendown()",
+    
+      "fillcolor(\"yellow\")",
+      "begin_fill()",
+      "setposition(-100,-150)",
+      "setposition(-150,-100)",
+      "setposition(-100,-50)",
+      "setposition(-50,-100)",
+      "end_fill()",
+    
+      "penup()",
+      "setposition(50,-100)",
+      "pendown()",
+    
+      "fillcolor(\"blue\")",
+      "begin_fill()",
+      "circle(50)",
+      "end_fill()"
+    ];
+    
   
-    "penup()",
-    "setposition(50,50)",
-    "pendown()",
+    const normalizeLine = (line) => {
+      return line
+        .replace(/\s+/g, '')            // hapus semua spasi/tab
+        .replace(/,\s*/g, ',');         // pastikan koma tidak diikuti spasi
+    };
   
-    "fillcolor(\"red\")",
-    "begin_fill()",
-    "setposition(150,50)",
-    "setposition(100,150)",
-    "setposition(50,50)",
-    "end_fill()",
+    const userCodeLines = pythonCodeChallanges
+      .split("\n")
+      .map(line => line.trim())
+      .filter(line => line !== "")      // hilangkan baris kosong
+      .map(normalizeLine);
   
-    "penup()",
-    "setposition(-50,-100)",
-    "pendown()",
+    for (let i = 0; i < userCodeLines.length; i++) {
+      if (normalizeLine(validCodeSteps[i]) !== userCodeLines[i]) {
+        if (!alertShownRef.current) {
+          alertShownRef.current = true;
+          swal("Ups, ada yang salah!", `Langkah ke-${i + 1} salah.`, "error")
+            .then(() => {
+              runitchallanges('', true, true); // skip validasi
+              alertShownRef.current = false;
+            });
+        }
+        setHasRun(false);
+        return;
+      }
+    }
   
-    "fillcolor(\"yellow\")",
-    "begin_fill()",
-    "setposition(-100,-150)",
-    "setposition(-150,-100)",
-    "setposition(-100,-50)",
-    "setposition(-50,-100)",
-    "end_fill()",
-  
-    "penup()",
-    "setposition(50,-100)",
-    "pendown()",
-  
-    "fillcolor(\"blue\")",
-    "begin_fill()",
-    "circle(50)",
-    "end_fill()"
-  ];
-  
-
-  const normalizeLine = (line) => {
-    return line
-      .replace(/\s+/g, '')            // hapus semua spasi/tab
-      .replace(/,\s*/g, ',');         // pastikan koma tidak diikuti spasi
-  };
-
-  const userCodeLines = pythonCodeChallanges
-    .split("\n")
-    .map(line => line.trim())
-    .filter(line => line !== "")      // hilangkan baris kosong
-    .map(normalizeLine);
-
-  for (let i = 0; i < userCodeLines.length; i++) {
-    if (normalizeLine(validCodeSteps[i]) !== userCodeLines[i]) {
+    if (userCodeLines.length === validCodeSteps.length) {
       if (!alertShownRef.current) {
         alertShownRef.current = true;
-        swal("Ups, ada yang salah!", `Langkah ke-${i + 1} salah.`, "error")
-          .then(() => {
-            runitchallanges('', true, true); // skip validasi
+        swal("Mantap!", "Semua langkah benar, kamu berhasil!", "success")
+          .then(async () => {
             alertShownRef.current = false;
+    
+            try {
+              if (progresTantangan === 10) {
+                await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+                  progres_tantangan: progresTantangan + 1
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+                setProgresTantangan(prev => prev + 1);
+              }
+            } catch (error) {
+              console.error("Gagal update progres tantangan:", error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal Update Progres Tantangan',
+                text: 'Terjadi kesalahan saat memperbarui progres tantangan kamu.',
+                confirmButtonColor: '#d33'
+              });
+            }
           });
       }
       setHasRun(false);
-      return;
-    }
-  }
-
-  if (userCodeLines.length === validCodeSteps.length) {
-    if (!alertShownRef.current) {
-      alertShownRef.current = true;
-      swal("Mantap!", "Semua langkah benar, kamu berhasil!", "success").then(() => {
-        alertShownRef.current = false;
-      });
-    }
-    setHasRun(false);
-  }
-};
+    } 
+  };
 
 const resetCodeChallanges = () => {
   setPythonCodeChallanges('');

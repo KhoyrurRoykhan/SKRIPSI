@@ -11,6 +11,7 @@ import backward100 from './assets/2turtle-backward.gif';
 import peringatan from './assets/peringatan.gif';
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
+import Swal from "sweetalert2";
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
 import map from './assets/2-forward-backward-b.png';
@@ -24,6 +25,7 @@ import "../assets/tutor-copy.css";
 
 const TantanganDua = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint challanges
     const showHint = () => {
@@ -49,6 +51,7 @@ const TantanganDua = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -206,7 +209,28 @@ const checkCodeChallanges = (userCode) => {
   console.log("Step setelah cek:", step);
 
   if (step >= validCode.length) {
-    swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+    swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success").then(async () => {
+      try {
+        if (progresTantangan === 1) {
+          await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+            progres_tantangan: progresTantangan + 1
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setProgresTantangan(prev => prev + 1);
+        }
+      } catch (error) {
+        console.error("Gagal update progres tantangan halaman 2:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Update Progres Tantangan',
+          text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman kedua.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
   }
 };
 

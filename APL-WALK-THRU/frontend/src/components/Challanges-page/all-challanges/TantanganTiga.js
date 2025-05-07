@@ -25,10 +25,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
+import Swal from "sweetalert2";
 
 
 const TantanganTiga = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint
     const showHint = () => {
@@ -54,6 +56,7 @@ const TantanganTiga = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -132,38 +135,55 @@ const TantanganTiga = () => {
           "setposition(-100,-100)",
         ];
       
-        // Bersihkan dan buang baris kosong
         const userCodeLines = pythonCodeRef.current
           .trim()
           .split("\n")
           .map(line => line.trim())
-          .filter(line => line !== ""); // ← Skip baris kosong
+          .filter(line => line !== "");
       
         for (let i = 0; i < userCodeLines.length; i++) {
           const line = userCodeLines[i];
       
           if (!line.startsWith("setposition")) {
-            swal("Salah", "Anda harus menggunakan setposition", "error").then(() => {
+            return swal("Salah", "Anda harus menggunakan setposition", "error").then(() => {
               pythonCodeRef.current = '';
               resetCodeChallanges();
             });
-            return;
           }
       
           if (line !== validCode[i]) {
-            swal("Salah", "Posisi x y yang anda masukan tidak tepat", "error").then(() => {
+            return swal("Salah", "Posisi x y yang anda masukan tidak tepat", "error").then(() => {
               pythonCodeRef.current = '';
               resetCodeChallanges();
             });
-            return;
           }
         }
       
-        // Jika semua langkah yang dimasukkan benar, tapi tidak perlu cek panjang sama persis
         if (userCodeLines.length + currentStep === validCode.length) {
-          swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success");
+          swal("Benar!", "Kamu berhasil menyelesaikan tantangan!", "success").then(async () => {
+            try {
+              if (progresTantangan === 2) {
+                await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+                  progres_tantangan: progresTantangan + 1
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+                setProgresTantangan(prev => prev + 1);
+              }
+            } catch (error) {
+              console.error("Gagal update progres tantangan halaman 3:", error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal Update Progres Tantangan',
+                text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman ketiga.',
+                confirmButtonColor: '#d33'
+              });
+            }
+          });
         }
-      };      
+      };
       
     
     const initializeTurtle = () => {

@@ -23,8 +23,8 @@ import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
 
 const correctCommands = {
-    '1a': 'forward(100)',
-    '1b': 'right(90)',
+    '1a': 'for x in range(6):\n forward(100)\n  left(60)',
+    '1b': 'for x in range(5):\n forward(100)\n  right(144)',
   };
 
 const ForLoop = () => {
@@ -152,22 +152,50 @@ const ForLoop = () => {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [activeKey, setActiveKey] = useState('1a');
 
+  const normalizeLine = (line) => {
+    return line
+      .toLowerCase()               // bikin semua huruf kecil biar gak sensi kapital
+      .replace(/['"]/g, '"')       // samain semua kutip jadi "
+      .replace(/\s+/g, ' ')        // spasi berlebih jadi satu spasi
+      .replace(/\s*\(\s*/g, '(')   // hapus spasi sekitar kurung buka
+      .replace(/\s*\)\s*/g, ')')   // hapus spasi sekitar kurung tutup
+      .replace(/\s*,\s*/g, ',')    // hapus spasi sekitar koma
+      .replace(/\s*:\s*/g, ':')    // hapus spasi sekitar titik dua
+      .trim();
+  };
+  
   const checkCode = () => {
-    const lines = pythonCode.split('\n').map(line => line.trim());
+    const cleanedCode = pythonCode
+      .split('\n')
+      .map(line => normalizeLine(line))
+      .filter(line => line.length > 0);
+  
     let newCompletedSteps = [];
-    let keys = Object.keys(correctCommands);
-    
-    for (let i = 0; i < keys.length; i++) {
-      if (lines[i] === correctCommands[keys[i]]) {
-        newCompletedSteps.push(keys[i]);
+  
+    for (const key of Object.keys(correctCommands)) {
+      const expected = correctCommands[key]
+        .split('\n')
+        .map(line => normalizeLine(line));
+  
+      const codeSlice = cleanedCode.slice(0, expected.length);
+  
+      const isMatch = expected.every((expectedLine, idx) => {
+        const userLine = codeSlice[idx] || '';
+        return userLine.includes(expectedLine);
+      });
+  
+      if (isMatch) {
+        newCompletedSteps.push(key);
+        cleanedCode.splice(0, expected.length);
       } else {
         break;
       }
     }
-    
+  
     setCompletedSteps(newCompletedSteps);
-    if (newCompletedSteps.length < keys.length) {
-      setActiveKey(keys[newCompletedSteps.length]);
+  
+    if (newCompletedSteps.length < Object.keys(correctCommands).length) {
+      setActiveKey(Object.keys(correctCommands)[newCompletedSteps.length]);
     } else {
       setActiveKey(null);
     }
@@ -963,9 +991,13 @@ for i in range(100):
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Membuat hexagon dengan perulangan for dengan kode perintah dibawah ini:</p>
-                      <pre><code>for x in range(6):</code></pre>
-                      <pre><code>forward(100)</code></pre>
-                      <pre><code>left(60)</code></pre>
+                      <pre>
+                        <code>
+{`for x in range(6):
+  forward(100)
+  left(60)`}
+                        </code>
+                      </pre>
                     </AccordionBody>
                   </AccordionItem>
                   <AccordionItem eventKey="1b">
@@ -975,9 +1007,13 @@ for i in range(100):
                     </AccordionHeader>
                     <AccordionBody>
                     <p>Hapus semua kode yang sudah di ketik sebelumnya lalu gunakan kode perintah dibawah ini untuk membuat bintang sederhana dengan perulangan for:</p>
-                      <pre><code>for x in range(5):</code></pre>
-                      <pre><code>forward(100)</code></pre>
-                      <pre><code>right(144)</code></pre>
+                      <pre>
+                        <code>
+{`for x in range(5)::
+  forward(100)
+  right(144)`}
+                        </code>
+                      </pre>
                     </AccordionBody>
                   </AccordionItem>
                   

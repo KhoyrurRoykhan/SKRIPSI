@@ -20,9 +20,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
+import Swal from "sweetalert2";
 
 const TantanganEnam = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
+    
     
     // hint challanges
     const showHint = () => {
@@ -48,6 +51,7 @@ const TantanganEnam = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -147,7 +151,30 @@ const TantanganEnam = () => {
             .then(resetCodeChallanges);
           return;
         } else if (radius === 100) {
-          swal("Mantap!", "Kamu berhasil membuat bidawang mengitari sungai dengan sempurna!", "success");
+          swal("Mantap!", "Kamu berhasil membuat bidawang mengitari sungai dengan sempurna!", "success")
+          .then(async () => {
+            try {
+              if (progresTantangan === 5) {
+                await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+                  progres_tantangan: progresTantangan + 1
+                }, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+                setProgresTantangan(prev => prev + 1);
+              }
+            } catch (error) {
+              console.error("Gagal update progres tantangan halaman 6:", error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal Update Progres Tantangan',
+                text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman keenam.',
+                confirmButtonColor: '#d33'
+              });
+            }
+            resetCodeChallanges();
+          });
           return;
         }
       }

@@ -12,6 +12,7 @@ import backward100 from './assets/2turtle-backward.gif';
 
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
+import Swal from "sweetalert2";
 import papuyu from './assets/papuyu-1.png';
 import broccoli from './assets/cacingtarget.png';
 import ikan from './assets/ikan.png';
@@ -26,6 +27,7 @@ import "../assets/tutor-copy.css";
 
 const TantanganTujuh = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint
     const showHint = () => {
@@ -52,6 +54,7 @@ const TantanganTujuh = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -84,12 +87,34 @@ const TantanganTujuh = () => {
   const [inputA, setInputA] = useState("");
   const [inputB, setInputB] = useState("");
 
-  const checkAnswer = () => {
+  const checkAnswer = async () => {
     const correctAnswersA = ["(-100.0, 100.0)", "(-100, 100)", "(-100,100)"];
     const correctAnswersB = ["(-150.0, -100.0)", "(-150, -100)", "(-150,-100)"];
-    
+  
     if (correctAnswersA.includes(inputA) && correctAnswersB.includes(inputB)) {
-      swal("Benar!", "Jawaban Anda benar.", "success");
+      await swal("Benar!", "Jawaban Anda benar.", "success");
+  
+      try {
+        if (progresTantangan === 6) {
+          await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+            progres_tantangan: progresTantangan + 1
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setProgresTantangan(prev => prev + 1);
+        }
+      } catch (error) {
+        console.error("Gagal update progres tantangan halaman 7:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Update Progres Tantangan',
+          text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman ketujuh.',
+          confirmButtonColor: '#d33'
+        });
+      }
+  
     } else {
       swal("Salah!", "Jawaban Anda salah.", "error");
     }

@@ -15,6 +15,7 @@ import papuyu from './assets/papuyu-1.png';
 import kepiting from './assets/kepiting.png';
 import map from './assets/forloop-tilemap.png';
 import grid from './assets/3-setposition-b.png';
+import Swal from "sweetalert2";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -23,6 +24,7 @@ import "../assets/tutor-copy.css";
 
 const TantanganDuabelas = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint challanges
     const showHint = () => {
@@ -49,6 +51,7 @@ const TantanganDuabelas = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -186,7 +189,31 @@ const TantanganDuabelas = () => {
     }
   
     // Jika semua benar
-    swal("Sukses!", "Instruksi kamu benar! Bidawang siap bergerak!", "success");
+    swal("Berhasil!", "Kamu menyelesaikan tantangan ini!", "success")
+    .then(async () => {
+      try {
+        if (progresTantangan === 11) {
+          await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+            progres_tantangan: progresTantangan + 1
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setProgresTantangan(prev => prev + 1);
+        }
+      } catch (error) {
+        console.error("Gagal update progres tantangan:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Update Progres Tantangan',
+          text: 'Terjadi kesalahan saat memperbarui progres tantangan kamu.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+
+    
   };
   
 

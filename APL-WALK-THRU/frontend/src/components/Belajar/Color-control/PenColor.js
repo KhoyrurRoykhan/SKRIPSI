@@ -21,11 +21,10 @@ import "../assets/tutor-copy.css";
 import Swal from "sweetalert2";
 
 const correctCommands = {
-    '1a': 'forward(100)',
-    '1b': 'right(90)',
-    '1c': 'forward(100)',
-    '1d': 'left(45)',
-    '1e': 'forward(50)'
+    '1a': 'pencolor("blue")',
+    '1b': 'forward(100)',
+    '1c': 'pencolor("red")',
+    '1d': 'forward(100)'
   };
 
 const Color = () => {
@@ -111,29 +110,57 @@ const Color = () => {
 
 
     //accordion task
-    const [completedSteps, setCompletedSteps] = useState([]);
-    const [activeKey, setActiveKey] = useState('1a');
+  const [completedSteps, setCompletedSteps] = useState([]);
+  const [activeKey, setActiveKey] = useState('1a');
+
+  const normalizeLine = (line) => {
+    return line
+      .toLowerCase()               // bikin semua huruf kecil biar gak sensi kapital
+      .replace(/['"]/g, '"')       // samain semua kutip jadi "
+      .replace(/\s+/g, ' ')        // spasi berlebih jadi satu spasi
+      .replace(/\s*\(\s*/g, '(')   // hapus spasi sekitar kurung buka
+      .replace(/\s*\)\s*/g, ')')   // hapus spasi sekitar kurung tutup
+      .replace(/\s*,\s*/g, ',')    // hapus spasi sekitar koma
+      .replace(/\s*:\s*/g, ':')    // hapus spasi sekitar titik dua
+      .trim();
+  };
   
-    const checkCode = () => {
-      const lines = pythonCode.split('\n').map(line => line.trim());
-      let newCompletedSteps = [];
-      let keys = Object.keys(correctCommands);
-      
-      for (let i = 0; i < keys.length; i++) {
-        if (lines[i] === correctCommands[keys[i]]) {
-          newCompletedSteps.push(keys[i]);
-        } else {
-          break;
-        }
-      }
-      
-      setCompletedSteps(newCompletedSteps);
-      if (newCompletedSteps.length < keys.length) {
-        setActiveKey(keys[newCompletedSteps.length]);
+  const checkCode = () => {
+    const cleanedCode = pythonCode
+      .split('\n')
+      .map(line => normalizeLine(line))
+      .filter(line => line.length > 0);
+  
+    let newCompletedSteps = [];
+  
+    for (const key of Object.keys(correctCommands)) {
+      const expected = correctCommands[key]
+        .split('\n')
+        .map(line => normalizeLine(line));
+  
+      const codeSlice = cleanedCode.slice(0, expected.length);
+  
+      const isMatch = expected.every((expectedLine, idx) => {
+        const userLine = codeSlice[idx] || '';
+        return userLine.includes(expectedLine);
+      });
+  
+      if (isMatch) {
+        newCompletedSteps.push(key);
+        cleanedCode.splice(0, expected.length);
       } else {
-        setActiveKey(null);
+        break;
       }
-    };
+    }
+  
+    setCompletedSteps(newCompletedSteps);
+  
+    if (newCompletedSteps.length < Object.keys(correctCommands).length) {
+      setActiveKey(Object.keys(correctCommands)[newCompletedSteps.length]);
+    } else {
+      setActiveKey(null);
+    }
+  };
   
     //kuis
     const [selectedAnswers, setSelectedAnswers] = useState({});

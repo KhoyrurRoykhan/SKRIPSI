@@ -932,9 +932,13 @@ circle(50, 180)`}
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Kemudian lanjutkan lagi pada baris baru dengan perintah dibawah ini memindahkan posisi bidawang ke bawah sejauh 50 langkah:</p>
-                      <pre><code>right(90)</code></pre>
-                      <pre><code>forward(50)</code></pre>
-                      <pre><code>left(90)</code></pre>
+                      <pre>
+                        <code>
+{`right(90
+forward(50)
+left(90)`}
+                        </code>
+                      </pre>
                     </AccordionBody>
                   </AccordionItem>
                   <AccordionItem eventKey="1c">

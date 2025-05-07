@@ -5,12 +5,12 @@ import { Accordion, Container, Row, Col, Button, Form, Alert, Card, Image, Accor
 import '../assets/tutor.css';
 import '../asset_skulpt/SkulptTurtleRunner.css';
 import { BsArrowClockwise, BsCheckCircle } from 'react-icons/bs'; // Import ikon Bootstrap
-import Swal from "sweetalert2";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../assets/tutor-copy.css";
+import Swal from "sweetalert2";
 
 const KuisPenColorControl = () => {
     const [activeButton, setActiveButton] = useState("intro-1");
@@ -18,6 +18,7 @@ const KuisPenColorControl = () => {
   const [expire, setExpire] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [riwayatNilai, setRiwayatNilai] = useState([]);
 
   useEffect(() => {
     refreshToken();
@@ -82,6 +83,43 @@ const KuisPenColorControl = () => {
       });
     }
   };
+
+  const [kkm, setKkm] = useState(80); // default sementara
+
+  useEffect(() => {
+    const fetchKKM = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/kkm/kuis`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setKkm(res.data.kkm);
+      } catch (err) {
+        console.error("Gagal mengambil KKM:", err);
+      }
+    };
+
+    if (token) fetchKKM();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchRiwayatNilai = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/nilai/by-user`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+  
+        setRiwayatNilai(res.data); // Sesuaikan ini dengan struktur data dari API
+      } catch (error) {
+        console.error("Gagal mengambil riwayat nilai:", error);
+      }
+    };
+  
+    if (token) fetchRiwayatNilai();
+  }, [token]);
 
   // Tentukan accordion aktif berdasarkan URL
   const activeAccordionKey = location.pathname.includes("/belajar/pencolorcontrol") || location.pathname.includes("/belajar/pencolorcontrol/leftright")
@@ -408,19 +446,18 @@ const KuisPenColorControl = () => {
               Terdapat 10 pertanyaan yang harus dikerjakan dalam kuis ini. Beberapa ketentuannya sebagai berikut:
             </p>
             <ul>
-              <li>Syarat nilai kelulusan : 80%</li>
-              <li>Durasi ujian : 15 menit</li>
+              <li>Nilai kelulusan minimum: {kkm}</li>
+              <li>Durasi pengerjaan: 15 menit</li>
             </ul>
             <p>
-              Apabila tidak memenuhi syarat kelulusan, maka Anda harus menunggu selama 1 menit untuk
-              mengulang pengerjaan kuis kembali. Manfaatkan waktu tunggu tersebut untuk mempelajari kembali
-              materi sebelumnya, ya.
+              Jika Anda belum mencapai nilai kelulusan, Anda harus mengulangi kuis!
             </p>
+
             <p>Selamat Mengerjakan!</p>
             {/* Button Start - Aligned to Right */}
             <div style={{ marginTop: 20, textAlign: 'right' }}>
             <button
-              onClick={() => navigate('/belajar/pencolorcontrol/kuis4')}
+              onClick={() => navigate('/belajar/pendahuluan/kuis1')}
               style={{
                 backgroundColor: '#2d3748',
                 color: 'white',
@@ -433,36 +470,46 @@ const KuisPenColorControl = () => {
             </button>
           </div>
 
+
             {/* Riwayat Section */}
             <div style={{ marginTop: 50 }}>
               <h4>Riwayat</h4>
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 20 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <th style={{ textAlign: 'left', padding: 10 }}>Tanggal</th>
-                    <th style={{ textAlign: 'left', padding: 10 }}>Persentase</th>
-                    <th style={{ textAlign: 'left', padding: 10 }}>Status</th>
-                    <th style={{ textAlign: 'left', padding: 10 }}>Action</th>
+                  <tr style={{ backgroundColor: '#f8fafc' }}>
+                    <th style={{ padding: 10, textAlign: 'center' }}>Nilai Kuis 1</th>
+                    <th style={{ padding: 10, textAlign: 'center' }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: 10 }}>25 Nov 2023 17:54</td>
-                    <td style={{ padding: 10 }}>100%</td>
-                    <td style={{ padding: 10 }}>
-                      <span style={{ padding: '2px 8px', backgroundColor: '#d1fae5', color: '#065f46', border: '1px solid #34d399', borderRadius: 5, fontSize: '12px' }}>
-                        Lulus
-                      </span>
-                    </td>
-                    <td style={{ padding: 10 }}>
-                      <button style={{ backgroundColor: '#f1f5f9', color: '#1e293b', padding: '5px 15px', borderRadius: 5, border: '1px solid #cbd5e1' }}>
-                        Lihat Detail
-                      </button>
-                    </td>
-                  </tr>
+                  {riwayatNilai.length > 0 ? (
+                    riwayatNilai.map((item, index) => (
+                      <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: 10, textAlign: 'center' }}>{item.kuis_1 || 0}%</td>
+                        <td style={{ padding: 10, textAlign: 'center' }}>
+                          <span style={{
+                            padding: '2px 8px',
+                            backgroundColor: item.kuis_1 >= kkm ? '#d1fae5' : '#fee2e2',
+                            color: item.kuis_1 >= kkm ? '#065f46' : '#991b1b',
+                            border: `1px solid ${item.kuis_1 >= kkm ? '#34d399' : '#f87171'}`,
+                            borderRadius: 5,
+                            fontSize: '12px'
+                          }}>
+                            {item.kuis_1 >= kkm ? 'Lulus' : 'Tidak Lulus'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="2" style={{ textAlign: 'center', padding: 20 }}>Belum ada riwayat nilai.</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+
+
             </div>
           </div>
         </Col>

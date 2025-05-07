@@ -9,6 +9,7 @@ import left120 from './assets/1left120.gif';
 import right90 from './assets/1right90.gif';
 import gabunganleftright from './assets/1gabunganleftright.gif';
 import peringatan from './assets/peringatan.gif';
+import Swal from "sweetalert2";
 
 // Challange
 import swal from 'sweetalert'; // Import SweetAlert
@@ -34,6 +35,7 @@ const positions = [
 
 const TantanganSatu = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     // hint challanges
     const showHint = () => {
@@ -53,11 +55,13 @@ const TantanganSatu = () => {
     };
 
     const [progresTantangan, setProgresTantangan] = useState(0);
+    
 
   useEffect(() => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -182,13 +186,41 @@ const TantanganSatu = () => {
     }
   };
 
-  const moveBroccoli = () => {
+  const moveBroccoli = async () => {
     let availableIndexes = positions.map((_, i) => i).filter(i => !usedIndexes.includes(i));
+  
     if (availableIndexes.length === 0) {
-      swal("Tantangan Selesai!", "Kamu telah menyelesaikan semua posisi!", "success");
-      setUsedIndexes([]);
-      availableIndexes = positions.map((_, i) => i);
+      // Semua tantangan selesai
+      swal("Tantangan Selesai!", "Kamu telah menyelesaikan semua posisi!", "success").then(async () => {
+        try {
+          if (progresTantangan === 0) {
+            await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+              progres_tantangan: progresTantangan + 1
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            setProgresTantangan(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error("Gagal update progres tantangan:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Update Progres Tantangan',
+            text: 'Terjadi kesalahan saat memperbarui progres tantangan kamu.',
+            confirmButtonColor: '#d33'
+          });
+        }
+      
+        setUsedIndexes([]); // reset posisi
+        const newIndexes = positions.map((_, i) => i);
+        const nextIndex = newIndexes[Math.floor(Math.random() * newIndexes.length)];
+        setCurrentIndex(nextIndex);
+      });      
+      return;
     }
+  
     const nextIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
     setUsedIndexes([...usedIndexes, nextIndex]);
     setCurrentIndex(nextIndex);

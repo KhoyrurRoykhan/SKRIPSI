@@ -17,6 +17,7 @@ import broccoli from './assets/cacingtarget.png';
 import udang from './assets/udang.png';
 import map from './assets/2-xcor-ycor.png';
 import grid from './assets/grid.png';
+import Swal from "sweetalert2";
 
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -27,6 +28,7 @@ import "../assets/tutor-copy.css";
 
 const TantanganDelapan = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState("");
 
     const [inputA, setInputA] = useState("");
     const [inputB, setInputB] = useState("");
@@ -56,6 +58,7 @@ const TantanganDelapan = () => {
     const checkAksesTantangan = async () => {
       try {
         const response = await axios.get('http://localhost:5000/token');
+        setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
 
         const progres = await axios.get('http://localhost:5000/user/progres-tantangan', {
@@ -82,16 +85,38 @@ const TantanganDelapan = () => {
     checkAksesTantangan();
   }, [navigate]); 
   
-      const checkAnswer = () => {
-        const correctAnswersA = ["-100.0", "-100", "-100 "];
-        const correctAnswersB = ["100.0", "100", "100 "];
-        
-        if (correctAnswersA.includes(inputA) && correctAnswersB.includes(inputB)) {
-          swal("Benar!", "Jawaban Anda benar.", "success");
-        } else {
-          swal("Salah!", "Jawaban Anda salah.", "error");
+  const checkAnswer = async () => {
+    const correctAnswersA = ["-100.0", "-100", "-100 "];
+    const correctAnswersB = ["100.0", "100", "100 "];
+  
+    if (correctAnswersA.includes(inputA) && correctAnswersB.includes(inputB)) {
+      await swal("Benar!", "Jawaban Anda benar.", "success");
+  
+      try {
+        if (progresTantangan === 7) {
+          await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/user/progres-tantangan`, {
+            progres_tantangan: progresTantangan + 1
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setProgresTantangan(prev => prev + 1);
         }
-      };
+      } catch (error) {
+        console.error("Gagal update progres tantangan halaman 8:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal Update Progres Tantangan',
+          text: 'Terjadi kesalahan saat memperbarui progres tantangan halaman kedelapan.',
+          confirmButtonColor: '#d33'
+        });
+      }
+  
+    } else {
+      swal("Salah!", "Jawaban Anda salah.", "error");
+    }
+  };
 
       const [pythonCode, setPythonCode] = useState(``);
     const [pythonCode1, setPythonCode1] = useState(`

@@ -123,23 +123,41 @@ const SetHome = () => {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [activeKey, setActiveKey] = useState('1a');
 
+  const normalizeLine = (line) => {
+    return line
+      .toLowerCase()               // bikin semua huruf kecil biar gak sensi kapital
+      .replace(/['"]/g, '"')       // samain semua kutip jadi "
+      .replace(/\s+/g, ' ')        // spasi berlebih jadi satu spasi
+      .replace(/\s*\(\s*/g, '(')   // hapus spasi sekitar kurung buka
+      .replace(/\s*\)\s*/g, ')')   // hapus spasi sekitar kurung tutup
+      .replace(/\s*,\s*/g, ',')    // hapus spasi sekitar koma
+      .replace(/\s*:\s*/g, ':')    // hapus spasi sekitar titik dua
+      .trim();
+  };
+  
   const checkCode = () => {
     const cleanedCode = pythonCode
       .split('\n')
-      .map(line => line.trim())
+      .map(line => normalizeLine(line))
       .filter(line => line.length > 0);
   
     let newCompletedSteps = [];
   
     for (const key of Object.keys(correctCommands)) {
-      const expected = correctCommands[key].split('\n').map(l => l.trim());
+      const expected = correctCommands[key]
+        .split('\n')
+        .map(line => normalizeLine(line));
+  
       const codeSlice = cleanedCode.slice(0, expected.length);
   
-      const isMatch = expected.every((cmd, idx) => cmd === codeSlice[idx]);
+      const isMatch = expected.every((expectedLine, idx) => {
+        const userLine = codeSlice[idx] || '';
+        return userLine.includes(expectedLine);
+      });
   
       if (isMatch) {
         newCompletedSteps.push(key);
-        cleanedCode.splice(0, expected.length); // hapus baris yang sudah dicek
+        cleanedCode.splice(0, expected.length);
       } else {
         break;
       }
@@ -782,9 +800,14 @@ home()`}
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Buat bidawang menjadi bergerak ke arah mana saja, sebagai contoh gunakan perintah di bawah ini untuk menggerakan bidawang: </p>
-                      <pre><code>forward(100)</code></pre>
-                      <pre><code>right(45)</code></pre>
-                      <pre><code>forward(200)</code></pre>
+                      <pre>
+                        <code>
+{`forward(100)
+right(45)
+forward(200)`}
+                        </code>
+                      </pre>
+
                       
                     </AccordionBody>
                   </AccordionItem>

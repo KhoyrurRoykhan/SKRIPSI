@@ -961,8 +961,12 @@ print("Posisi y akhir:", ycor()) `}
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Lakukan pemeriksaan posisi x dan y menggunakan perintah di bawah ini:</p>
-                      <pre><code>print("x :", xcor())</code></pre>
-                      <pre><code>print("y :", ycor())</code></pre>
+                      <pre>
+                        <code>
+{`print("x :", xcor())
+print("y :", ycor())`}
+                        </code>
+                      </pre>
                     </AccordionBody>
                   </AccordionItem>
                   <AccordionItem eventKey="1b">
@@ -972,8 +976,12 @@ print("Posisi y akhir:", ycor()) `}
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Kemudian lanjutkan lagi pada baris baru untuk menggerakan bidawang dengan perintah di bawah ini:</p>
-                      <pre><code>left(90)</code></pre>
-                      <pre><code>forward(150)</code></pre>
+                      <pre>
+                        <code>
+{`left(90)
+forward(150)`}
+                        </code>
+                      </pre>
                     </AccordionBody>
                   </AccordionItem>
                   <AccordionItem eventKey="1c">
@@ -983,8 +991,12 @@ print("Posisi y akhir:", ycor()) `}
                     </AccordionHeader>
                     <AccordionBody>
                       <p>Lakukan pemeriksaan lagi untuk posisi x dan y menggunakan perintah di bawah ini:</p>
-                      <pre><code>print("x :", xcor())</code></pre>
-                      <pre><code>print("y :", ycor())</code></pre>
+                      <pre>
+                        <code>
+{`print("x :", xcor())
+print("y :", ycor())`}
+                        </code>
+                      </pre>
                     </AccordionBody>
                   </AccordionItem>
                 </Accordion>
