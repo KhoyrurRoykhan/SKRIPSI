@@ -98,6 +98,7 @@ import KuisMengetahuistatusJawab from "./components/Belajar/Tell-state/KuisMenge
 import KuisPenColorControlJawab from "./components/Belajar/Pen-control/KuisPenColorControlJawab";
 import KuisMoreDrawingControlJawab from "./components/Belajar/More-drawing-control/KuisMoreDrawingControlJawab";
 import EvaluasiJawab from "./components/Belajar/Evaluasi/EvaluasiJawab";
+import RegisterGuru from "./Guru/Register-guru/RegisterGuru";
 
 function App() {
   return (
@@ -203,6 +204,7 @@ function App() {
 
       {/* Guru */}
       <Route path="/login-guru" element={<><NavbarGuru/><LoginGuru/></>}/>
+      <Route path="/register-guru" element={<><NavbarGuru/><RegisterGuru/></>}/>
 
       <Route path="/guru/dashboard" element={<><NavbarGuru/><Dashboard/></>}/>
       <Route path="/guru/datasiswa" element={<><NavbarGuru/><DataSiswa/></>}/>

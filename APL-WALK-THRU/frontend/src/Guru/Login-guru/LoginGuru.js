@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import kurakura from '../assets/kuralanding.png'; // gunakan ilustrasi yang sama
 
 const LoginGuru = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const AuthGuru = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/login-guru', {
-        email: email,
-        password: password
+      await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/login-guru`, {
+        email,
+        password
       });
       navigate("/guru/dashboard");
     } catch (error) {
@@ -24,48 +26,109 @@ const LoginGuru = () => {
   };
 
   return (
-    <section className="hero has-background-grey-light is-fullheight is-fullwidth">
-      <div className="hero-body">
-        <div className="container">
-          <div className='columns is-centered'>
-            <div className='column is-4-desktop'>
-              <form onSubmit={AuthGuru} className='box'>
-                <p className="has-text-centered has-text-danger">{msg}</p>
-                <div className='field mt-5'>
-                  <label className='label'>Email</label>
-                  <div className='controls'>
-                    <input 
-                      type='email' 
-                      className='input' 
-                      placeholder='Email Guru' 
-                      value={email} 
-                      onChange={(e) => setEmail(e.target.value)} 
-                      required 
-                    />
-                  </div>
-                </div>
-                <div className='field mt-5'>
-                  <label className='label'>Password</label>
-                  <div className='controls'>
-                    <input 
-                      type='password' 
-                      className='input' 
-                      placeholder='********' 
-                      value={password} 
-                      onChange={(e) => setPassword(e.target.value)} 
-                      required 
-                    />
-                  </div>
-                </div>
-                <div className='field mt-5'>
-                  <button className='button is-info is-fullwidth'>Login Guru</button>
-                </div>
-              </form>
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: '#ffffff'
+    }}>
+      <div style={{
+        display: 'flex',
+        maxWidth: '1000px',
+        width: '100%',
+        padding: '40px',
+        borderRadius: '10px',
+        background: '#fff'
+      }}>
+
+        {/* Gambar */}
+        <div style={{ flex: 1, paddingRight: '40px', display: 'flex', alignItems: 'center' }}>
+          <img src={kurakura} alt="Login Illustration" style={{ width: '80%' }} />
+        </div>
+
+        {/* Form Login Guru */}
+        <div style={{ flex: 2 }}>
+          <h2 style={{ color: '#198754', fontSize: '2rem', fontWeight: 'bold', marginBottom: '20px' }}>MASUK GURU</h2>
+          <form onSubmit={AuthGuru}>
+            {msg && <p style={{ color: 'red' }}>{msg}</p>}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ fontWeight: 'bold' }}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Masukkan Email"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  backgroundColor: '#e9f0fe',
+                  border: '1px solid #ccc',
+                  borderRadius: '5px'
+                }}
+                required
+              />
             </div>
-          </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label style={{ fontWeight: 'bold' }}>Kata Sandi</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Kata Sandi"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    backgroundColor: '#e9f0fe',
+                    border: '1px solid #ccc',
+                    borderRadius: '5px'
+                  }}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#198754'
+                  }}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
+            </div>
+            <div style={{ marginBottom: '20px', textAlign: 'right' }}>
+              <a href="/forgot-password-guru" style={{ color: '#198754', textDecoration: 'none' }}>Lupa kata sandi?</a>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              <button type="submit" style={{
+                flex: 1,
+                padding: '10px',
+                backgroundColor: '#198754',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px'
+              }}>
+                MASUK GURU
+              </button>
+            </div>
+            <p style={{ fontSize: '14px', marginBottom: '10px' }}>
+              Belum punya akun guru? <a href="/register-guru" style={{ color: '#198754' }}>Daftar</a>
+            </p>
+            <p style={{ fontSize: '14px' }}>
+              Kembali ke halaman <a href="/login" style={{ color: '#198754' }}>Login Siswa</a>
+            </p>
+          </form>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

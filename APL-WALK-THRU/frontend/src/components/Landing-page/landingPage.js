@@ -26,7 +26,6 @@ const LandingPage = () => {
 
   useEffect(() => {
     refreshToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const refreshToken = async () => {
@@ -38,7 +37,7 @@ const LandingPage = () => {
       setExpire(decoded.exp);
     } catch (error) {
       if (error.response) {
-        navigate('/login');
+        console.log("not login")
       }
     }
   };
@@ -125,79 +124,6 @@ const LandingPage = () => {
         </Col>
       </Row>
     </Container>
-
-    {/* <KategoriGrid/> */}
-
-    {/* <Container fluid style={{ marginTop: 40, background: 'linear-gradient(to right, #2DAA9E, #FBF8EF)', paddingTop: 100, paddingBottom: 100 }}>
-      <Row className="justify-content-center">
-        
-        <Col md={4} className="d-flex justify-content-center">
-          <Image src={Tujuan} roundedCircle fluid style={{ width: '250px', height: '250px' }}/>
-        </Col>
-        <Col md={7}>
-          <h1 id="tujuan" className="text-center mb-4">Tujuan</h1>
-          <p className="text-center">
-              Tujuan aplikasi Walk Through adalah untuk membantu siswa memahami konsep pemrograman menggunakan library Turtle di Python melalui tutorial interaktif dan tantangan yang menyenangkan. Dengan menyediakan pembelajaran visual yang menggabungkan geometri dan logika pemrograman, Walk Through membuat proses belajar lebih menarik dan memudahkan siswa untuk mengeksplorasi pembuatan berbagai bentuk dan desain. Platform ini dirancang untuk meningkatkan pemahaman siswa, mendorong kreativitas, dan memberikan pengalaman belajar yang mendalam dan interaktif.
-          </p>
-          <Button variant="primary" className="mt-3 d-block mx-auto" href="#">About us</Button>
-        </Col>
-      </Row>
-    </Container> */}
-
-
-      {/* <Container className="mt-5 d-flex flex-column align-items-center">
-        <Row className="align-items-center">
-          <Col xs="auto" className="text-center">
-            <h3 className="main-title">WALK THRU</h3>
-          </Col>
-          <Col xs="auto">
-            <img src={turtle} alt="turtle" className="turtle-img" />
-          </Col>
-        </Row>
-        <p>Library Turtle makes it surprisingly easy to start creating amazing shapes using the LOGO language</p>
-      </Container>
-
-      <h4 className='mt-4 text-center'>Explore:</h4>
-      <Container className="mt-2 d-flex justify-content-center align-items-center">
-        <Row className="justify-content-center">
-          <Col sm={12} md={4}>
-            <Card className='custom-card'>
-              <Card.Img variant="top" src={MenaraPandang} className="custom-card-img" />
-              <Card.Body>
-                <Card.Title className='text-center'>Belajar Turtle</Card.Title>
-                <Card.Text>
-                  Dive into the world of turtles and learn how to protect them.
-                </Card.Text>
-                <Button variant="primary" href='/tutorial'>Start Learning</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm={12} md={4}>
-            <Card className='custom-card'>
-              <Card.Img variant="top" src={JukungTeratai} className="custom-card-img" />
-              <Card.Body>
-                <Card.Title className='text-center'>Tantangan</Card.Title>
-                <Card.Text>
-                  Take on exciting challenges and win rewards.
-                </Card.Text>
-                <Button variant="primary" href='#'>Get Started</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm={12} md={4}>
-            <Card className='custom-card'>
-              <Card.Img variant="top" src={StikesSungai} className="custom-card-img" />
-              <Card.Body>
-                <Card.Title className='text-center'>Susur Sungai</Card.Title>
-                <Card.Text>
-                  Explore the wonders of the river ecosystem.
-                </Card.Text>
-                <Button variant="primary" href='#'>Discover More</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container> */}
 
     </Container>
   );
