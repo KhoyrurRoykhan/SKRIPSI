@@ -43,16 +43,16 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resToken = await axios.get('http://localhost:5000/token-guru');
+        const resToken = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token-guru`);
         const decoded = jwtDecode(resToken.data.accessToken);
         const tokenKelas = decoded.token;
         setTokenKelas(tokenKelas);
 
-        const total = await axios.get(`http://localhost:5000/count-users?token_kelas=${tokenKelas}`);
-        const selesai = await axios.get(`http://localhost:5000/count-selesai-belajar?token_kelas=${tokenKelas}`);
-        const tantangan = await axios.get(`http://localhost:5000/count-selesai-tantangan?token_kelas=${tokenKelas}`);
-        const nilaiRes = await axios.get(`http://localhost:5000/nilai/by-token?token_kelas=${tokenKelas}`);
-        const kkmRes = await axios.get(`http://localhost:5000/kkm?token_kelas=${tokenKelas}`);
+        const total = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/count-users?token_kelas=${tokenKelas}`);
+        const selesai = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/count-selesai-belajar?token_kelas=${tokenKelas}`);
+        const tantangan = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/count-selesai-tantangan?token_kelas=${tokenKelas}`);
+        const nilaiRes = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/nilai/by-token?token_kelas=${tokenKelas}`);
+        const kkmRes = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/kkm?token_kelas=${tokenKelas}`);
 
         setJumlahSiswa(total.data.count);
         setJumlahSelesaiBelajar(selesai.data.count);

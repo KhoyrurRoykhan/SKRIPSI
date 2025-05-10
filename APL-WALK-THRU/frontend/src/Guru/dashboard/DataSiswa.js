@@ -41,7 +41,7 @@ const DataSiswa = () => {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/users/${id}`);
+        await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/users/${id}`);
         Swal.fire('Dihapus!', 'Data siswa telah dihapus.', 'success');
         getUsers();
       } catch (error) {
@@ -56,12 +56,12 @@ const DataSiswa = () => {
 
   const getUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/token-guru');
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token-guru`);
       const decoded = jwtDecode(response.data.accessToken);
       const tokenKelas = decoded.token;
       setTokenKelas(tokenKelas);
 
-      const siswaRes = await axios.get(`http://localhost:5000/users/by-token?token_kelas=${tokenKelas}`);
+      const siswaRes = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/users/by-token?token_kelas=${tokenKelas}`);
       setDataSiswa(siswaRes.data);
     } catch (error) {
       console.log(error);
@@ -89,7 +89,7 @@ const DataSiswa = () => {
 
   const handleSaveChanges = async () => {
     try {
-      await axios.put(`http://localhost:5000/users/${selectedSiswa.id}`, {
+      await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/users/${selectedSiswa.id}`, {
         nama: selectedSiswa.nama,
         nisn: selectedSiswa.nisn
       });

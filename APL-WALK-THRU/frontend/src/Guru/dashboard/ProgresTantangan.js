@@ -23,12 +23,12 @@ const ProgresTantangan = () => {
 
   const getUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/token-guru');
+      const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/token-guru`);
       const decoded = jwtDecode(response.data.accessToken);
       const token = decoded.token;
       setTokenKelas(token);
 
-      const siswaRes = await axios.get(`http://localhost:5000/users/by-token?token_kelas=${token}`);
+      const siswaRes = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/users/by-token?token_kelas=${token}`);
       setDataSiswa(siswaRes.data);
     } catch (error) {
       console.log(error);
